@@ -1,0 +1,2 @@
+[Package: test, ttest, 1.0, default, 8x12]
+[File: img.txt]
