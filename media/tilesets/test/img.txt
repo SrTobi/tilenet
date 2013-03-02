@@ -1,4 +1,0 @@
-console.png
-(0,10):smiley
-(1,0):smiley2
-(15,4):test
