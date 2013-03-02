@@ -1,0 +1,17 @@
+Fall 1: Alles in einem Programm
+
+client							server
+--------------------------------------------------
+								|--start--
+								|configure...
+								|-> start server
+								|
+								|
+								|-> start client
+->mit server verbinden			|->Verbindung annehmen
+->passwort&anliegen schicken	|->ueberpruefen und bearbeiten und zurückschicken
+								|->tileset-id schicken
+->tileset-id entgegen nehmen
+->package laden
+->wenn nicht vorhanden: fragen	|->eventuell packet schicken
+loop:anzeigen und events senden |->start und ganz normal zeichnen und so weiter
