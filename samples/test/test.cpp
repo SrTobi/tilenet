@@ -6,12 +6,12 @@
 
 int main()
 {
-	const char* in = "Hallo wie ügehts?";
-	wchar_t out[1024];
+	const wchar_t* in = L"Hallo wie übergehts?";
+	char out[1024];
 
-	tilenet_convert_to_wstring(in, out, strlen(in));
+	tilenet_convert_to_astring(in, out, std::char_traits<wchar_t>::length(in)+1);
 
-	std::wcout << in;
+	std::cout << out;
 
 	std::cin.get();
 	return 0;
