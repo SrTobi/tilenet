@@ -24,6 +24,9 @@ extern "C" {
 #	endif
 #endif
 
+#define TNOK				((TNERROR)0)
+#define TNFAILED			((TNERROR)1)
+
 #define TNERRI_DESCRIPTION	0
 
 typedef unsigned int TNERROR;
