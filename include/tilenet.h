@@ -51,6 +51,7 @@ TNAPI TNERROR tilenet_weak(TNIDTYPE id, TNIDTYPE* weak);
 TNAPI TNERROR tilenet_unweak(TNIDTYPE weak, TNIDTYPE* id);
 TNAPI TNERROR tilenet_refcount(TNIDTYPE id, size_t* refs);
 TNAPI TNERROR tilenet_weakcount(TNIDTYPE id, size_t* refs);
+TNAPI TNERROR tilenet_destroy(TNIDTYPE id);
 TNAPI TNERROR tilenet_gc(TNSERVERID id, size_t* collected);
 
 /**** server management ****/
