@@ -16,6 +16,8 @@ SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 set(tilenet_include_file		"${CMAKE_SOURCE_DIR}/include/tilenet.h")
 
+add_definitions(-DTILENET_AS_LIB)
+
 include_directories(include ${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 
@@ -23,6 +25,7 @@ link_directories(${Boost_LIBRARY_DIRS})
 
 
 add_subdirectory(library)
+add_subdirectory(samples)
 
 
 
