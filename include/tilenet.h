@@ -29,12 +29,14 @@ extern "C" {
 
 #define TNERRI_DESCRIPTION	0
 
+
+struct TilenetObject;
+
 typedef unsigned int TNERROR;
 typedef unsigned int TNERRINFO;
-typedef unsigned int TNIDTYPE;
+typedef TilenetObject* TNOBJ;
 
-typedef TNIDTYPE TNWEAKID;
-typedef TNIDTYPE TNSERVERID;
+typedef TNOBJ TNSERVER;
 
 TNAPI TNERROR tilenet_convert_to_wstring(const char* src, wchar_t* dest, size_t size);
 TNAPI TNERROR tilenet_convert_to_astring(const wchar_t* src, char* dest, size_t size);
@@ -42,22 +44,24 @@ TNAPI TNERROR tilenet_convert_to_astring(const wchar_t* src, char* dest, size_t 
 /**** error management ****/
 TNAPI TNERROR tilenet_get_error_string(TNERROR err, TNERRINFO infono, wchar_t* dest, size_t buflen);
 TNAPI TNERROR tilenet_get_error_int(TNERROR err, TNERRINFO infono, int* dest);
-TNAPI TNERROR tilenet_get_info_list(TNERROR err, TNERRINFO* dest, size_t buflen, size_t* copyed);
+TNAPI TNERROR tilenet_get_info_list(TNERROR err, TNERRINFO* dest, size_t buflen, size_t* copied);
 
 /**** id management *****/
-TNAPI TNERROR tilenet_addref(TNIDTYPE id);
-TNAPI TNERROR tilenet_release(TNIDTYPE id);
-TNAPI TNERROR tilenet_weak(TNIDTYPE id, TNIDTYPE* weak);
-TNAPI TNERROR tilenet_unweak(TNIDTYPE weak, TNIDTYPE* id);
-TNAPI TNERROR tilenet_refcount(TNIDTYPE id, size_t* refs);
-TNAPI TNERROR tilenet_weakcount(TNIDTYPE id, size_t* refs);
-TNAPI TNERROR tilenet_destroy(TNIDTYPE id);
-TNAPI TNERROR tilenet_gc(TNSERVERID id, size_t* collected);
+TNAPI TNERROR tilenet_addref(TNOBJ obj);
+TNAPI TNERROR tilenet_release(TNOBJ obj);
+TNAPI TNERROR tilenet_weak(TNOBJ obj, TNOBJ* weak);
+TNAPI TNERROR tilenet_unweak(TNOBJ weak, TNOBJ* obj);
+TNAPI TNERROR tilenet_refcount(TNOBJ obj, size_t* refs);
+TNAPI TNERROR tilenet_weakcount(TNOBJ obj, size_t* refs);
+TNAPI TNERROR tilenet_destroy(TNOBJ id);
+TNAPI TNERROR tilenet_debug_gc(size_t* collected);
+
 
 /**** server management ****/
-TNAPI TNERROR tilenet_create_server(TNSERVERID* newid);
-TNAPI TNERROR tilenet_destroy_server(TNSERVERID srvid);
-TNAPI TNERROR tilenet_get_server_list(TNSERVERID* dest, size_t buflen, size_t* copyed);
+TNAPI TNERROR tilenet_get_object_server(TNOBJ obj, TNSERVER* srvObj);
+TNAPI TNERROR tilenet_create_server(TNSERVER* newObj);
+TNAPI TNERROR tilenet_destroy_server(TNSERVER srvObj);
+TNAPI TNERROR tilenet_get_server_list(TNSERVER* dest, size_t buflen, size_t* copied);
 
 
 
