@@ -15,16 +15,18 @@ file(GLOB library_utils_source "source/utils/*.cpp")
 file(GLOB library_include "include/*.hpp")
 file(GLOB library_source "source/*.cpp")
 
-
+set(library_all_source 	${tilenet_include_file}
+						${library_source} ${library_include}
+						${library_client_source} ${library_client_include}
+						${library_service_source} ${library_service_include}
+						${library_server_source} ${library_server_include}
+						${library_utils_source} ${library_utils_include})
+						
+set(library_all_source ${library_all_source} PARENT_SCOPE)
 
 include_directories(include)
 
-add_library(tilenet ${tilenet_include_file}
-					${library_source} ${library_include}
-					${library_client_source} ${library_client_include}
-					${library_service_source} ${library_service_include}
-					${library_server_source} ${library_server_include}
-					${library_utils_source} ${library_utils_include})
+add_library(tilenet ${library_all_source})
 
 source_group("include" FILES ${tilenet_include_file})
 source_group("include" FILES ${library_include})

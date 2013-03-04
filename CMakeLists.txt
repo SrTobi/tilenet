@@ -26,7 +26,7 @@ link_directories(${Boost_LIBRARY_DIRS})
 
 add_subdirectory(library)
 add_subdirectory(samples)
-
+add_subdirectory(tests)
 
 
 #add_executable(sync4cpp		 		${include_files} ${sources_files})
