@@ -5,14 +5,14 @@
 #include <boost/variant/variant.hpp>
 
 #include "tilenet.h"
-
+#include "settings.hpp"
 
 struct ThreadErrorInfo
 {
-	typedef boost::variant<std::wstring, int> value_type;
+	typedef boost::variant<string, int> value_type;
 
 
-	ThreadErrorInfo(TNERROR code, const std::wstring& description)
+	ThreadErrorInfo(TNERROR code, const string& description)
 		: errorcode(code)
 	{
 		infos.insert(std::make_pair(TNERRI_DESCRIPTION, description));
@@ -26,7 +26,7 @@ struct ThreadErrorInfo
 boost::thread_specific_ptr<ThreadErrorInfo> LastThreadError;
 
 
-void reset_error(TNERROR code, const std::wstring& description)
+void reset_error(TNERROR code, const string& description)
 {
 	LastThreadError.reset(new ThreadErrorInfo(code, description));
 }
@@ -38,7 +38,7 @@ void add_errinfo(TNERRINFO info, int i)
 	LastThreadError->infos.insert(std::make_pair(info, i));
 }
 
-void add_errinfo(TNERRINFO info, const std::wstring& str)
+void add_errinfo(TNERRINFO info, const string& str)
 {
 	assert(LastThreadError.get());
 	assert(LastThreadError->infos.count(info) == 0);
