@@ -2,6 +2,7 @@
 #ifndef _PTR_HPP
 #define _PTR_HPP
 
+#include <type_traits>
 
 #include "settings.hpp"
 
@@ -14,7 +15,7 @@ template<typename Type>
 class ptr
 {
 public:
-	typedef Type			ptr_type;
+	typedef Type			value_type;
 	typedef ptr<Type>		this_type;
 	typedef weakptr<Type>	weak_type;
 
@@ -23,7 +24,12 @@ public:
 	{
 	}
 
-	ptr(ptr_type* p)
+	ptr(const std::nullptr_t&)
+		: mPtr(nullptr)
+	{
+	}
+
+	ptr(value_type* p)
 		: mPtr(nullptr)
 	{
 		reset(p);
@@ -38,40 +44,51 @@ public:
 	ptr(const weak_type& weak)
 		: mPtr(nullptr)
 	{
-		reset(weak->unweak().get());
+		reset(weak.unweak().get());
 	}
 
+	template<typename Other>
+	ptr(const ptr<Other>& other)
+	{
+		static_assert(std::is_base_of<value_type, Other>::value, "Can not convert from 'Other' to 'value_type'!");
+		reset(static_cast<value_type*>(other.get()));
+	}
+	
 	~ptr()
 	{
 		reset(nullptr);
 	}
 
-	this_type operator =(ptr_type* p)
+	this_type operator =(value_type* p)
 	{
 		reset(p);
 		return *this;
 	}
 
-	this_type operator =(const this_type& other)
+	this_type& operator =(const std::nullptr_t&)
+	{
+		reset(nullptr);
+		return *this;
+	}
+
+	this_type& operator =(const this_type& other)
 	{
 		reset(other.mPtr);
 		return *this;
 	}
 
-	this_type operator =(const weak_type& other)
+	this_type& operator =(const weak_type& other)
 	{
 		reset(weak->unweak().get());
 		return *this;
 	}
 
-	void reset(ptr_type* p)
+
+	void reset(value_type* p)
 	{
 		if(mPtr)
 		{
-			if(mPtr->subref() == 0)
-			{
-				delete mPtr;
-			}
+			TilenetObject::Release(mPtr);
 		}
 
 		mPtr = p;
@@ -82,17 +99,17 @@ public:
 		}
 	}
 
-	ptr_type* get() const
+	value_type* get() const
 	{
 		return mPtr;
 	}
 
-	ptr_type* operator ->() const
+	value_type* operator ->() const
 	{
 		return mPtr;
 	}
 
-	ptr_type& operator *() const
+	value_type& operator *() const
 	{
 		tnAssert(mPtr);
 		return *mPtr;
@@ -109,7 +126,7 @@ public:
 	}
 
 private:
-	ptr_type* mPtr;
+	value_type* mPtr;
 };
 
 
@@ -117,65 +134,88 @@ template<typename Type>
 class weakptr
 {
 public:
-	typedef Type				ptr_type;
+	typedef Type				value_type;
 	typedef TilenetWeakObject	weak_type;
-	typedef weakptr<Type>		this_type;
-	typedef ptr<Type>			refptr_type;
+	typedef weakptr<value_type>	this_type;
 
 	weakptr()
-		: mPtr(nullptr)
 	{
 	}
 
-	weakptr(const refptr_type& rp)
-		: mPtr(nullptr)
+	weakptr(const std::nullptr_t&)
 	{
-		reset(rp->weak());
+	}
+
+	weakptr(const ptr<value_type>& p)
+	{
+		reset(p);
 	}
 
 	weakptr(const this_type& other)
-		: mPtr(nullptr)
 	{
-		reset(other.mPtr);
+		reset(other);
 	}
 
 	~weakptr()
 	{
-		if(mPtr)
-		{
-			mPtr->subref();
-		}
 	}
 
-	this_type& operator =(const refptr_type& rp)
+	this_type& operator =(const std::nullptr_t&)
 	{
-		reset(rp->weak());
+		reset(nullptr);
+		return *this;
+	}
+
+	this_type& operator =(const ptr<value_type>& p)
+	{
+		reset(p);
 		return *this;
 	}
 
 	this_type& operator =(const this_type& other)
 	{
-		reset(other.mPtr);
+		reset(other.mWeakPtr);
 		return *this;
 	}
 
-private:
-	void reset(weak_type* p)
+	void reset(const std::nullptr_t&)
 	{
-		if(mPtr)
-		{
-			mPtr->subref();
-		}
-
-		mPtr = p;
-
-		if(mPtr)
-		{
-			mPtr->addref();
-		}
+		mWeakPtr = nullptr;
 	}
+
+	void reset(const ptr<value_type>& obj)
+	{
+		if(obj)
+			mWeakPtr = obj->weak();
+		else
+			mWeakPtr = nullptr;
+	}
+
+	void reset(const this_type& other)
+	{
+		mWeakPtr = other.mWeakPtr;
+	}
+
+	ptr<value_type> unweak()
+	{
+		if(!mWeakPtr)
+			return nullptr;
+
+		ptr<TilenetObject> objPtr = mWeakPtr->unweak();
+
+		if(!objPtr)
+		{
+			mWeakPtr = nullptr;
+			return nullptr;
+		}
+
+		value_type* converted = tilenet_vcast<value_type*>(objPtr.get());
+		tnAssert(converted);
+		return converted;
+	}
+
 private:
-	weak_type* mPtr;
+	ptr<weak_type> mWeakPtr;
 };
 
 

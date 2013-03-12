@@ -2,16 +2,21 @@
 #ifndef _TILENET_OBJECT_HPP
 #define _TILENET_OBJECT_HPP
 
-
+#include <boost/noncopyable.hpp>
 #include "settings.hpp"
 
 #include "ptr.hpp"
 
 template<typename Type>
 class ptr;
+template<typename Type>
+class weakptr;
 
 class Server;
 class TilenetWeakObject;
+struct TilenetObject;
+
+
 
 struct TilenetObject
 {
@@ -26,11 +31,12 @@ public:
 	size_t weakCount() const;
 
 	virtual ptr<TilenetWeakObject> weak();
-
+	virtual size_t destroy();
 private:
 	void addref() const;
-	size_t subref() const;
+	bool subref() const;
 
+	static void Release(const TilenetObject* obj);
 private:
 	mutable size_t			mCount;
 	ptr<TilenetWeakObject>	mWeak;
@@ -40,20 +46,24 @@ private:
 
 class TilenetWeakObject
 	: public TilenetObject
+	, boost::noncopyable
 {
 	friend struct TilenetObject;
+	template<typename Type>
+	friend class weakptr;
 public:
 	virtual ~TilenetWeakObject();
 
 	virtual override ptr<TilenetWeakObject> weak();
+	virtual override size_t destroy();
 
 	ptr<TilenetObject> unweak();
 	ptr<const TilenetObject> unweak() const;
-
 private:
-	TilenetWeakObject(const ptr<TilenetObject>& obj);
+	void uncouple();
+	TilenetWeakObject(TilenetObject* obj);
 
-	TilenetObject*const mObj;
+	TilenetObject* mObj;
 };
 
 
