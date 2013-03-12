@@ -5,56 +5,67 @@
 
 #include "settings.hpp"
 
+#include "ptr.hpp"
+
 template<typename Type>
 class ptr;
 
 class Server;
-struct TilenetWeakObject;
+class TilenetWeakObject;
 
 struct TilenetObject
 {
+	template<typename Type>
+	friend class ptr;
 public:
 	TilenetObject();
-	~TilenetObject();
+	virtual ~TilenetObject();
 
 
 	size_t refCount() const;
 	size_t weakCount() const;
 
-	virtual Server* server() const;
-
-protected:
-	virtual TilenetWeakObject* weak() const;
+	virtual ptr<TilenetWeakObject> weak();
 
 private:
-	void addref();
-	void subref();
+	void addref() const;
+	size_t subref() const;
 
 private:
-	size_t		mCount;
+	mutable size_t			mCount;
+	ptr<TilenetWeakObject>	mWeak;
 };
 
-struct TilenetWeakObject
+
+
+class TilenetWeakObject
 	: public TilenetObject
 {
-	template<typename Type>
-	friend class ptr;
-	template<typename Type>
-	friend class weakptr;
+	friend struct TilenetObject;
 public:
-	TilenetWeakObject(TilenetObject* obj);
-	~TilenetWeakObject();
+	virtual ~TilenetWeakObject();
 
-	virtual override Server* server() const;
+	virtual override ptr<TilenetWeakObject> weak();
+
+	ptr<TilenetObject> unweak();
+	ptr<const TilenetObject> unweak() const;
 
 private:
-	TilenetObject* unweak() const;
-	virtual override TilenetWeakObject* weak() const;
-private:
+	TilenetWeakObject(const ptr<TilenetObject>& obj);
+
 	TilenetObject* mObj;
 };
 
 
+
+
+class TilenetIdObject
+	: public TilenetObject
+{
+public:
+	TilenetIdObject();
+	virtual ~TilenetIdObject();
+};
 
 
 #endif

@@ -5,7 +5,7 @@
 
 #include "settings.hpp"
 
-struct TilenetWeakObject;
+class TilenetWeakObject;
 
 template<typename Type>
 class weakptr;
@@ -43,10 +43,7 @@ public:
 
 	~ptr()
 	{
-		if(mPtr)
-		{
-			mPtr->subref();
-		}
+		reset(nullptr);
 	}
 
 	this_type operator =(ptr_type* p)
@@ -71,7 +68,10 @@ public:
 	{
 		if(mPtr)
 		{
-			mPtr->subref();
+			if(mPtr->subref() == 0)
+			{
+				delete mPtr;
+			}
 		}
 
 		mPtr = p;
@@ -99,7 +99,7 @@ public:
 
 	operator bool() const
 	{
-		return mPtr;
+		return mPtr != nullptr;
 	}
 
 private:
