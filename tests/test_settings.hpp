@@ -97,6 +97,7 @@ public:
 
 	void expect(const Events& v)
 	{
+		BOOST_REQUIRE(events->size());
 		BOOST_CHECK_EQUAL(v, events->front());
 		events->pop_front();
 	}
