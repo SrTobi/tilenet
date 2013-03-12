@@ -25,7 +25,8 @@ typedef uint32_t uint32;
 typedef int64_t int64;
 typedef uint32_t uint32;
 
-
+#include "utils/exceptions.hpp"
 #include "utils/tilenet_object.hpp"
+#include "utils/lexical_convert.hpp"
 
 #endif
