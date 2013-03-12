@@ -13,6 +13,8 @@
 typedef unsigned int IdType;
 typedef std::wstring string;
 
+
+#define NOT_IMPLEMENTED()	BOOST_THROW_EXCEPTION(excp::NotImplException());
 #define tnAssert(_expr)		assert(_expr)
 #define tilenet_vcast		dynamic_cast
 

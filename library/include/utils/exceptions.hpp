@@ -9,18 +9,34 @@
 
 namespace excp {
 
-typedef boost::error_info<struct TagWhatInfo, string> InfoWhat;
+
+template<TNERRINFO I>
+struct Tag {};
+
+typedef boost::error_info<Tag<TNERRI_DESCRIPTION>, string>	InfoWhat;
+typedef boost::error_info<Tag<TNERRI_INFOCODE>, int>		InfoCode;
+typedef boost::error_info<Tag<TNERRI_ELEMCOPIED>, int>		CopiedEements;
 
 
 //! Base of most exceptions thrown by alacarte
 struct ExceptionBase : public boost::exception, std::exception
 {
 	string why() const throw();
+};
+
+
+struct NotImplException: public ExceptionBase {};
+
+
+struct CodeException
+	: public ExceptionBase
+{
 	virtual TNERROR getErrorCode() const = 0;
 };
 
 template<TNERROR ErrCode>
-struct Exception
+struct SpecificCodeException
+	: public ExceptionBase
 {
 	virtual override TNERROR getErrorCode() const
 	{
@@ -29,7 +45,9 @@ struct Exception
 };
 
 
-
+typedef SpecificCodeException<TNINFONOTSET> InfoNotSetException;
+typedef SpecificCodeException<TNWRONGINFOTYPE> WrongInfoTypeException;
+typedef SpecificCodeException<TNBUFFERUNDERSIZED> BufferUndersizedException;
 
 
 template<typename Info>
