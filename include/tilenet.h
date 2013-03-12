@@ -51,9 +51,9 @@ TNAPI TNERROR tilenet_addref(TNOBJ obj);
 TNAPI TNERROR tilenet_release(TNOBJ obj);
 TNAPI TNERROR tilenet_weak(TNOBJ obj, TNOBJ* weak);
 TNAPI TNERROR tilenet_unweak(TNOBJ weak, TNOBJ* obj);
-TNAPI TNERROR tilenet_refcount(TNOBJ obj, size_t* refs);
-TNAPI TNERROR tilenet_weakcount(TNOBJ obj, size_t* refs);
-TNAPI TNERROR tilenet_destroy(TNOBJ id);
+TNAPI TNERROR tilenet_get_refcount(TNOBJ obj, size_t* refs);
+TNAPI TNERROR tilenet_get_weakcount(TNOBJ obj, size_t* refs);
+TNAPI TNERROR tilenet_destroy(TNOBJ obj, size_t* refs);
 TNAPI TNERROR tilenet_gc(size_t* collected);
 
 
