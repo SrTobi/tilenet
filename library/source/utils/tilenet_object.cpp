@@ -42,7 +42,8 @@ void TilenetObject::addref() const
 
 size_t TilenetObject::subref() const
 {
-	return --mCount;
+
+	return mCount == 0 ? 0 : --mCount;
 }
 
 
@@ -51,7 +52,7 @@ size_t TilenetObject::subref() const
 TilenetWeakObject::TilenetWeakObject( const ptr<TilenetObject>& obj )
 	: mObj(obj.get())
 {
-
+	tnAssert(obj.get());
 }
 
 TilenetWeakObject::~TilenetWeakObject()

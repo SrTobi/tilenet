@@ -2,7 +2,7 @@
 #ifndef _SETTINGS_HPP
 #define _SETTINGS_HPP
 
-
+#include <assert.h>
 #include <string>
 #include <boost/shared_ptr.hpp>
 
@@ -13,7 +13,7 @@
 typedef unsigned int IdType;
 typedef std::wstring string;
 
-
+#define tnAssert(_expr)		assert(_expr)
 
 
 typedef int8_t int8;

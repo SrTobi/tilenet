@@ -53,7 +53,7 @@ public:
 private:
 	TilenetWeakObject(const ptr<TilenetObject>& obj);
 
-	TilenetObject* mObj;
+	TilenetObject*const mObj;
 };
 
 

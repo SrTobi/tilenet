@@ -94,6 +94,7 @@ public:
 
 	ptr_type& operator *() const
 	{
+		tnAssert(mPtr);
 		return *mPtr;
 	}
 
