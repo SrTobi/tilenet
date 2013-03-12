@@ -10,27 +10,7 @@
 
 struct TilenetObject;
 
-class IdManager
-{
-	friend struct TilenetObject;
-public:
-	typedef IdType id_type;
-	IdManager();
-	~IdManager();
-
-	//RefObject* getObject(id_type id);
-
-private:
-	id_type reserveNewId();
-	void	freeId(id_type id);
-
-private:
-	std::stack<id_type> mEmptyIds;
-	std::vector<TilenetObject*> mObjects;
-};
-
 class Server
-	: public IdManager
 {
 public:
 
