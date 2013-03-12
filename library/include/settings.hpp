@@ -14,7 +14,7 @@ typedef unsigned int IdType;
 typedef std::wstring string;
 
 #define tnAssert(_expr)		assert(_expr)
-
+#define tilenet_vcast		dynamic_cast
 
 typedef int8_t int8;
 typedef uint8_t uint8;
