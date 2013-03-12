@@ -98,6 +98,11 @@ public:
 		return *mPtr;
 	}
 
+	bool operator !() const
+	{
+		return mPtr == nullptr;
+	}
+
 	operator bool() const
 	{
 		return mPtr != nullptr;
