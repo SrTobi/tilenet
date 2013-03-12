@@ -54,8 +54,6 @@ TNAPI TNERROR tilenet_unweak(TNOBJ weak, TNOBJ* obj);
 TNAPI TNERROR tilenet_get_refcount(TNOBJ obj, size_t* refs);
 TNAPI TNERROR tilenet_get_weakcount(TNOBJ obj, size_t* refs);
 TNAPI TNERROR tilenet_destroy(TNOBJ obj, size_t* refs);
-TNAPI TNERROR tilenet_gc(size_t* collected);
-
 
 /**** server management ****/
 TNAPI TNERROR tilenet_get_object_server(TNOBJ obj, TNSERVER* srvObj);
