@@ -48,7 +48,7 @@ struct SpecificCodeException
 typedef SpecificCodeException<TNINFONOTSET> InfoNotSetException;
 typedef SpecificCodeException<TNWRONGINFOTYPE> WrongInfoTypeException;
 typedef SpecificCodeException<TNBUFFERUNDERSIZED> BufferUndersizedException;
-
+typedef SpecificCodeException<TNNOERROR> NoErrorException;
 
 template<typename Info>
 struct ErrorOut

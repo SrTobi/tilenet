@@ -31,8 +31,9 @@ extern "C" {
 
 #define TNNULLARG			((TNERROR)100)	//!< Indicates, that a given argument was null but must not be null
 
-#define TNINFONOTSET		((TNERROR)200)	//!< Wanted info was not set for the error
-#define TNWRONGINFOTYPE		((TNERROR)201)	//!< Info has another type
+#define TNNOERROR			((TNERROR)200)	//!< There was no last error 
+#define TNINFONOTSET		((TNERROR)201)	//!< Wanted info was not set for the error
+#define TNWRONGINFOTYPE		((TNERROR)202)	//!< Info has another type
 
 #define TNERRI_DESCRIPTION	0	//!< Gives an descritpion of the error (string)
 #define TNERRI_INFOCODE		1	//!< Determinates the info code caused the error (int)
@@ -54,6 +55,7 @@ TNAPI TNERROR tilenet_convert_to_astring(const wchar_t* src, char* dest, size_t 
 TNAPI TNERROR tilenet_get_error_string(TNERRINFO infono, wchar_t* dest, size_t buflen);
 TNAPI TNERROR tilenet_get_error_int(TNERRINFO infono, int* dest);
 TNAPI TNERROR tilenet_get_info_list(TNERRINFO* dest, size_t buflen, size_t* copied);
+TNAPI TNERROR tilenet_get_last_error();
 
 /**** id management *****/
 TNAPI TNERROR tilenet_addref(TNOBJ obj);

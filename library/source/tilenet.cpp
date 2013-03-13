@@ -75,6 +75,9 @@ public:
 template<typename Target>
 Target get_error(TNERRINFO code)
 {
+	if(!LastThreadError.get())
+		BOOST_THROW_EXCEPTION(excp::NoErrorException());
+
 	auto it = LastThreadError->infos.find(code);
 
 	if(it == LastThreadError->infos.end())
@@ -84,8 +87,41 @@ Target get_error(TNERRINFO code)
 }
 
 
+struct TrivialExtractor
+{
+	template<typename Type>
+	Type operator ()(const Type& v)
+	{
+		return v;
+	}
+};
+
+template<typename Iterator, typename Type, typename Extractor>
+void copy_its(Iterator begin, const Iterator end, Type* dest, size_t buflen, size_t* copied, Extractor ex)
+{
+	tnAssert(copied);
+	tnAssert(dest);
+	tnAssert(buflen);
+	size_t idx = 0;
+
+	Iterator it;
+	for(it = begin; it != end && idx < buflen; ++it)
+	{
+		dest[idx] = ex(*it);
+		++idx;
+	}
+
+	*copied = idx;
+
+	if(it != end)
+		BOOST_THROW_EXCEPTION(excp::BufferUndersizedException() << excp::CopiedEements(idx));
+}
+
 void copy_string(const string& src, wchar_t* dest, size_t buflen)
 {
+	tnAssert(dest);
+	tnAssert(buflen);
+
 	size_t len = std::min(src.size(), buflen-1);
 
 	memcpy(dest, src.c_str(), len * sizeof(wchar_t));
@@ -96,9 +132,9 @@ void copy_string(const string& src, wchar_t* dest, size_t buflen)
 }
 
 
-
 #define CHECK_RETURN(_cond, _ret)	if(!(_cond)){return (_ret);}
 #define CHECK_NULL(_expr)			CHECK_RETURN(_expr, TNNULLARG)
+#define CHECK_IF_ERROR()			CHECK_RETURN(LastThreadError.get(), TNNOERROR)
 
 
 /**
@@ -196,9 +232,10 @@ TNERROR tilenet_convert_to_astring( const wchar_t* src, char* dest, size_t size 
  * \param dest A buffer used as destination
  * \param buflen Size of the buffer indicating the maximum size of the output string
  * \return TNOK, if info was copied successfully
+ * \return TNNOERROR, if there was no error in this thread
  * \return TNINFONOTSET, if no info with infono exists in the current error
  * \return TNWRONGINFOTYPE, if the error info is an int
- * \return TNBUFFEROVERFLOW, if buflen was smaller then the string which should be copied!
+ * \return TNBUFFERUNDERSIZED, if buflen was smaller then the string, which should be copied!
  *
  * \note This function will not modify the internal (error)state, even if it fails!
  *
@@ -207,6 +244,7 @@ TNAPI TNERROR tilenet_get_error_string(TNERRINFO infono, wchar_t* dest, size_t b
 {
 	CHECK_NULL(dest);
 	CHECK_NULL(buflen);
+	CHECK_IF_ERROR();
 
 	try {
 		string infoString = get_error<string>(infono);
@@ -237,8 +275,9 @@ TNAPI TNERROR tilenet_get_error_string(TNERRINFO infono, wchar_t* dest, size_t b
  *
  * \param infono The number, identifying the certain info
  * \param dest A buffer used as destination
- * \param buflen Size of the buffer indicating the maximum size of the output string
+ * \param buflen Size of the buffer, indicating the maximum size of the output string
  * \return TNOK, if info was copied successfully
+ * \return TNNOERROR, if there was no error in this thread
  * \return TNINFONOTSET, if no info with infono exists in the current error
  * \return TNWRONGINFOTYPE, if the error info is a string
  *
@@ -248,6 +287,7 @@ TNAPI TNERROR tilenet_get_error_string(TNERRINFO infono, wchar_t* dest, size_t b
 TNAPI TNERROR tilenet_get_error_int(TNERRINFO infono, int* dest )
 {
 	CHECK_NULL(dest);
+	CHECK_IF_ERROR();
 
 	try {
 		*dest = get_error<int>(infono);
@@ -268,9 +308,64 @@ TNAPI TNERROR tilenet_get_error_int(TNERRINFO infono, int* dest )
 	}
 }
 
+/**
+ * @brief Fills a list with all error information codes available at the current error
+ *
+ * \param dest A buffer list used as destination
+ * \param buflen The size of the buffer, indicating the maximum codes that will be copied
+ * \param copied Variable set to the number of info codes copied by this function
+ * \return TNOK, if all codes were successfully copied.
+ * \return TNNOERROR, if there was no error in this thread
+ * \return TNBUFFERUNDERSIZED, if buflen was smaller then the number of codes, which should be copied!
+ *
+ *
+ **/
 TNAPI TNERROR tilenet_get_info_list(TNERRINFO* dest, size_t buflen, size_t* copied )
 {
-	NOT_IMPLEMENTED();
+	CHECK_NULL(dest);
+	CHECK_NULL(buflen);
+	CHECK_NULL(copied);
+	CHECK_IF_ERROR();
+
+	struct {
+		TNERRINFO operator ()(const std::pair<TNERRINFO, ThreadErrorInfo::value_type>& p)
+		{
+			return p.first;
+		}
+	} extractor;
+
+	try {
+		copy_its(LastThreadError->infos.begin(), LastThreadError->infos.end(), dest, buflen, copied, extractor);
+
+		return TNOK;
+	} catch(excp::BufferUndersizedException&)
+	{
+		return TNBUFFERUNDERSIZED;
+
+	} catch(...)
+	{
+		return TNUNKNOWN;
+	}
+}
+
+
+/**
+ * @brief Returns the last error code
+ *
+ * If no error occurred in this thread TNOK will be the code returned.
+ *
+ * \return The code of the last error occurred in the current thread.
+ *
+ * \note This function can not fail.
+ * \note This function will not modify the internal (error)state!
+ *
+ **/
+TNAPI TNERROR tilenet_get_last_error()
+{
+	if(LastThreadError.get())
+		return TNOK;
+
+	return LastThreadError->errorcode;
 }
 
 
