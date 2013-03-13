@@ -31,6 +31,13 @@ struct get_infocode<boost::error_info<Tag<I>, Param> >
 };
 
 
+template<typename Exception>
+struct DefaultExceptionDescription
+{
+	static_assert(sizeof(Exception) != sizeof(Exception), "'Exception' has no default description!");
+};
+
+#define DEFAULT_DESCRIPTION(_excp, _desc) template<> struct DefaultExceptionDescription<_excp>{ static const char* Description() { return _desc; } };
 
 //! Base of most exceptions thrown by alacarte
 struct ExceptionBase : public boost::exception, std::exception
@@ -56,6 +63,12 @@ struct SpecificCodeException
 	{
 		return ErrCode;
 	}
+
+	virtual const char* what() const throw()
+	{
+		return DefaultExceptionDescription<SpecificCodeException<ErrCode>>::Description();
+	}
+
 };
 
 
@@ -63,6 +76,11 @@ typedef SpecificCodeException<TNINFONOTSET> InfoNotSetException;
 typedef SpecificCodeException<TNWRONGINFOTYPE> WrongInfoTypeException;
 typedef SpecificCodeException<TNBUFFERUNDERSIZED> BufferUndersizedException;
 typedef SpecificCodeException<TNNOERROR> NoErrorException;
+
+DEFAULT_DESCRIPTION(InfoNotSetException,		"Desired information is not available for the last error!");
+DEFAULT_DESCRIPTION(WrongInfoTypeException,		"Desired information has another type!");
+DEFAULT_DESCRIPTION(BufferUndersizedException,	"Buffer is to small to take all informations!");
+DEFAULT_DESCRIPTION(NoErrorException,			"There is no last error!");
 
 template<typename Info>
 struct ErrorOut
