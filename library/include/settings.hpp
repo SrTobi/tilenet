@@ -13,6 +13,10 @@
 typedef unsigned int IdType;
 typedef std::wstring string;
 
+#ifdef _DEBUG
+#	define TILENET_DEBUG
+#endif
+
 
 #define NOT_IMPLEMENTED()	BOOST_THROW_EXCEPTION(excp::NotImplException());
 #define tnAssert(_expr)		assert(_expr)

@@ -26,7 +26,7 @@ extern "C" {
 
 #define TNOK				((TNERROR)0)	//!< Indicates that no error occured
 #define TNUNKNOWN			((TNERROR)1)	//!< Indicates an unknown error
-#define TNINTERNALASSERTION	((TNERROR)2)	//!< Internal assertion occured. This should not be returned normaly. Please submit a ticket!
+#define TNINTERNALERROR		((TNERROR)2)	//!< Internal error occured. This should not be returned normaly. Please submit a ticket!
 #define TNBUFFERUNDERSIZED	((TNERROR)3)	//!< The given buffer was to short to take all the output
 
 #define TNNULLARG			((TNERROR)100)	//!< Indicates, that a given argument was null but must not be null
@@ -35,9 +35,10 @@ extern "C" {
 #define TNINFONOTSET		((TNERROR)201)	//!< Wanted info was not set for the error
 #define TNWRONGINFOTYPE		((TNERROR)202)	//!< Info has another type
 
-#define TNERRI_DESCRIPTION	0	//!< Gives an descritpion of the error (string)
-#define TNERRI_INFOCODE		1	//!< Determinates the info code caused the error (int)
-#define TNERRI_ELEMCOPIED	2	//!< Indicates the number of elements copied into an undersized buffer (int)
+#define TNERRI_DESCRIPTION					((TNERRINFO)0)	//!< Gives an descritpion of the error (string)
+#define TNERRI_INTERNALDEBUGDESCRIPTION		((TNERRINFO)1)	//!< If debugmode is active one can find an internal debugging description with this info (string)
+#define TNERRI_INFOCODE						((TNERRINFO)2)	//!< Determinates the info code caused the error (int)
+#define TNERRI_ELEMCOPIED					((TNERRINFO)3)	//!< Indicates the number of elements copied into an undersized buffer (int)
 
 
 struct TilenetObject;

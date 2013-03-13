@@ -86,6 +86,45 @@ Target get_error(TNERRINFO code)
 	return boost::apply_visitor(VisitorForInfoType<Target>(), it->second);
 }
 
+#define EXTRACT_ERROR_INFO(_expType)								\
+	{																\
+		auto* p = boost::get_error_info<_expType>(*codeexcp);		\
+		if(p)														\
+			add_errinfo(excp::get_infocode<_expType>::value, *p);	\
+	}
+
+TNERROR process_exception(const excp::ExceptionBase& exp, bool reset = true)
+{
+	const excp::CodeException* codeexcp = dynamic_cast<const excp::CodeException*>(&exp);
+
+	TNERROR errorcode = TNINTERNALERROR;
+	if(codeexcp)
+	{
+		errorcode = codeexcp->getErrorCode();
+	}
+
+	if(reset)
+	{
+		reset_error(errorcode, exp.why());
+
+		if(codeexcp)
+		{
+			// Extract error infos
+			EXTRACT_ERROR_INFO(excp::InfoCode);
+			EXTRACT_ERROR_INFO(excp::CopiedEements);
+		}
+
+#ifdef TILENET_DEBUG
+
+		add_errinfo(TNERRI_INTERNALDEBUGDESCRIPTION, lexical_convert<string>(boost::diagnostic_information(exp)));
+
+#endif // TILENET_DEBUG
+	}
+
+	return errorcode;
+}
+#undef EXTRACT_ERROR_INFO
+
 
 struct TrivialExtractor
 {
@@ -131,6 +170,24 @@ void copy_string(const string& src, wchar_t* dest, size_t buflen)
 		BOOST_THROW_EXCEPTION(excp::BufferUndersizedException() << excp::CopiedEements(len+1));
 }
 
+
+#define AUTO_CATCH(_reset_error)																		\
+	catch(excp::ExceptionBase& e) {																		\
+		return process_exception(e, _reset_error);														\
+	} catch(std::exception& e)																			\
+	{ 																									\
+		if(_reset_error)																				\
+			reset_error(TNINTERNALERROR, lexical_convert<string>(e.what()));							\
+		return TNINTERNALERROR;																			\
+	} catch(boost::exception& e)																		\
+	{ 																									\
+		if(_reset_error)																				\
+			reset_error(TNINTERNALERROR, lexical_convert<string>(boost::diagnostic_information(e)));	\
+		return TNINTERNALERROR;																			\
+	} catch(...)																						\
+	{ 																									\
+		return TNUNKNOWN;																				\
+	}
 
 #define CHECK_RETURN(_cond, _ret)	if(!(_cond)){return (_ret);}
 #define CHECK_NULL(_expr)			CHECK_RETURN(_expr, TNNULLARG)
@@ -252,22 +309,7 @@ TNAPI TNERROR tilenet_get_error_string(TNERRINFO infono, wchar_t* dest, size_t b
 
 		return TNOK;
 
-	} catch(excp::InfoNotSetException&)
-	{
-		return TNINFONOTSET;
-	
-	} catch(excp::WrongInfoTypeException&)
-	{
-		return TNWRONGINFOTYPE;
-	
-	} catch(excp::BufferUndersizedException&)
-	{
-		return TNBUFFERUNDERSIZED;
-
-	} catch(...)
-	{
-		return TNUNKNOWN;
-	}
+	} AUTO_CATCH(false);
 }
 
 /**
@@ -294,18 +336,7 @@ TNAPI TNERROR tilenet_get_error_int(TNERRINFO infono, int* dest )
 
 		return TNOK;
 
-	} catch(excp::InfoNotSetException&)
-	{
-		return TNINFONOTSET;
-
-	} catch(excp::WrongInfoTypeException&)
-	{
-		return TNWRONGINFOTYPE;
-
-	} catch(...)
-	{
-		return TNUNKNOWN;
-	}
+	} AUTO_CATCH(false);
 }
 
 /**
@@ -338,14 +369,7 @@ TNAPI TNERROR tilenet_get_info_list(TNERRINFO* dest, size_t buflen, size_t* copi
 		copy_its(LastThreadError->infos.begin(), LastThreadError->infos.end(), dest, buflen, copied, extractor);
 
 		return TNOK;
-	} catch(excp::BufferUndersizedException&)
-	{
-		return TNBUFFERUNDERSIZED;
-
-	} catch(...)
-	{
-		return TNUNKNOWN;
-	}
+	} AUTO_CATCH(false);
 }
 
 

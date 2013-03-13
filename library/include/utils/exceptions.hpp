@@ -13,9 +13,23 @@ namespace excp {
 template<TNERRINFO I>
 struct Tag {};
 
+
 typedef boost::error_info<Tag<TNERRI_DESCRIPTION>, string>	InfoWhat;
 typedef boost::error_info<Tag<TNERRI_INFOCODE>, int>		InfoCode;
 typedef boost::error_info<Tag<TNERRI_ELEMCOPIED>, int>		CopiedEements;
+
+template<typename ErrorInfo>
+struct get_infocode
+{
+	static_assert(sizeof(ErrorInfo) != sizeof(ErrorInfo), "ErrorInfo is no boost::error");
+};
+
+template<TNERRINFO I, typename Param>
+struct get_infocode<boost::error_info<Tag<I>, Param> >
+	: public std::integral_constant<TNERRINFO, I>
+{
+};
+
 
 
 //! Base of most exceptions thrown by alacarte
