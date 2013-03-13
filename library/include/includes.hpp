@@ -24,6 +24,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/smart_ptr/detail/spinlock_pool.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/unordered_map.hpp>
 
 #ifdef TILENET_TESTS
 //#include <boost/test/test_tools.hpp>

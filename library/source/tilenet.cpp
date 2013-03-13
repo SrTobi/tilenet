@@ -2,8 +2,8 @@
 
 #include <locale>
 #include <assert.h>
-#include <hash_map>
 #include <boost/thread/tss.hpp>
+#include <boost/unordered_map.hpp>
 #include <boost/variant/variant.hpp>
 
 #include "tilenet.h"
@@ -22,7 +22,7 @@ struct ThreadErrorInfo
 
 
 	const TNERROR errorcode;
-	std::hash_map<TNERRINFO, value_type> infos;
+	boost::unordered_map<TNERRINFO, value_type> infos;
 };
 
 boost::thread_specific_ptr<ThreadErrorInfo> LastThreadError;
