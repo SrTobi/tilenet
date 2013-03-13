@@ -5,11 +5,20 @@ project(tilenet)
 
 #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
-set(Boost_USE_STATIC_LIBS    ON)
+if(MSVC)
+set(Boost_USE_STATIC_LIBS ON)
+endif(MSVC)
+
+
+option(Tilenet_USE_PRE_COMPILED_HEADER	"Use precompiled header for compilation" ON)
+option(Tilenet_BUILD_SHARED_LIB			"Build tilenet as shared library" OFF)
+option(Tilenet_MAKE_DOXYGEN_TARGET		"Create a doxygen build target" OFF)
 find_package(Boost COMPONENTS system thread unit_test_framework REQUIRED)
 
 
+if(NOT MSVC)
 ADD_DEFINITIONS("-std=c++0x")
+endif(NOT MSVC)
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
@@ -36,11 +45,13 @@ add_subdirectory(tests)
 
 
 # add a target to generate API documentation with Doxygen
-#find_package(Doxygen)
-#if(DOXYGEN_FOUND)
-#	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doc.doxy ${CMAKE_CURRENT_BINARY_DIR}/doc.doxy @ONLY)
-#	add_custom_target(documentation ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doc.doxy
-#		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-#		COMMENT "Generating API documentation with Doxygen" VERBATIM
-#	)
-#endif(DOXYGEN_FOUND)
+if(Tilenet_MAKE_DOXYGEN_TARGET)
+	find_package(Doxygen)
+	if(DOXYGEN_FOUND)
+		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doc.doxy ${CMAKE_CURRENT_BINARY_DIR}/doc.doxy @ONLY)
+		add_custom_target(documentation ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doc.doxy
+			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+			COMMENT "Generating API documentation with Doxygen" VERBATIM
+		)
+	endif(DOXYGEN_FOUND)
+endif(Tilenet_MAKE_DOXYGEN_TARGET)
