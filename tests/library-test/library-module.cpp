@@ -1,3 +1,5 @@
+#include "includes.hpp"
+
 /************************************************
  * 
  *	This file only sets the test module.

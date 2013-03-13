@@ -1,3 +1,5 @@
+#include "includes.hpp"
+
 #include "test_settings.hpp"
 
 #include <boost/test/unit_test.hpp>

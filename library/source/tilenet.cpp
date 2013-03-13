@@ -1,3 +1,5 @@
+#include "includes.hpp"
+
 #include <locale>
 #include <assert.h>
 #include <hash_map>

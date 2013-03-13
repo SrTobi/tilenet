@@ -13,17 +13,28 @@ endif(MSVC)
 option(Tilenet_USE_PRE_COMPILED_HEADER	"Use precompiled header for compilation" ON)
 option(Tilenet_BUILD_SHARED_LIB			"Build tilenet as shared library" OFF)
 option(Tilenet_MAKE_DOXYGEN_TARGET		"Create a doxygen build target" OFF)
-find_package(Boost COMPONENTS system thread unit_test_framework REQUIRED)
 
+if(Tilenet_USE_PRE_COMPILED_HEADER)
+	add_subdirectory("extras/pch")
+	add_definitions(-DTILENET_USE_PRECOMPILED_HEADER)
+else(Tilenet_USE_PRE_COMPILED_HEADER)
+
+	# simply set an empty macro
+	MACRO(ADD_PRECOMPILED_HEADER _targetName _input)
+	ENDMACRO()
+
+endif(Tilenet_USE_PRE_COMPILED_HEADER)
 
 if(NOT MSVC)
 ADD_DEFINITIONS("-std=c++0x")
 endif(NOT MSVC)
 
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+find_package(Boost COMPONENTS system thread unit_test_framework REQUIRED)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
-set(tilenet_include_file		"${CMAKE_SOURCE_DIR}/include/tilenet.h")
+set(tilenet_library_pch_file	"includes.hpp")
+set(tilenet_include_file		"${PROJECT_SOURCE_DIR}/include/tilenet.h")
 
 add_definitions(-DTILENET_AS_LIB)
 

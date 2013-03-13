@@ -28,6 +28,8 @@ include_directories(include)
 
 add_library(tilenet ${library_all_source})
 
+add_precompiled_header(tilenet	${tilenet_library_pch_file})
+
 source_group("include" FILES ${tilenet_include_file})
 source_group("include" FILES ${library_include})
 source_group("source" FILES ${library_source})
