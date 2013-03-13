@@ -1,3 +1,7 @@
+*.swp
+*.swap
+
+
 lib/
 bin/
 doc/
