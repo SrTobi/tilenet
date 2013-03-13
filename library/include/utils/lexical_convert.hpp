@@ -2,6 +2,7 @@
 #ifndef _LEXICAL_CONVERT_HPP
 #define _LEXICAL_CONVERT_HPP
 
+#include <boost/lexical_cast.hpp>
 #include "settings.hpp"
 
 
