@@ -86,11 +86,11 @@ Target get_error(TNERRINFO code)
 	return boost::apply_visitor(VisitorForInfoType<Target>(), it->second);
 }
 
-#define EXTRACT_ERROR_INFO(_expType)								\
-	{																\
-		auto* p = boost::get_error_info<_expType>(*codeexcp);		\
-		if(p)														\
-			add_errinfo(excp::get_infocode<_expType>::value, *p);	\
+#define EXTRACT_ERROR_INFO(_expType)									\
+	{																	\
+		auto const*const p = boost::get_error_info<_expType>(*codeexcp);\
+		if(p)															\
+			add_errinfo(excp::get_infocode<_expType>::value, *p);		\
 	}
 
 TNERROR process_exception(const excp::ExceptionBase& exp, bool reset = true)
@@ -172,14 +172,14 @@ void copy_string(const string& src, wchar_t* dest, size_t buflen)
 
 
 #define AUTO_CATCH(_reset_error)																		\
-	catch(excp::ExceptionBase& e) {																		\
+	catch(const excp::ExceptionBase& e) {																		\
 		return process_exception(e, _reset_error);														\
-	} catch(std::exception& e)																			\
+	} catch(const std::exception& e)																			\
 	{ 																									\
 		if(_reset_error)																				\
 			reset_error(TNINTERNALERROR, lexical_convert<string>(e.what()));							\
 		return TNINTERNALERROR;																			\
-	} catch(boost::exception& e)																		\
+	} catch(const boost::exception& e)																		\
 	{ 																									\
 		if(_reset_error)																				\
 			reset_error(TNINTERNALERROR, lexical_convert<string>(boost::diagnostic_information(e)));	\
