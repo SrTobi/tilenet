@@ -6,6 +6,7 @@
 
 #include "settings.hpp"
 
+struct TilenetObject;
 class TilenetWeakObject;
 
 template<typename Type>
@@ -77,14 +78,14 @@ public:
 		return *this;
 	}
 
-	this_type& operator =(const weak_type& other)
+	this_type& operator =(const weak_type& weak)
 	{
-		reset(weak->unweak().get());
+		reset(weak.unweak().get());
 		return *this;
 	}
 
 
-	void reset(value_type* p)
+	inline void reset(value_type* p)
 	{
 		if(mPtr)
 		{
@@ -196,7 +197,7 @@ public:
 		mWeakPtr = other.mWeakPtr;
 	}
 
-	ptr<value_type> unweak()
+	inline ptr<value_type> unweak()
 	{
 		if(!mWeakPtr)
 			return nullptr;
