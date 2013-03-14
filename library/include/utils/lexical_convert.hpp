@@ -8,26 +8,26 @@
 
 
 template<typename To, typename From>
-To lexical_convert(const From& from)
+inline To lexical_convert(const From& from)
 {
 	static_assert(sizeof(To) != sizeof(To), "Can not convert 'From' to 'To'!");
 }
 
 template<typename To>
-To lexical_convert(const char* from)
+inline To lexical_convert(const char* from)
 {
 	return lexical_convert<To>(std::string(from));
 }
 
 
 template<typename To>
-To lexical_convert(const wchar_t* from)
+inline To lexical_convert(const wchar_t* from)
 {
 	return lexical_convert<To>(std::wstring(from));
 }
 
 template<>
-std::string lexical_convert(const std::wstring& from)
+inline std::string lexical_convert(const std::wstring& from)
 {
 	std::string to(from.size(), ' ');
 	tilenet_convert_to_astring(from.data(), &to[0], from.size());
@@ -36,7 +36,7 @@ std::string lexical_convert(const std::wstring& from)
 
 
 template<>
-std::wstring lexical_convert(const std::string& from)
+inline std::wstring lexical_convert(const std::string& from)
 {
 	std::wstring to(from.size(), ' ');
 	tilenet_convert_to_wstring(from.data(), &to[0], from.size());
@@ -44,7 +44,7 @@ std::wstring lexical_convert(const std::string& from)
 }
 
 template<typename Both>
-Both lexical_convert(const Both& from)
+inline Both lexical_convert(const Both& from)
 {
 	return from;
 }

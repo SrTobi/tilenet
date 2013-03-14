@@ -107,7 +107,7 @@ struct ErrorOut
 };
 
 template<typename Stream, typename Info>
-std::basic_ostream<Stream>& operator <<(std::basic_ostream<Stream>& os, const ErrorOut<Info>& info)
+inline std::basic_ostream<Stream>& operator <<(std::basic_ostream<Stream>& os, const ErrorOut<Info>& info)
 {
 	if(info.value)
 	{
