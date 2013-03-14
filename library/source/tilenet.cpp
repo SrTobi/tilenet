@@ -9,6 +9,9 @@
 #include "tilenet.h"
 #include "settings.hpp"
 
+
+/// @cond DEV
+
 struct ThreadErrorInfo
 {
 	typedef boost::variant<string, int> value_type;
@@ -193,6 +196,7 @@ void copy_string(const string& src, wchar_t* dest, size_t buflen)
 #define CHECK_NULL(_expr)			CHECK_RETURN(_expr, TNNULLARG)
 #define CHECK_IF_ERROR()			CHECK_RETURN(LastThreadError.get(), TNNOERROR)
 
+/// @endcond
 
 /**
  * \defgroup Tilenet Global Tilenet functions
@@ -317,7 +321,6 @@ TNAPI TNERROR tilenet_get_error_string(TNERRINFO infono, wchar_t* dest, size_t b
  *
  * \param infono The number, identifying the certain info
  * \param dest A buffer used as destination
- * \param buflen Size of the buffer, indicating the maximum size of the output string
  * \return TNOK, if info was copied successfully
  * \return TNNOERROR, if there was no error in this thread
  * \return TNINFONOTSET, if no info with infono exists in the current error

@@ -2,6 +2,8 @@
 #ifndef _SETTINGS_HPP
 #define _SETTINGS_HPP
 
+/// @cond DEV
+
 #include <assert.h>
 #include <string>
 #include <boost/shared_ptr.hpp>
@@ -43,5 +45,7 @@ class weakptr;
 #include "utils/exceptions.hpp"
 #include "utils/tilenet_object.hpp"
 #include "utils/lexical_convert.hpp"
+
+/// @endcond
 
 #endif

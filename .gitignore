@@ -1,8 +1,13 @@
 *.swp
+
 *.swap
 
 
+
 lib/
+
 bin/
-doc/
+
+doc/html/
+
 build/

@@ -2,6 +2,10 @@
 
 #include "settings.hpp"
 
+
+/// @cond DEV
+
+
 namespace excp {
 
 
@@ -13,3 +17,6 @@ namespace excp {
 	}
 
 };
+
+
+/// @endcond

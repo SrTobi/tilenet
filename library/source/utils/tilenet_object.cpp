@@ -1,5 +1,7 @@
 #include "includes.hpp"
 
+/// @cond DEV
+
 #include <boost/smart_ptr/detail/spinlock_pool.hpp>
 #include "utils/tilenet_object.hpp"
 
@@ -10,6 +12,10 @@ typedef boost::detail::spinlock_pool<SpinLockBaseId>	spinlock_pool_for_count;
 typedef boost::detail::spinlock_pool<SpinLockBaseId+1>	spinlock_pool_for_obj;
 
 // ******************************* tilenet object ******************************* //
+/**
+ * @brief Inits the recount to 0
+ *
+ **/
 TilenetObject::TilenetObject()
 	: mCount(0)
 {
@@ -23,18 +29,33 @@ TilenetObject::~TilenetObject()
 	tnAssert(!mWeak || !mWeak->mObj);
 }
 
+/**
+ * @brief Returns the reference counting
+ *
+ * \return The number of references pointing to this class
+ **/
 size_t TilenetObject::refCount() const
 {
 	return mCount;
 }
 
+/**
+ * @brief Returns the weak counting 
+ *
+ * \return The number of weak references pointing to this class
+ **/
 size_t TilenetObject::weakCount() const
 {
 	// subtract the one pointer this class is holding
 	return mWeak? (mWeak->mCount - 1) : 0;
 }
 
-
+/**
+ * @brief Returns a weak pointer to this object
+ *
+ * \return A weak pointer to this object
+ *
+ **/
 ptr<TilenetWeakObject> TilenetObject::weak()
 {
 	spinlock_pool_for_obj::scoped_lock lock((TilenetObject*)this);
@@ -48,12 +69,26 @@ ptr<TilenetWeakObject> TilenetObject::weak()
 	return mWeak;
 }
 
+/**
+ * @brief Increases the reference counter
+ *
+ **/
 void TilenetObject::addref() const
 {
 	spinlock_pool_for_count::scoped_lock lock(&mCount);
 	++mCount;
 }
 
+/**
+ * @brief Decreases the reference counter
+ *
+ * If the reference counter is set to 0 by this function the
+ * weak reference is uncoupled.
+ * 
+ * \return if the object should continue to live
+ *
+ * \note if false is returned, this object should be deleted immediately
+ **/
 bool TilenetObject::subref() const
 {
 	spinlock_pool_for_count::scoped_lock lock(&mCount);
@@ -77,7 +112,11 @@ size_t TilenetObject::destroy()
 	return 0;
 }
 
-
+/**
+ * @brief Decreases the ref count of an object an deletes it if necessary
+ *
+ * \param obj The object which should be released.
+ **/
 void TilenetObject::Release( const TilenetObject* obj )
 {
 	if(!obj->subref())
@@ -133,13 +172,4 @@ override size_t TilenetWeakObject::destroy()
 
 
 
-// ******************************* tilenet id object ******************************* //
-TilenetIdObject::TilenetIdObject()
-{
-
-}
-
-TilenetIdObject::~TilenetIdObject()
-{
-
-}
+/// @endcond

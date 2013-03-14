@@ -2,6 +2,8 @@
 #ifndef _LEXICAL_CONVERT_HPP
 #define _LEXICAL_CONVERT_HPP
 
+/// @cond DEV
+
 #include <boost/lexical_cast.hpp>
 #include "settings.hpp"
 
@@ -49,4 +51,6 @@ inline Both lexical_convert(const Both& from)
 	return from;
 }
 
+
+/// @endcond
 #endif

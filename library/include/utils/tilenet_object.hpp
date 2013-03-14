@@ -2,12 +2,21 @@
 #ifndef _TILENET_OBJECT_HPP
 #define _TILENET_OBJECT_HPP
 
+/// @cond DEV
+
 #include <boost/noncopyable.hpp>
 #include "settings.hpp"
 
 #include "ptr.hpp"
 
 
+/**
+ * @brief Super class of most of tilenet's objects
+ *
+ * If an object is a subclass of Tilenetobject it can be used outside of tilenet with the c api.
+ * It can also be used with ptr and weakptr
+ *
+ **/
 struct TilenetObject
 {
 	template<typename Type, typename TnObject>
@@ -33,7 +42,10 @@ private:
 };
 
 
-
+/**
+ * @brief Presents a weak ptr to a tilenet object or a subclass of it.
+ *
+ **/
 class TilenetWeakObject
 	: public TilenetObject
 	, boost::noncopyable
@@ -59,13 +71,6 @@ private:
 
 
 
-class TilenetIdObject
-	: public TilenetObject
-{
-public:
-	TilenetIdObject();
-	virtual ~TilenetIdObject();
-};
-
+/// @endcond
 
 #endif

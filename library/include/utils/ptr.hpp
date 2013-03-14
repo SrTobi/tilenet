@@ -2,6 +2,8 @@
 #ifndef _PTR_HPP
 #define _PTR_HPP
 
+/// @cond DEV
+
 #include <type_traits>
 
 #include "settings.hpp"
@@ -215,5 +217,7 @@ private:
 };
 
 #include "tilenet_object.hpp"
+
+/// @endcond
 
 #endif
