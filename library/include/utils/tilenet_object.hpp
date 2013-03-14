@@ -7,20 +7,10 @@
 
 #include "ptr.hpp"
 
-template<typename Type>
-class ptr;
-template<typename Type>
-class weakptr;
-
-class Server;
-class TilenetWeakObject;
-struct TilenetObject;
-
-
 
 struct TilenetObject
 {
-	template<typename Type>
+	template<typename Type, typename TnObject>
 	friend class ptr;
 public:
 	TilenetObject();
@@ -49,7 +39,7 @@ class TilenetWeakObject
 	, boost::noncopyable
 {
 	friend struct TilenetObject;
-	template<typename Type>
+	template<typename Type, typename TnWeakObject, typename TnObject>
 	friend class weakptr;
 public:
 	virtual ~TilenetWeakObject();

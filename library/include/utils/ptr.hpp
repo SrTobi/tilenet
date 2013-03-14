@@ -6,13 +6,8 @@
 
 #include "settings.hpp"
 
-struct TilenetObject;
-class TilenetWeakObject;
 
-template<typename Type>
-class weakptr;
-
-template<typename Type>
+template<typename Type, typename TnObject>
 class ptr
 {
 public:
@@ -89,7 +84,7 @@ public:
 	{
 		if(mPtr)
 		{
-			TilenetObject::Release(mPtr);
+			TnObject::Release(mPtr);
 		}
 
 		mPtr = p;
@@ -131,12 +126,12 @@ private:
 };
 
 
-template<typename Type>
+template<typename Type, typename TnObject, typename TnWeakObject>
 class weakptr
 {
 public:
 	typedef Type				value_type;
-	typedef TilenetWeakObject	weak_type;
+	typedef TnWeakObject		weak_type;
 	typedef weakptr<value_type>	this_type;
 
 	weakptr()
@@ -202,7 +197,7 @@ public:
 		if(!mWeakPtr)
 			return nullptr;
 
-		ptr<TilenetObject> objPtr = mWeakPtr->unweak();
+		ptr<TnObject> objPtr = mWeakPtr->unweak();
 
 		if(!objPtr)
 		{
@@ -219,5 +214,6 @@ private:
 	ptr<weak_type> mWeakPtr;
 };
 
+#include "tilenet_object.hpp"
 
 #endif

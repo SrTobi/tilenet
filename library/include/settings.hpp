@@ -29,7 +29,16 @@ typedef uint16_t uint16;
 typedef int32_t int32;
 typedef uint32_t uint32;
 typedef int64_t int64;
-typedef uint32_t uint32;
+typedef uint64_t uint64;
+
+
+struct TilenetObject;
+class TilenetWeakObject;
+
+template<typename Type, typename TnObject = TilenetObject>
+class ptr;
+template<typename Type, typename TnObject = TilenetObject, typename TnWeakObject = TilenetWeakObject>
+class weakptr;
 
 #include "utils/exceptions.hpp"
 #include "utils/tilenet_object.hpp"
