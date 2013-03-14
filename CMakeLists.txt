@@ -5,14 +5,17 @@ project(tilenet)
 
 #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
+set(Option_DEFAULT_MAKE_DOXYGEN_TARGET ON)
+
 if(MSVC)
 set(Boost_USE_STATIC_LIBS ON)
+set(Option_DEFAULT_MAKE_DOXYGEN_TARGET OFF)
 endif(MSVC)
 
 
 option(Tilenet_USE_PRE_COMPILED_HEADER	"Use precompiled header for compilation" ON)
 option(Tilenet_BUILD_SHARED_LIB			"Build tilenet as shared library" OFF)
-option(Tilenet_MAKE_DOXYGEN_TARGET		"Create a doxygen build target" OFF)
+option(Tilenet_MAKE_DOXYGEN_TARGET		"Create a doxygen build target" ${Option_DEFAULT_MAKE_DOXYGEN_TARGET})
 
 if(Tilenet_USE_PRE_COMPILED_HEADER)
 	add_subdirectory("extras/pch")
@@ -28,6 +31,8 @@ endif(Tilenet_USE_PRE_COMPILED_HEADER)
 if(NOT MSVC)
 ADD_DEFINITIONS("-std=c++0x")
 endif(NOT MSVC)
+
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK) 
 
 find_package(Boost COMPONENTS system thread unit_test_framework REQUIRED)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)

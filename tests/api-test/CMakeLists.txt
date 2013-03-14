@@ -7,4 +7,5 @@ source_group(tests FILES ${test_settings} ${test_library_module})
 source_group(convert-test FILES ${convert_test_source})
 
 add_executable(api-test ${test_library_module} ${convert_test_source} ${test_settings})
+target_link_libraries(api-test ${Boost_LIBRARIES})
 add_precompiled_header(library-test	${tilenet_library_pch_file})
