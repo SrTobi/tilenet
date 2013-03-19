@@ -51,14 +51,23 @@ extern "C" {
 #define TNSC_NOCLIENT	0x0002
 #define TNSC_CONSOLE	0x0004
 
-/**** event type ****/
+/**** event types ****/
 #define TNEV_CONNECT		((TNEVTYPE)1)	//!< New participant has connected
 #define TNEV_DISCONNECT		((TNEVTYPE)2)	//!< Participant has disconnected
 
 #define TNEV_KEYDOWN		((TNEVTYPE)100)	//!< Key was pressed
 #define TNEV_KEYUP			((TNEVTYPE)101)	//!< Key was released
 
-	
+/**** tileset flags ****/
+#define TNTS_GRAPHIC	0x000000
+#define TNTS_STDSET		0x000 | TNTS_GRAPHIC
+#define TNTS_FONTSET	0x001 | TNTS_GRAPHIC
+
+/**** key modifier ****/
+#define TNKM_SHIFT		0x001
+#define TNKM_STRG		0x002
+#define TNKM_ALT		0x004
+
 /**** definitions ****/
 typedef unsigned int	TNERROR;
 typedef unsigned int	TNERRINFO;
@@ -88,16 +97,16 @@ typedef TNOBJ TNCMDSET;
 
 /**** structs ****/
 
-struct TilenetServerConfig
+typedef struct TilenetServerConfig
 {
 	unsigned short	port;		//!< Port of the server
 	unsigned int	maxc;		//!< Maximal number of connections
-	wchar_t*		name;		//!< Name of the server
-	wchar_t*		info;		//!< Info string about the server
-	wchar_t*		pkg;		//!< Standard package used for the server
-	wchar_t*		pkgi;		//!< Interface name for proper packages
+	const wchar_t*	name;	//!< Name of the server
+	const wchar_t*	info;	//!< Info string about the server
+	const wchar_t*	pkg;	//!< Standard package used for the server
+	const wchar_t*	pkgi;	//!< Interface name for proper packages
 	TNFLAG			options;	//!< Further options
-};
+} TNSVRCONFIG;
 
 typedef struct TilenetEvent
 {
@@ -123,10 +132,6 @@ typedef struct TilenetView
 	int	y;
 } *TNVIEW;
 
-#define TNVF_HLEFT		0x0
-#define TNVF_VLEFT		0x0
-#define TNVF_HCENTER	0x001
-#define TNVF_VCENTER	0x002
 
 
 /**** conversion ****/
@@ -143,7 +148,7 @@ TNAPI TNERROR tilenet_get_last_error();
 TNAPI TNERROR tilenet_destroy(TNOBJ obj);
 
 /**** server management ****/
-TNAPI TNERROR tilenet_create_server(TNSERVER* server, TilenetServerConfig* init);
+TNAPI TNERROR tilenet_create_server(TNSERVER* server, TNSVRCONFIG* init);
 TNAPI TNERROR tilenet_start_server(TNSERVER server);
 TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen, size_t* fetched);
 
@@ -153,22 +158,22 @@ TNAPI TNERROR tilenet_attach_layer(TNSERVER server, TNPARTICIPANT participant, T
 TNAPI TNERROR tilenet_attach_cmdset(TNSERVER server, TNPARTICIPANT participant, TNCMDSET set);
 
 /**** layer: frame ****/
-TNAPI TNERROR tilenet_create_frame(TNLAYER* frame);
+TNAPI TNERROR tilenet_create_frame(TNLAYER* frame, TNFLAG flags);
 TNAPI TNERROR tilenet_reset_frame(TNLAYER frame);
 TNAPI TNERROR tilenet_finish_frame(TNLAYER frame);
 TNAPI TNERROR tilenet_frame_push(TNLAYER frame, TNLAYER* layer, TNVIEW* view);
 
 /**** layer: tile-layer ****/
-TNAPI TNERROR tilenet_create_tilelayer(TNLAYER* layer, TNTILESET set, unsigned int width, unsigned int height);
-TNAPI TNERROR tilenet_put_tile(TNLAYER* layer, unsigned int x, unsigned int y, TNID tileid, TNCOLOR color);
+TNAPI TNERROR tilenet_create_tilelayer(TNLAYER* layer, unsigned int width, unsigned int height, TNRATIO xr, TNRATIO yr, TNFLAG flags);
+TNAPI TNERROR tilenet_put_tile(TNLAYER* layer, unsigned int x, unsigned int y, void* tile);
 
 /**** tileset ****/
-TNAPI TNERROR tilenet_create_tileset(TNTILESET* set, const wchar_t* name, TNRATIO xr, TNRATIO yr);
-TNAPI TNERROR tilenet_tileset_add_tile(TNTILESET set, const wchar_t* name, TNID* id);
+TNAPI TNERROR tilenet_create_tileset(TNTILESET* set, const wchar_t* name, TNFLAG flags);
+TNAPI TNERROR tilenet_register_tile(TNTILESET set, const wchar_t* name, TNID* id);
 
 /**** commands ****/
 TNAPI TNERROR tilenet_create_commandset(TNCMDSET* set, const wchar_t* name);
-TNAPI TNERROR tilenet_inject_commands(TNCMDSET src, TNCMDSET dest);
+TNAPI TNERROR tilenet_inherit_commands(TNCMDSET base, TNCMDSET derive);
 TNAPI TNERROR tilenet_add_command(TNCMDSET set, TNID id, const wchar_t* name, const wchar_t* defkey);
 
 #ifdef __cplusplus
