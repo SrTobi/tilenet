@@ -166,11 +166,12 @@ TNAPI TNERROR tilenet_get_last_error();
 
 /**** object management *****/
 TNAPI TNERROR tilenet_destroy(TNOBJ obj);
+TNAPI TNERROR tilenet_clone(TNOBJ src, TNOBJ* dest);
 
 /**** server management ****/
 TNAPI TNERROR tilenet_create_server(TNSERVER* server, TNSVRCONFIG* init);
 TNAPI TNERROR tilenet_start_server(TNSERVER server);
-TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen, size_t* fetched);
+TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen, size_t* fetched, size_t* timeout);
 
 /**** participant managment ****/
 TNAPI TNERROR tilenet_kick(TNSERVER server, TNPARTICIPANT participant, const wchar_t* reason);
