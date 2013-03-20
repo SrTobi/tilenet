@@ -7,6 +7,9 @@
 #include <assert.h>
 #include <string>
 #include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/weak_ptr.hpp>
+
 
 #include "tilenet.h"
 
@@ -14,6 +17,10 @@
 
 typedef unsigned int IdType;
 typedef std::wstring string;
+
+using boost::shared_ptr;
+using boost::make_shared;
+using boost::weak_ptr;
 
 #ifdef _DEBUG
 #	define TILENET_DEBUG
@@ -34,13 +41,8 @@ typedef int64_t int64;
 typedef uint64_t uint64;
 
 
-struct TilenetObject;
-class TilenetWeakObject;
 
-template<typename Type, typename TnObject = TilenetObject>
-class ptr;
-template<typename Type, typename TnObject = TilenetObject, typename TnWeakObject = TilenetWeakObject>
-class weakptr;
+
 
 #include "utils/exceptions.hpp"
 #include "utils/tilenet_object.hpp"
