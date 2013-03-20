@@ -6,9 +6,7 @@
 
 #include <assert.h>
 #include <string>
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/weak_ptr.hpp>
+#include <memory>
 
 
 #include "tilenet.h"
@@ -18,9 +16,8 @@
 typedef unsigned int IdType;
 typedef std::wstring string;
 
-using boost::shared_ptr;
-using boost::make_shared;
-using boost::weak_ptr;
+using std::shared_ptr;
+using std::weak_ptr;
 
 #ifdef _DEBUG
 #	define TILENET_DEBUG
