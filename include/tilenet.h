@@ -107,29 +107,32 @@ typedef TNOBJ TNCMDSET;
 
 /**** structs ****/
 
+//! Config values to init the server
 typedef struct TilenetServerConfig
 {
 	unsigned short	port;		//!< Port of the server
 	unsigned int	maxc;		//!< Maximal number of connections
-	const wchar_t*	name;	//!< Name of the server
-	const wchar_t*	info;	//!< Info string about the server
-	const wchar_t*	pkg;	//!< Standard package used for the server
-	const wchar_t*	pkgi;	//!< Interface name for proper packages
+	const wchar_t*	name;		//!< Name of the server
+	const wchar_t*	info;		//!< Info string about the server
+	const wchar_t*	pkg;		//!< Standard package used for the server
+	const wchar_t*	pkgi;		//!< Interface name for proper packages
 	TNFLAG			options;	//!< Further options
 } TNSVRCONFIG;
 
+//! Contains information about an event
 typedef struct TilenetEvent
 {
-	TNEVTYPE		type;
-	TNPARTICIPANT	participant;
+	TNEVTYPE		type;			//! Type of an event
+	TNPARTICIPANT	participant;	//! Participant the event coming from
 
 	typedef union
 	{
+		//! In case of an keyevent this will contain information
 		typedef struct
 		{
-			TNID	cmd;
-			wchar_t ch;
-			TNFLAG	modifier;
+			TNID	cmd;		//! An associated command
+			wchar_t ch;			//! The character pressed on the keyboard
+			TNFLAG	modifier;	//!	A key modifier
 		} keyevent;
 	} evdata;
 
