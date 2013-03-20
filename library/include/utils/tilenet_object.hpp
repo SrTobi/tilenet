@@ -17,14 +17,16 @@
  **/
 struct TilenetObject
 {
-	template<typename Type, typename TnObject>
-	friend class ptr;
 public:
 	TilenetObject();
 	virtual ~TilenetObject();
 
 	virtual size_t destroy() = 0;
 	virtual shared_ptr<TilenetObject> clone() = 0;
+
+	static void Destroy(TilenetObject* obj);
+private:
+	std::shared_ptr<TilenetObject> mSelf;
 };
 
 
@@ -38,7 +40,7 @@ public:
 	IdObject();
 	virtual ~IdObject();
 
-	virtual override size_t destroy() = 0;
+	virtual override void destroy() = 0;
 	virtual override shared_ptr<TilenetObject> clone() = 0;
 
 	id_type id() const;
@@ -51,6 +53,8 @@ private:
 	static queue_type			FreeList;
 	static boost::shared_mutex	IdMutex;
 };
+
+
 
 
 template<typename T>
