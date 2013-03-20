@@ -61,6 +61,15 @@ IdObject<T>::IdObject()
 template<typename T>
 IdObject<T>::~IdObject()
 {
+	boost::lock_guard<boost::shared_mutex> lock(IdMutex);
+	const rawId = TNEXTRACTID(id());
+
+	tnAssert(Objects.size() > rawId);
+	tnAssert(Objects[rawId]);
+	tnAssert(Objects[rawId].lock().get() == this);
+
+	Objects[rawId].reset();
+	FreeList.push(rawId);
 }
 
 template<typename T>
@@ -80,15 +89,15 @@ typename IdObject<T>::id_type IdObject<T>::Register(const shared_ptr<T>& obj)
 		newId = FreeList.front();
 		FreeList.pop();
 
-		assert(newId < Objects.size());
-		assert(!Objects.at(newId));
+		tnAssert(newId < Objects.size());
+		tnAssert(!Objects.at(newId));
 		Objects[newId] = obj;
 	}else{
 		newId = Objects.size();
 		Objects.push_back(obj);
 	}
 
-	// TODO: Add random tag
+	newId |= (std::rand() % TNMAX_IDTAG) << TN_ID_BITLENGTH;
 	
 	obj->id = newId;
 
@@ -100,7 +109,7 @@ shared_ptr<T> IdObject<T>::Resolve(id_type id)
 {
 	boost::shared_lock<boost::shared_mutex> lock(IdMutex);
 
-	id_type rawId = TNEXTRACTID_ID(id);
+	id_type rawId = TNEXTRACTID(id);
 
 	if(rawId < Objects.size())
 	{
@@ -110,7 +119,7 @@ shared_ptr<T> IdObject<T>::Resolve(id_type id)
 			return obj;
 	}
 	
-	// TODO: throw!
+	BOOST_THROW_EXCEPTION(excp::BadIdException() << excp::BadId(*(int*)&id));
 }
 
 
