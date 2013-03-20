@@ -68,6 +68,16 @@ extern "C" {
 #define TNKM_STRG		0x002
 #define TNKM_ALT		0x004
 
+/**** layer flag ****/
+#define TNLF_CONSOLE	0x0004
+
+/**** view flags ****/
+#define TNVF_HFLIP		0x0001
+#define TNVF_VFLIP		0x0002
+#define TNVF_SIZERATIO	0x0004
+#define TNVF_POSRATIO	0x0008
+#define TNVF_COLORMUL	0x0010
+
 /**** definitions ****/
 typedef unsigned int	TNERROR;
 typedef unsigned int	TNERRINFO;
@@ -128,8 +138,15 @@ typedef struct TilenetEvent
 typedef struct TilenetView
 {
 	TNFLAG flags;
-	int	x;
-	int	y;
+	TNRATIO xr;
+	TNRATIO yr;
+	TNRATIO wr;
+	TNRATIO hr;
+	unsigned int width;
+	unsigned int height;
+	unsigned int x;
+	unsigned int y;
+	TNCOLOR color;
 } *TNVIEW;
 
 
