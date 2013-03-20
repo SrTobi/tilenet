@@ -113,15 +113,15 @@ typedef struct TilenetEvent
 	TNEVTYPE		type;
 	TNPARTICIPANT	participant;
 
-	union
+	typedef union
 	{
-		struct keyevent
+		typedef struct
 		{
 			TNID	cmd;
 			wchar_t ch;
 			TNFLAG	modifier;
-		};
-	};
+		} keyevent;
+	} evdata;
 
 } TNEVENT;
 
