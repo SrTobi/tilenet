@@ -4,10 +4,7 @@
 
 /// @cond DEV
 
-#include <boost/noncopyable.hpp>
 #include "settings.hpp"
-
-#include "ptr.hpp"
 
 
 /**
