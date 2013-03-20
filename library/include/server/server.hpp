@@ -6,17 +6,27 @@
 #include <vector>
 
 #include "settings.hpp"
+#include "utils/tilenet_object.hpp"
 
+namespace srv {
 
-struct TilenetObject;
 
 class Server
+	: public TilenetObject
 {
 public:
+	Server(const TNSVRCONFIG* init);
+	~Server();
+
+	virtual override size_t destroy();
+	virtual override shared_ptr<TilenetObject> clone();
 
 private:
-
 };
+
+
+
+}
 
 
 
