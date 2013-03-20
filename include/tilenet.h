@@ -89,9 +89,11 @@ typedef unsigned int	TNID;
 typedef uint32_t		TNPARTICIPANT;
 
 #define TNSTDRATIO	1000
-#define TNPARTICIPANT_TAG(_p)	(_p >> 20)
-#define TNPARTICIPANT_ID(_p)	(_p & 0xFFFFF)
-#define TNMAX_PARTICIPANTS		(1 << 20);
+#define TNID_BITLENGTH		28
+#define TNEXTRACTID_TAG(_p)	(_p >> TNID_BITLENGTH)
+#define TNEXTRACTID_ID(_p)	(_p & ((1 << TNID_BITLENGTH) - 1))
+#define TNMAX_ID				(1 << TNID_BITLENGTH
+#define TNMAX_PARTICIPANTS		TNMAX_ID;
 
 /**** objects ****/
 struct TilenetObject;
