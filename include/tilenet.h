@@ -88,12 +88,14 @@ typedef unsigned int	TNRATIO;
 typedef unsigned int	TNID;
 typedef uint32_t		TNPARTICIPANT;
 
-#define TNSTDRATIO	1000
-#define TNID_BITLENGTH		28
-#define TNEXTRACTID_TAG(_p)	(_p >> TNID_BITLENGTH)
-#define TNEXTRACTID_ID(_p)	(_p & ((1 << TNID_BITLENGTH) - 1))
-#define TNMAX_ID				(1 << TNID_BITLENGTH
-#define TNMAX_PARTICIPANTS		TNMAX_ID;
+#define TNSTDRATIO				1000
+#define TN_ID_BITLENGTH			28
+#define TN_TAG_BITLENGTH		((sizeof(TNID)*8) - TN_ID_BITLENGTH)
+#define TNEXTRACTTAG(_p)		(_p >> TNID_BITLENGTH)
+#define TNEXTRACTID(_p)			(_p & TNMAX_ID)
+#define TNMAX_ID				((1 << TNID_BITLENGTH) - 1)
+#define TNMAX_IDTAG				((1 << TN_TAG_BITLENGTH) - 1)
+#define TNMAX_PARTICIPANTS		(TNMAX_ID + 1);
 
 /**** objects ****/
 struct TilenetObject;
