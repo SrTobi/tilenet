@@ -33,6 +33,7 @@ extern "C" {
 #define TNBUFFERUNDERSIZED	((TNERROR)3)	//!< The given buffer was to short to take all the output
 
 #define TNNULLARG			((TNERROR)100)	//!< Indicates, that a given argument was null but must not be null
+#define TNBADID				((TNERROR)101)	//!< Indicates, that a given id does not exist
 
 #define TNNOERROR			((TNERROR)200)	//!< There was no last error 
 #define TNINFONOTSET		((TNERROR)201)	//!< Wanted info was not set for the error
@@ -44,7 +45,7 @@ extern "C" {
 #define TNERRI_INTERNALDEBUGDESCRIPTION		((TNERRINFO)1)	//!< If debugmode is active one can find an internal debugging description with this info (string)
 #define TNERRI_INFOCODE						((TNERRINFO)2)	//!< Determinates the info code caused the error (int)
 #define TNERRI_ELEMCOPIED					((TNERRINFO)3)	//!< Indicates the number of elements copied into an undersized buffer (int)
-
+#define TNERRI_BADID						((TNERRINFO)4)	//!< Determinates the id that caused the error (int)
 
 /**** server options ****/
 #define TNSC_STANDALONE	0x0001

@@ -115,6 +115,7 @@ TNERROR process_exception(const excp::ExceptionBase& exp, bool reset = true)
 			// Extract error infos
 			EXTRACT_ERROR_INFO(excp::InfoCode);
 			EXTRACT_ERROR_INFO(excp::CopiedEements);
+			EXTRACT_ERROR_INFO(excp::BadId);
 		}
 
 #ifdef TILENET_DEBUG

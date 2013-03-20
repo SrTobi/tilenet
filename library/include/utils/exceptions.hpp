@@ -19,6 +19,7 @@ struct Tag {};
 typedef boost::error_info<Tag<TNERRI_DESCRIPTION>, string>	InfoWhat;		//!< Short describtion of the exception
 typedef boost::error_info<Tag<TNERRI_INFOCODE>, int>		InfoCode;		//!< error info code that raised the exception
 typedef boost::error_info<Tag<TNERRI_ELEMCOPIED>, int>		CopiedEements;	//!< Number of elements already copied by an operation
+typedef boost::error_info<Tag<TNERRI_BADID>, int>			BadId;
 
 template<typename ErrorInfo>
 struct get_infocode
@@ -85,11 +86,13 @@ typedef SpecificCodeException<TNINFONOTSET> InfoNotSetException;
 typedef SpecificCodeException<TNWRONGINFOTYPE> WrongInfoTypeException;
 typedef SpecificCodeException<TNBUFFERUNDERSIZED> BufferUndersizedException;
 typedef SpecificCodeException<TNNOERROR> NoErrorException;
+typedef SpecificCodeException<TNBADID> BadIdException;
 
 DEFAULT_DESCRIPTION(InfoNotSetException,		"Desired information is not available for the last error!");
 DEFAULT_DESCRIPTION(WrongInfoTypeException,		"Desired information has another type!");
 DEFAULT_DESCRIPTION(BufferUndersizedException,	"Buffer is to small to take all informations!");
 DEFAULT_DESCRIPTION(NoErrorException,			"There is no last error!");
+DEFAULT_DESCRIPTION(BadIdException,				"Used id does not exist!");
 
 
 /**
