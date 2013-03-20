@@ -30,10 +30,12 @@ extern "C" {
 #define TNOK				((TNERROR)0)	//!< Indicates that no error occured
 #define TNUNKNOWN			((TNERROR)1)	//!< Indicates an unknown error
 #define TNINTERNALERROR		((TNERROR)2)	//!< Internal error occured. This should not be returned normaly. Please submit a ticket!
-#define TNBUFFERUNDERSIZED	((TNERROR)3)	//!< The given buffer was to short to take all the output
+#define TNNOTSUPPORTED		((TNERROR)3)	//!< An operation is not supported in the current version or compilation mode
+#define TNBUFFERUNDERSIZED	((TNERROR)4)	//!< The given buffer was to short to take all the output
 
 #define TNNULLARG			((TNERROR)100)	//!< Indicates, that a given argument was null but must not be null
 #define TNBADID				((TNERROR)101)	//!< Indicates, that a given id does not exist
+#define TNNOTCLONABLE		((TNERROR)102)	//!< Indicates, that an object, which is not clonable, was tried to clone.
 
 #define TNNOERROR			((TNERROR)200)	//!< There was no last error 
 #define TNINFONOTSET		((TNERROR)201)	//!< Wanted info was not set for the error
@@ -174,8 +176,7 @@ TNAPI TNERROR tilenet_destroy(TNOBJ obj);
 TNAPI TNERROR tilenet_clone(TNOBJ src, TNOBJ* dest);
 
 /**** server management ****/
-TNAPI TNERROR tilenet_create_server(TNSERVER* server, TNSVRCONFIG* init);
-TNAPI TNERROR tilenet_start_server(TNSERVER server);
+TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init);
 TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen, size_t* fetched, size_t* timeout);
 
 /**** participant managment ****/

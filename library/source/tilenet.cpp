@@ -9,6 +9,8 @@
 #include "tilenet.h"
 #include "settings.hpp"
 
+#include "server/server.hpp"
+
 
 /// @cond DEV
 
@@ -395,6 +397,44 @@ TNAPI TNERROR tilenet_get_last_error()
 
 	return LastThreadError->errorcode;
 }
+
+TNAPI TNERROR tilenet_destroy(TNOBJ obj)
+{
+	CHECK_NULL(obj);
+
+	try {
+		TilenetObject::Destroy(obj);
+		return TNOK;
+
+	} AUTO_CATCH(true);
+}
+
+TNAPI TNERROR tilenet_clone(TNOBJ src, TNOBJ* dest)
+{
+	CHECK_NULL(src);
+	CHECK_NULL(dest);
+
+	try {
+		*dest = src->clone().get();
+		return TNOK;
+
+	} AUTO_CATCH(true);
+}
+
+TNAPI TNERROR tilenet_create_server( TNSERVER* server, const TNSVRCONFIG* init )
+{
+	CHECK_NULL(server);
+	CHECK_NULL(init);
+
+	try {
+		*server = new srv::Server(init);
+		return TNOK;
+
+	} AUTO_CATCH(true);
+}
+
+
+
 
 
 
