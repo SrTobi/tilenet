@@ -36,6 +36,7 @@ extern "C" {
 #define TNNULLARG			((TNERROR)100)	//!< Indicates, that a given argument was null but must not be null
 #define TNBADID				((TNERROR)101)	//!< Indicates, that a given id does not exist
 #define TNNOTCLONABLE		((TNERROR)102)	//!< Indicates, that an object, which is not clonable, was tried to clone.
+#define TNBADTYPE			((TNERROR)103)	//!< The object had the wrong type
 
 #define TNNOERROR			((TNERROR)200)	//!< There was no last error 
 #define TNINFONOTSET		((TNERROR)201)	//!< Wanted info was not set for the error
@@ -180,9 +181,9 @@ TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init);
 TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen, size_t* fetched, size_t* timeout);
 
 /**** participant managment ****/
-TNAPI TNERROR tilenet_kick(TNSERVER server, TNPARTICIPANT participant, const wchar_t* reason);
-TNAPI TNERROR tilenet_attach_layer(TNSERVER server, TNPARTICIPANT participant, TNLAYER layer);
-TNAPI TNERROR tilenet_attach_cmdset(TNSERVER server, TNPARTICIPANT participant, TNCMDSET set);
+TNAPI TNERROR tilenet_kick(TNPARTICIPANT participant, const wchar_t* reason);
+TNAPI TNERROR tilenet_attach_layer(TNPARTICIPANT participant, TNLAYER layer);
+TNAPI TNERROR tilenet_attach_cmdset(TNPARTICIPANT participant, TNCMDSET set);
 
 /**** layer: frame ****/
 TNAPI TNERROR tilenet_create_frame(TNLAYER* frame, TNFLAG flags);
