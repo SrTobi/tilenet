@@ -198,6 +198,7 @@ void copy_string(const string& src, wchar_t* dest, size_t buflen)
 #define CHECK_RETURN(_cond, _ret)	if(!(_cond)){return (_ret);}
 #define CHECK_NULL(_expr)			CHECK_RETURN(_expr, TNNULLARG)
 #define CHECK_IF_ERROR()			CHECK_RETURN(LastThreadError.get(), TNNOERROR)
+#define CHECK_CAST(_dest, _src, _type)	auto* _dest = dynamic_cast<_type*>(_src); CHECK_RETURN(_dest, TNBADTYPE);
 
 /// @endcond
 
@@ -421,7 +422,7 @@ TNAPI TNERROR tilenet_clone(TNOBJ src, TNOBJ* dest)
 	} AUTO_CATCH(true);
 }
 
-TNAPI TNERROR tilenet_create_server( TNSERVER* server, const TNSVRCONFIG* init )
+TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init)
 {
 	CHECK_NULL(server);
 	CHECK_NULL(init);
@@ -432,6 +433,28 @@ TNAPI TNERROR tilenet_create_server( TNSERVER* server, const TNSVRCONFIG* init )
 
 	} AUTO_CATCH(true);
 }
+
+TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen, size_t* fetched, size_t* timeout)
+{
+	CHECK_NULL(server);
+	CHECK_NULL(dest);
+	CHECK_NULL(buflen);
+	CHECK_NULL(fetched);
+	CHECK_CAST(srv, server, ::srv::Server);
+
+	try {
+		
+		*fetched = 0;
+		while(*fetched < buflen && srv->fetchNextEvent(dest + *fetched, timeout))
+		{
+			++(*fetched);
+			timeout = nullptr;
+		}
+
+		return TNOK;
+	} AUTO_CATCH(true);
+}
+
 
 
 

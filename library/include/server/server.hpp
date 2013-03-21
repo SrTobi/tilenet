@@ -21,6 +21,8 @@ public:
 	virtual override size_t destroy();
 	virtual override shared_ptr<TilenetObject> clone();
 
+	bool fetchNextEvent(TNEVENT* dest, size_t* timeout);
+
 private:
 };
 
