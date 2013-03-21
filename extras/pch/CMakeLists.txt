@@ -30,9 +30,7 @@ MACRO(ADD_PRECOMPILED_HEADER _targetName _input)
 			IF(_source MATCHES \\.\(cc|cxx|cpp\)$)
 				GET_FILENAME_COMPONENT(_sourceWe ${_source} NAME_WE)
 				GET_FILENAME_COMPONENT(_pch_file ${_input} NAME)
-				message("Test with ${_sourceWe}")
 				IF(_sourceWe STREQUAL ${_inputWe})
-				message(Found)
 				SET(PCH_COMPILE_FLAGS "${PCH_COMPILE_FLAGS} /Yc${_pch_file}")
 				SET(_sourceFound TRUE)
 				ELSE(_sourceWe STREQUAL ${_inputWe})
@@ -71,7 +69,7 @@ MACRO(ADD_PRECOMPILED_HEADER _targetName _input)
 			#MESSAGE("${item}")
 		ENDFOREACH(item)
 
-		MESSAGE("${CMAKE_CXX_COMPILER} -DPCHCOMPILE ${_compiler_FLAGS}. -x c++-header -o ${_output} ${_source}")
+		# MESSAGE("${CMAKE_CXX_COMPILER} -DPCHCOMPILE ${_compiler_FLAGS}. -x c++-header -o ${_output} ${_source}")
 		ADD_CUSTOM_COMMAND(
 			OUTPUT ${_output}
 			COMMAND ${CMAKE_CXX_COMPILER} ${_compiler_FLAGS} -x c++-header -o ${_output} ${_source}
