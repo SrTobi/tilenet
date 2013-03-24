@@ -10,6 +10,12 @@
 
 namespace srv {
 
+class EventQueue;
+
+struct Acceptor 
+	: public TilenetObject
+{
+};
 
 class Server
 	: public TilenetObject
@@ -21,9 +27,13 @@ public:
 	virtual override size_t destroy();
 	virtual override shared_ptr<TilenetObject> clone();
 
+	void addAcceptor(const std::shared_ptr<Acceptor>& acceptor);
+
 	bool fetchNextEvent(TNEVENT* dest, size_t* timeout);
 
 private:
+	std::shared_ptr<EventQueue> mEvents;
+	std::list<std::shared_ptr<Acceptor>> mAcceptors;
 };
 
 

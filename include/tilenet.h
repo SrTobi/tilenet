@@ -51,8 +51,6 @@ extern "C" {
 #define TNERRI_BADID						((TNERRINFO)4)	//!< Determinates the id that caused the error (int)
 
 /**** server options ****/
-#define TNSC_STANDALONE	0x0001
-#define TNSC_NOCLIENT	0x0002
 #define TNSC_CONSOLE	0x0004
 
 /**** event types ****/
@@ -118,8 +116,6 @@ typedef TNOBJ TNCMDSET;
 //! Config values to init the server
 typedef struct TilenetServerConfig
 {
-	unsigned short	port;		//!< Port of the server
-	unsigned int	maxc;		//!< Maximal number of connections
 	const wchar_t*	name;		//!< Name of the server
 	const wchar_t*	info;		//!< Info string about the server
 	const wchar_t*	pkg;		//!< Standard package used for the server
@@ -178,6 +174,7 @@ TNAPI TNERROR tilenet_clone(TNOBJ src, TNOBJ* dest);
 
 /**** server management ****/
 TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init);
+TNAPI TNERROR tilenet_add_listen_acceptor(TNSERVER server, unsigned short port, unsigned int maxc);
 TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen, size_t* fetched, size_t* timeout);
 
 /**** participant managment ****/

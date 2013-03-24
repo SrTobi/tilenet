@@ -10,7 +10,7 @@
 #include "settings.hpp"
 
 #include "server/server.hpp"
-
+#include "server/acceptors/listen_acceptor.hpp"
 
 /// @cond DEV
 
@@ -434,18 +434,31 @@ TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init)
 	} AUTO_CATCH(true);
 }
 
+
+TNAPI TNERROR tilenet_add_listen_acceptor(TNSERVER server, unsigned short port, unsigned int maxc )
+{
+	CHECK_NULL(server);
+	CHECK_CAST(_server, server, ::srv::Server);
+
+	try {
+		_server->addAcceptor(std::shared_ptr<srv::Acceptor>(new ListenAcceptor(port, maxc)));
+
+	} AUTO_CATCH(true);
+}
+
+
 TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen, size_t* fetched, size_t* timeout)
 {
 	CHECK_NULL(server);
 	CHECK_NULL(dest);
 	CHECK_NULL(buflen);
 	CHECK_NULL(fetched);
-	CHECK_CAST(srv, server, ::srv::Server);
+	CHECK_CAST(_server, server, ::srv::Server);
 
 	try {
 		
 		*fetched = 0;
-		while(*fetched < buflen && srv->fetchNextEvent(dest + *fetched, timeout))
+		while(*fetched < buflen && _server->fetchNextEvent(dest + *fetched, timeout))
 		{
 			++(*fetched);
 			timeout = nullptr;
