@@ -11,6 +11,8 @@
 namespace srv {
 
 class EventQueue;
+class Participant;
+class ConnectionPort;
 
 struct Acceptor 
 	: public TilenetObject
@@ -28,8 +30,9 @@ public:
 	virtual override shared_ptr<TilenetObject> clone();
 
 	void addAcceptor(const std::shared_ptr<Acceptor>& acceptor);
-
+	std::shared_ptr<Participant> addParticipant(const shared_ptr<ConnectionPort>& conport);
 	bool fetchNextEvent(TNEVENT* dest, size_t* timeout);
+
 
 private:
 	std::shared_ptr<EventQueue> mEvents;

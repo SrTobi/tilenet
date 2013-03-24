@@ -10,6 +10,7 @@
 #include "settings.hpp"
 
 #include "server/server.hpp"
+#include "server/participant.hpp"
 #include "server/acceptors/listen_acceptor.hpp"
 
 /// @cond DEV
@@ -469,6 +470,21 @@ TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen
 		return TNOK;
 	} AUTO_CATCH(true);
 }
+
+TNAPI TNERROR tilenet_kick( TNPARTICIPANT participant, const wchar_t* reason )
+{
+	try {
+		shared_ptr<srv::Participant> p = srv::Participant::Resolve(participant);
+
+		tnAssert(p);
+
+		p->kick(reason);
+
+		return TNOK;
+
+	} AUTO_CATCH(true);
+}
+
 
 
 
