@@ -435,14 +435,16 @@ TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init)
 }
 
 
-TNAPI TNERROR tilenet_add_listen_acceptor(TNSERVER server, unsigned short port, unsigned int maxc )
+TNAPI TNERROR tilenet_add_listen_acceptor(TNSERVER server, unsigned short port, unsigned int maxc)
 {
 	CHECK_NULL(server);
 	CHECK_CAST(_server, server, ::srv::Server);
 
 	try {
-		_server->addAcceptor(std::shared_ptr<srv::Acceptor>(new ListenAcceptor(port, maxc)));
+		auto* acceptor = new ListenAcceptor(port, maxc);
+		_server->addAcceptor(acceptor->self<srv::Acceptor>());
 
+		return TNOK;
 	} AUTO_CATCH(true);
 }
 
