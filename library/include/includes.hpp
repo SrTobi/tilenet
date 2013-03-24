@@ -12,16 +12,15 @@
 #include <vector>
 #include <queue>
 #include <iostream>
-
-
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 
 // ********** boost ********** //
-#include <boost/shared_ptr.hpp>
 #include <boost/thread/tss.hpp>
 #include <boost/variant/variant.hpp>
 #include <boost/exception/all.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/smart_ptr/detail/spinlock_pool.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/unordered_map.hpp>
 
