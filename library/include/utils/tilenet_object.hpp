@@ -16,6 +16,7 @@
  *
  **/
 struct TilenetObject
+	: public std::enable_shared_from_this<TilenetObject>
 {
 public:
 	TilenetObject();
@@ -23,6 +24,18 @@ public:
 
 	virtual size_t destroy() = 0;
 	virtual shared_ptr<TilenetObject> clone() = 0;
+
+	template<typename Result>
+	std::shared_ptr<Result> self()
+	{
+		return std::static_pointer_cast<Result>(shared_from_this());
+	}
+
+	template<typename Result>
+	std::shared_ptr<const Result> self() const
+	{
+		return std::static_pointer_cast<const Result>(shared_from_this());
+	}
 
 	static void Destroy(TilenetObject* obj);
 private:
