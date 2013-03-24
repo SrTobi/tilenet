@@ -1,5 +1,6 @@
 #include "includes.hpp"
 #include "server/server.hpp"
+#include "server/event_queue.hpp"
 
 namespace srv {
 
@@ -22,6 +23,17 @@ size_t Server::destroy()
 shared_ptr<TilenetObject> Server::clone()
 {
 	BOOST_THROW_EXCEPTION(excp::NotClonableException() << excp::InfoWhat(L"Server can not be cloned!"));
+}
+
+bool Server::fetchNextEvent( TNEVENT* dest, size_t* timeout )
+{
+	if(timeout)
+	{
+		return mEvents->pop(dest, std::chrono::milliseconds(*timeout));
+	}else{
+		mEvents->pop(dest);
+		return true;
+	}
 }
 
 
