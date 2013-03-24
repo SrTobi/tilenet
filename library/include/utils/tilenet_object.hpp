@@ -6,6 +6,8 @@
 
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/thread/shared_lock_guard.hpp>
+#include <mutex>
+
 #include "settings.hpp"
 
 
@@ -47,7 +49,7 @@ template<typename T>
 class IdObject
 {
 	typedef TNID							id_type;
-	typedef std::vector<T>					list_type;
+	typedef std::vector<weak_ptr<T>>		list_type;
 	typedef std::queue<id_type>				queue_type;
 public:
 	IdObject();
@@ -64,7 +66,7 @@ private:
 	id_type	mId;
 	static list_type			Objects;
 	static queue_type			FreeList;
-	static boost::shared_mutex	IdMutex;
+	static std::mutex			IdMutex;
 };
 
 
@@ -78,11 +80,10 @@ IdObject<T>::IdObject()
 template<typename T>
 IdObject<T>::~IdObject()
 {
-	boost::lock_guard<boost::shared_mutex> lock(IdMutex);
-	const rawId = TNEXTRACTID(id());
+	std::lock_guard<std::mutex> lock(IdMutex);
+	const id_type rawId = TNEXTRACTID(id());
 
 	tnAssert(Objects.size() > rawId);
-	tnAssert(Objects[rawId]);
 	tnAssert(Objects[rawId].lock().get() == this);
 
 	Objects[rawId].reset();
@@ -98,7 +99,7 @@ typename IdObject<T>::id_type IdObject<T>::id() const
 template<typename T>
 typename IdObject<T>::id_type IdObject<T>::Register(const shared_ptr<T>& obj)
 {
-	boost::lock_guard<boost::shared_mutex> lock(IdMutex);
+	std::lock_guard<std::mutex> lock(IdMutex);
 
 	id_type newId;
 	if(FreeList.size())
@@ -124,7 +125,7 @@ typename IdObject<T>::id_type IdObject<T>::Register(const shared_ptr<T>& obj)
 template<typename T>
 shared_ptr<T> IdObject<T>::Resolve(id_type id)
 {
-	boost::shared_lock<boost::shared_mutex> lock(IdMutex);
+	std::lock_guard<std::mutex> lock(IdMutex);
 
 	id_type rawId = TNEXTRACTID(id);
 
