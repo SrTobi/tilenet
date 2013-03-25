@@ -69,8 +69,14 @@ private:
 	static std::mutex			IdMutex;
 };
 
+template<typename T>
+typename IdObject<T>::list_type IdObject<T>::Objects;
 
+template<typename T>
+typename IdObject<T>::queue_type IdObject<T>::FreeList;
 
+template<typename T>
+std::mutex IdObject<T>::IdMutex;
 
 template<typename T>
 IdObject<T>::IdObject()
