@@ -10,6 +10,7 @@
 #include "settings.hpp"
 
 #include "server/server.hpp"
+#include "server/service.hpp"
 #include "server/participant.hpp"
 #include "server/acceptors/listen_acceptor.hpp"
 
@@ -423,6 +424,32 @@ TNAPI TNERROR tilenet_clone(TNOBJ src, TNOBJ* dest)
 	} AUTO_CATCH(true);
 }
 
+TNAPI TNERROR tilenet_create_service(TNSERVICE* service, size_t threadcount)
+{
+	CHECK_NULL(service);
+
+	try {
+		auto* s = new srv::Service();
+		s->setThreadCount(threadcount);
+
+		*service = s;
+		return TNOK;
+
+	} AUTO_CATCH(true);
+}
+
+TNAPI TNERROR tilenet_set_service_thread_count(TNSERVICE service, size_t count)
+{
+	CHECK_NULL(service);
+	CHECK_CAST(_service, service, ::srv::Service);
+
+	try {
+		_service->setThreadCount(count);
+		return TNOK;
+
+	} AUTO_CATCH(true);
+}
+
 TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init)
 {
 	CHECK_NULL(server);
@@ -484,6 +511,8 @@ TNAPI TNERROR tilenet_kick( TNPARTICIPANT participant, const wchar_t* reason )
 
 	} AUTO_CATCH(true);
 }
+
+
 
 
 
