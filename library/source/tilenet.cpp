@@ -429,7 +429,7 @@ TNAPI TNERROR tilenet_create_service(TNSERVICE* service, size_t threadcount)
 	CHECK_NULL(service);
 
 	try {
-		auto* s = new srv::Service();
+		auto* s = new ::srv::Service();
 		s->setThreadCount(threadcount);
 
 		*service = s;
@@ -461,7 +461,7 @@ TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init)
 	CHECK_NULL(init->service);
 
 	try {
-		*server = new srv::Server(init);
+		*server = new ::srv::Server(init);
 		return TNOK;
 
 	} AUTO_CATCH(true);
@@ -474,8 +474,8 @@ TNAPI TNERROR tilenet_add_listen_acceptor(TNSERVER server, unsigned short port, 
 	CHECK_OBJ(_server, server, ::srv::Server);
 
 	try {
-		auto* acceptor = new ListenAcceptor(port, maxc);
-		_server->addAcceptor(acceptor->self<srv::Acceptor>());
+		auto* acceptor = new ::srv::ListenAcceptor(port, maxc);
+		_server->addAcceptor(acceptor->self<::srv::Acceptor>());
 
 		return TNOK;
 	} AUTO_CATCH(true);
@@ -506,7 +506,7 @@ TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen
 TNAPI TNERROR tilenet_kick( TNPARTICIPANT participant, const wchar_t* reason )
 {
 	try {
-		shared_ptr<srv::Participant> p = srv::Participant::Resolve(participant);
+		shared_ptr<::srv::Participant> p = srv::Participant::Resolve(participant);
 
 		tnAssert(p);
 

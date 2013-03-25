@@ -36,6 +36,12 @@ bool Server::fetchNextEvent( TNEVENT* dest, size_t* timeout )
 	}
 }
 
+void Server::addAcceptor(const std::shared_ptr<Acceptor>& acceptor)
+{
+	mAcceptors.push_back(acceptor);
+	acceptor->start();
+}
+
 
 
 

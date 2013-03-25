@@ -17,6 +17,8 @@ class ConnectionPort;
 struct Acceptor 
 	: public TilenetObject
 {
+public:
+	virtual void start() = 0;
 };
 
 class Server
