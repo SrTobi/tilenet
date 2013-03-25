@@ -26,7 +26,7 @@ public:
 	Server(const TNSVRCONFIG* init);
 	~Server();
 
-	virtual override size_t destroy();
+	virtual override void destroy();
 	virtual override shared_ptr<TilenetObject> clone();
 
 	void addAcceptor(const std::shared_ptr<Acceptor>& acceptor);

@@ -17,7 +17,7 @@ public:
 	~ListenAcceptor();
 
 
-	virtual override size_t destroy();
+	virtual override void destroy();
 	virtual override shared_ptr<TilenetObject> clone();
 private:
 	port_type mPort;

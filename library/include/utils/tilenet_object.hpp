@@ -24,7 +24,7 @@ public:
 	TilenetObject();
 	virtual ~TilenetObject();
 
-	virtual size_t destroy() = 0;
+	virtual void destroy() = 0;
 	virtual shared_ptr<TilenetObject> clone() = 0;
 
 	template<typename Result>

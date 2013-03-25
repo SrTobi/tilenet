@@ -15,7 +15,7 @@ Server::~Server()
 
 }
 
-size_t Server::destroy()
+void Server::destroy()
 {
 	NOT_IMPLEMENTED();
 }
