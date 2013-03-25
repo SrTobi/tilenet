@@ -80,6 +80,11 @@ extern "C" {
 #define TNVF_POSRATIO	0x0008
 #define TNVF_COLORMUL	0x0010
 
+/**** char modifier ****/
+#define TNCT_BOLD		0x0001000
+#define TNCT_ITALIC		0x0002000
+#define TNCT_UNDERLINE	0x0004000
+
 /**** definitions ****/
 typedef unsigned int	TNERROR;
 typedef unsigned int	TNERRINFO;
@@ -139,9 +144,32 @@ typedef struct TilenetEvent
 			wchar_t ch;			//! The character pressed on the keyboard
 			TNFLAG	modifier;	//!	A key modifier
 		} keyevent;
-	} evdata;
+	} data;
 
 } TNEVENT;
+
+typedef struct TilenetTile
+{
+	TNTILESET tileset;
+
+	typedef union
+	{
+		typedef struct {
+			TNID	id;
+			TNFLAG	modifier;
+			TNCOLOR color;
+		} stdset;
+
+		typedef struct {
+			wchar_t ch;
+			TNFLAG	modifier;
+			TNCOLOR color;
+		} charset;
+
+	} data;
+
+} TNTILE;
+
 
 typedef struct TilenetView
 {
@@ -195,7 +223,7 @@ TNAPI TNERROR tilenet_frame_push(TNLAYER frame, TNLAYER* layer, TNVIEW* view);
 
 /**** layer: tile-layer ****/
 TNAPI TNERROR tilenet_create_tilelayer(TNLAYER* layer, unsigned int width, unsigned int height, TNRATIO xr, TNRATIO yr, TNFLAG flags);
-TNAPI TNERROR tilenet_put_tile(TNLAYER* layer, unsigned int x, unsigned int y, void* tile);
+TNAPI TNERROR tilenet_put_tile(TNLAYER* layer, unsigned int x, unsigned int y, TNTILE* tile);
 
 /**** tileset ****/
 TNAPI TNERROR tilenet_create_tileset(TNTILESET* set, const wchar_t* name, TNFLAG flags);
