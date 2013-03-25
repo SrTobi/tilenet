@@ -201,7 +201,7 @@ void copy_string(const string& src, wchar_t* dest, size_t buflen)
 #define CHECK_NULL(_expr)			CHECK_RETURN(_expr, TNNULLARG)
 #define CHECK_IF_ERROR()			CHECK_RETURN(LastThreadError.get(), TNNOERROR)
 #define CHECK_CAST(_dest, _src, _type)	auto* _dest = dynamic_cast<_type*>(_src); CHECK_RETURN(_dest, TNBADTYPE);
-
+#define CHECK_OBJ(_dest, _src, _type)	CHECK_CAST(_tmp_##_dest, _src, _type); auto _dest = _tmp_##_dest->self<_type>();
 /// @endcond
 
 /**
@@ -441,7 +441,7 @@ TNAPI TNERROR tilenet_create_service(TNSERVICE* service, size_t threadcount)
 TNAPI TNERROR tilenet_set_service_thread_count(TNSERVICE service, size_t count)
 {
 	CHECK_NULL(service);
-	CHECK_CAST(_service, service, ::srv::Service);
+	CHECK_OBJ(_service, service, ::srv::Service);
 
 	try {
 		_service->setThreadCount(count);
@@ -471,7 +471,7 @@ TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init)
 TNAPI TNERROR tilenet_add_listen_acceptor(TNSERVER server, unsigned short port, unsigned int maxc)
 {
 	CHECK_NULL(server);
-	CHECK_CAST(_server, server, ::srv::Server);
+	CHECK_OBJ(_server, server, ::srv::Server);
 
 	try {
 		auto* acceptor = new ListenAcceptor(port, maxc);
@@ -488,7 +488,7 @@ TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen
 	CHECK_NULL(dest);
 	CHECK_NULL(buflen);
 	CHECK_NULL(fetched);
-	CHECK_CAST(_server, server, ::srv::Server);
+	CHECK_OBJ(_server, server, ::srv::Server);
 
 	try {
 		
