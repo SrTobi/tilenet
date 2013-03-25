@@ -4,6 +4,10 @@
 
 #ifdef TILENET_USE_PRECOMPILED_HEADER
 
+#ifdef _MSC_VER
+#include <sdkddkver.h>
+#endif
+
 // ********** std ********** //
 #include <type_traits>
 #include <string>
@@ -23,6 +27,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/unordered_map.hpp>
+#include <boost/asio.hpp>
 
 #ifdef TILENET_TESTS
 //#include <boost/test/test_tools.hpp>
