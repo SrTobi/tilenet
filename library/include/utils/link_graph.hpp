@@ -11,11 +11,40 @@ namespace graph {
 
 
 template<typename RelatedType, typename TargetType = RelatedType>
+class Link;
+
+
+template<typename RelatedType, typename TargetType = RelatedType>
+class LinkTicket
+{
+	template<typename RelatedType, typename TargetType>
+	friend class Link;
+public:
+	typedef Link<RelatedType, TargetType> link_type;
+
+	const link_type& native() const
+	{
+		return mLink;
+	}
+
+private:
+	LinkTicket(link_type* link)
+		: mLink(link)
+	{
+	}
+
+private:
+	link_type* mLink;
+};
+
+
+template<typename RelatedType, typename TargetType>
 class Link
 {
 public:
 	typedef RelatedType related_type;
 	typedef TargetType	target_type;
+	typedef LinkTicket<related_type, target_type> ticket_type;
 
 	Link()
 		: mSelfPtr(nullptr)
@@ -39,6 +68,11 @@ public:
 		}
 	}
 
+	void link(const ticket_type& ticket)
+	{
+		link(ticket.mLink);
+	}
+
 	void link(Link<target_type, related_type>& other)
 	{
 		tnAssert(&other != this);
@@ -50,6 +84,11 @@ public:
 
 		mLinks.insert(std::make_pair(other.mSelfPtr, std::make_pair(other.mRelated, &other)));
 		other.mLinks.insert(std::make_pair(mSelfPtr, std::make_pair(mRelated, this)));
+	}
+
+	void unlink(const ticket_type& ticket)
+	{
+		unlink(ticket.mLink);
 	}
 
 	void unlink(std::shared_ptr<TargetType>& ptr)
@@ -83,13 +122,17 @@ public:
 		}
 	}
 
+	void has(const ticket_type& ticket)
+	{
+		has(ticket.mLink);
+	}
 
-	bool has(std::shared_ptr<TargetType>& ptr) const
+	bool has(const std::shared_ptr<TargetType>& ptr) const
 	{
 		return has(ptr.get());
 	}
 
-	bool has(Link<target_type, related_type>& link) const
+	bool has(const Link<target_type, related_type>& link) const
 	{
 		return has(link.mSelfPtr);
 	}
@@ -97,6 +140,11 @@ public:
 	size_t size() const
 	{
 		return mLinks.size();
+	}
+
+	ticket_type ticket() const
+	{
+		return ticket_type(this);
 	}
 
 private:
