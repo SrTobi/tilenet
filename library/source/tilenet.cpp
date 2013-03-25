@@ -454,6 +454,11 @@ TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init)
 {
 	CHECK_NULL(server);
 	CHECK_NULL(init);
+	CHECK_NULL(init->name);
+	CHECK_NULL(init->info);
+	CHECK_NULL(init->pkg);
+	CHECK_NULL(init->pkgi);
+	CHECK_NULL(init->service);
 
 	try {
 		*server = new srv::Server(init);
