@@ -19,6 +19,7 @@ public:
 	~ListenAcceptor();
 
 	virtual override void start();
+	virtual override void stop();
 	virtual override void destroy();
 	virtual override shared_ptr<TilenetObject> clone();
 private:
