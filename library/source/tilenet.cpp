@@ -471,11 +471,11 @@ TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init)
 TNAPI TNERROR tilenet_add_listen_acceptor(TNSERVER server, unsigned short port, unsigned int maxc)
 {
 	CHECK_NULL(server);
-	CHECK_OBJ(_server, server, ::srv::Server);
+	CHECK_OBJ(_server, server, srv::Server);
 
 	try {
-		auto* acceptor = new ::srv::ListenAcceptor(port, maxc);
-		_server->addAcceptor(acceptor->self<::srv::Acceptor>());
+		auto* acceptor = new srv::ListenAcceptor(port, maxc);
+		_server->addAcceptor(acceptor->self<srv::Acceptor>());
 
 		return TNOK;
 	} AUTO_CATCH(true);
@@ -488,7 +488,7 @@ TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen
 	CHECK_NULL(dest);
 	CHECK_NULL(buflen);
 	CHECK_NULL(fetched);
-	CHECK_OBJ(_server, server, ::srv::Server);
+	CHECK_OBJ(_server, server, srv::Server);
 
 	try {
 		
@@ -506,7 +506,7 @@ TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen
 TNAPI TNERROR tilenet_kick( TNPARTICIPANT participant, const wchar_t* reason )
 {
 	try {
-		shared_ptr<::srv::Participant> p = srv::Participant::Resolve(participant);
+		shared_ptr<srv::Participant> p = srv::Participant::Resolve(participant);
 
 		tnAssert(p);
 
