@@ -20,7 +20,7 @@ public:
 	Participant(const shared_ptr<EventQueue>& eventQueue, const shared_ptr<ConnectionPort>& port);
 	~Participant();
 
-	void kick(const string reason);
+	void kick(const string& reason);
 private:
 	shared_ptr<ConnectionPort> mPort;
 	std::unique_ptr<StatusHandler> mHandler;
