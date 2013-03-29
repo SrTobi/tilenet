@@ -113,7 +113,6 @@ typedef TNOBJ TNSERVER;
 typedef TNOBJ TNLAYER;
 typedef TNOBJ TNTILESET;
 typedef TNOBJ TNCMDSET;
-typedef TNOBJ TNSERVICE;
 
 
 /**** structs ****/
@@ -125,7 +124,6 @@ typedef struct TilenetServerConfig
 	const wchar_t*	info;		//!< Info string about the server
 	const wchar_t*	pkg;		//!< Standard package used for the server
 	const wchar_t*	pkgi;		//!< Interface name for proper packages
-	TNSERVICE		service;
 	TNFLAG			options;	//!< Further options
 } TNSVRCONFIG;
 
@@ -202,8 +200,8 @@ TNAPI TNERROR tilenet_destroy(TNOBJ obj);
 TNAPI TNERROR tilenet_clone(TNOBJ src, TNOBJ* dest);
 
 /**** service managment ****/
-TNAPI TNERROR tilenet_create_service(TNSERVICE* service, size_t threadcount);
-TNAPI TNERROR tilenet_set_service_thread_count(TNSERVICE service, size_t count);
+TNAPI TNERROR tilenet_fetch_service(size_t timeout);
+TNAPI TNERROR tilenet_set_service_thread_count(size_t count);
 
 /**** server management ****/
 TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init);

@@ -88,4 +88,10 @@ void Service::runThread()
 	}
 }
 
+Service& Service::Inst()
+{
+	static Service serviceSingleton;
+	return serviceSingleton;
+}
+
 }

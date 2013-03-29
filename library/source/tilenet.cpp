@@ -424,27 +424,12 @@ TNAPI TNERROR tilenet_clone(TNOBJ src, TNOBJ* dest)
 	} AUTO_CATCH(true);
 }
 
-TNAPI TNERROR tilenet_create_service(TNSERVICE* service, size_t threadcount)
+
+TNAPI TNERROR tilenet_set_service_thread_count(size_t count)
 {
-	CHECK_NULL(service);
 
 	try {
-		auto* s = new ::srv::Service();
-		s->setThreadCount(threadcount);
-
-		*service = s;
-		return TNOK;
-
-	} AUTO_CATCH(true);
-}
-
-TNAPI TNERROR tilenet_set_service_thread_count(TNSERVICE service, size_t count)
-{
-	CHECK_NULL(service);
-	CHECK_OBJ(_service, service, ::srv::Service);
-
-	try {
-		_service->setThreadCount(count);
+		srv::Service::Inst().setThreadCount(count);
 		return TNOK;
 
 	} AUTO_CATCH(true);
@@ -458,7 +443,6 @@ TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init)
 	CHECK_NULL(init->info);
 	CHECK_NULL(init->pkg);
 	CHECK_NULL(init->pkgi);
-	CHECK_NULL(init->service);
 
 	try {
 		*server = new ::srv::Server(init);

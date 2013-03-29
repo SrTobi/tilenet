@@ -14,7 +14,6 @@ class Service
 	, public TilenetObject
 {
 public:
-	Service();
 	~Service();
 
 	void setThreadCount(size_t count);
@@ -22,7 +21,9 @@ public:
 	virtual override void destroy();
 	virtual override shared_ptr<TilenetObject> clone();
 
+	static Service& Inst();
 private:
+	Service();
 	void runThread();
 
 private:
