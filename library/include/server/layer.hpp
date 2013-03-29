@@ -20,12 +20,7 @@ public:
 	virtual override void destroy();
 	virtual override shared_ptr<TilenetObject> clone();
 
-	void put(TNTILE* tile);
-
 	void clear();
-
-private:
-	graph::Link<Layer, Frame> mParents;
 };
 
 
