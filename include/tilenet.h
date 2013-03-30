@@ -30,12 +30,11 @@ extern "C" {
 #define TNOK				((TNERROR)0)	//!< Indicates that no error occured
 #define TNUNKNOWN			((TNERROR)1)	//!< Indicates an unknown error
 #define TNINTERNALERROR		((TNERROR)2)	//!< Internal error occured. This should not be returned normaly. Please submit a ticket!
-#define TNNOTSUPPORTED		((TNERROR)3)	//!< An operation is not supported in the current version or compilation mode
+#define TNNOTSUPPORTED		((TNERROR)3)	//!< An operation is not supported in the current version or compilation mode or by the used object
 #define TNBUFFERUNDERSIZED	((TNERROR)4)	//!< The given buffer was to short to take all the output
 
 #define TNNULLARG			((TNERROR)100)	//!< Indicates, that a given argument was null but must not be null
 #define TNBADID				((TNERROR)101)	//!< Indicates, that a given id does not exist
-#define TNNOTCLONABLE		((TNERROR)102)	//!< Indicates, that an object, which is not clonable, was tried to clone.
 #define TNBADTYPE			((TNERROR)103)	//!< The object had the wrong type
 
 #define TNNOERROR			((TNERROR)200)	//!< There was no last error 

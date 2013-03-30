@@ -87,14 +87,14 @@ typedef SpecificCodeException<TNWRONGINFOTYPE> WrongInfoTypeException;
 typedef SpecificCodeException<TNBUFFERUNDERSIZED> BufferUndersizedException;
 typedef SpecificCodeException<TNNOERROR> NoErrorException;
 typedef SpecificCodeException<TNBADID> BadIdException;
-typedef SpecificCodeException<TNNOTCLONABLE> NotClonableException;
+typedef SpecificCodeException<TNNOTSUPPORTED> NotSupportedException;
 
 DEFAULT_DESCRIPTION(InfoNotSetException,		"Desired information is not available for the last error!");
 DEFAULT_DESCRIPTION(WrongInfoTypeException,		"Desired information has another type!");
 DEFAULT_DESCRIPTION(BufferUndersizedException,	"Buffer is to small to take all informations!");
 DEFAULT_DESCRIPTION(NoErrorException,			"There is no last error!");
 DEFAULT_DESCRIPTION(BadIdException,				"Used id does not exist!");
-DEFAULT_DESCRIPTION(NotClonableException,		"Tried to clone an unclonable object!");
+DEFAULT_DESCRIPTION(NotSupportedException,		"Operation is not supported by the object!");
 
 
 /**

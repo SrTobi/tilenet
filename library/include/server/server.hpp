@@ -18,6 +18,13 @@ struct Acceptor
 	: public TilenetObject
 {
 public:
+	Acceptor();
+	virtual ~Acceptor();
+
+	virtual override void destroy() = 0;
+	virtual override shared_ptr<TilenetObject> clone() = 0;
+	override void flush();
+
 	virtual void start() = 0;
 	virtual void stop() = 0;
 };
@@ -31,10 +38,12 @@ public:
 
 	virtual override void destroy();
 	virtual override shared_ptr<TilenetObject> clone();
+	virtual override void flush();
 
 	void addAcceptor(const std::shared_ptr<Acceptor>& acceptor);
 	std::shared_ptr<Participant> addParticipant(const shared_ptr<ConnectionPort>& conport);
 	bool fetchNextEvent(TNEVENT* dest, size_t* timeout);
+
 
 
 private:

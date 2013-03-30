@@ -26,6 +26,7 @@ public:
 
 	virtual void destroy() = 0;
 	virtual shared_ptr<TilenetObject> clone() = 0;
+	virtual void flush() = 0;
 
 	template<typename Result>
 	std::shared_ptr<Result> self()
@@ -54,9 +55,6 @@ class IdObject
 public:
 	IdObject();
 	virtual ~IdObject();
-
-	virtual override void destroy() = 0;
-	virtual override shared_ptr<TilenetObject> clone() = 0;
 
 	id_type id() const;
 
