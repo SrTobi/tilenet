@@ -12,7 +12,7 @@ class Participant::StatusHandler
 
 
 
-Participant::Participant( const shared_ptr<EventQueue>& eventQueue, const shared_ptr<ConnectionPort>& port )
+Participant::Participant( const shared_ptr<EventQueue>& eventQueue, const shared_ptr<net::ConnectionPort>& port )
 {
 	NOT_IMPLEMENTED();
 }

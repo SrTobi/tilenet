@@ -12,6 +12,7 @@ class Frame;
 
 class Layer
 	: public TilenetObject
+	, public IdObject<Layer>
 {
 public:
 	Layer();

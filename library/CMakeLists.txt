@@ -6,6 +6,9 @@ file(GLOB library_client_source "source/client/*.cpp")
 file(GLOB library_server_include "include/server/*.hpp")
 file(GLOB library_server_source "source/server/*.cpp")
 
+file(GLOB library_network_include "include/network/*.hpp")
+file(GLOB library_network_source "source/network/*.cpp")
+
 file(GLOB library_server_acceptors_include "include/server/acceptors/*.hpp")
 file(GLOB library_server_acceptors_source "source/server/acceptors/*.cpp")
 
@@ -20,6 +23,7 @@ set(library_all_source 	${tilenet_include_file}
 						${library_client_source} ${library_client_include}
 						${library_server_acceptors_include} ${library_server_acceptors_source}
 						${library_server_source} ${library_server_include}
+						${library_network_source} ${library_network_include}
 						${library_utils_source} ${library_utils_include})
 						
 set(library_all_source ${library_all_source} PARENT_SCOPE)
@@ -40,6 +44,9 @@ source_group("source\\client" FILES ${library_client_source})
 
 source_group("include\\server" FILES ${library_server_include})
 source_group("source\\server" FILES ${library_server_source})
+
+source_group("include\\network" FILES ${library_network_include})
+source_group("source\\network" FILES ${library_network_source})
 
 source_group("include\\server\\acceptors" FILES ${library_server_acceptors_include})
 source_group("source\\server\\acceptors" FILES ${library_server_acceptors_source})
