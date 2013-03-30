@@ -7,6 +7,8 @@
 
 namespace srv {
 
+std::unique_ptr<Service> Service::Singleton;
+
 Service::Service()
 {
 	mThreadPool.reset(new ThreadPool(*this));
@@ -24,15 +26,23 @@ void Service::setThreadCount(size_t count)
 }
 
 
-void Service::shutdown()
+bool Service::IsInstanced()
 {
+	return Singleton;
 }
-
 
 Service& Service::Inst()
 {
-	static Service serviceSingleton;
-	return serviceSingleton;
+	if(!IsInstanced())
+		Singleton.reset(new Service());
+
+	return *Singleton;
 }
+
+void Service::Shutdown()
+{
+	Singleton.reset();
+}
+
 
 }

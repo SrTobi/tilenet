@@ -18,14 +18,17 @@ public:
 	~Service();
 
 	void setThreadCount(size_t count);
-	void shutdown();
 
+	static bool IsInstanced();
 	static Service& Inst();
+	static void Shutdown();
 private:
 	Service();
 
 private:
 	std::unique_ptr<ThreadPool> mThreadPool;
+
+	static std::unique_ptr<Service> Singleton;
 };
 
 
