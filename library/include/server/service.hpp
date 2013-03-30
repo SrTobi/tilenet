@@ -11,15 +11,12 @@ namespace srv {
 
 class Service
 	: public boost::asio::io_service
-	, public TilenetObject
 {
 public:
 	~Service();
 
 	void setThreadCount(size_t count);
-
-	virtual override void destroy();
-	virtual override shared_ptr<TilenetObject> clone();
+	void shutdown();
 
 	static Service& Inst();
 private:

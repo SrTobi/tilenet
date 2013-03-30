@@ -26,7 +26,7 @@ void srv::Service::setThreadCount(size_t count)
 	{
 		while(mThreads.size() < count)
 		{
-			std::thread thread(std::bind(&Service::runThread, self<Service>()));
+			std::thread thread(std::bind(&Service::runThread, this));
 			mThreads.insert(std::make_pair(thread.get_id(), std::move(thread)));
 		}
 	}else{
@@ -35,7 +35,7 @@ void srv::Service::setThreadCount(size_t count)
 }
 
 
-void srv::Service::destroy()
+void srv::Service::shutdown()
 {
 	{
 		std::lock_guard<std::mutex> lock(mMutex);
@@ -48,16 +48,6 @@ void srv::Service::destroy()
 		p.second.join();
 	}
 }
-
-shared_ptr<TilenetObject> srv::Service::clone()
-{
-	shared_ptr<Service> newService(new Service());
-
-	newService->setThreadCount(mTargetThreadCount);
-
-	return newService;
-}
-
 
 
 void Service::runThread()
