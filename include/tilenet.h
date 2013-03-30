@@ -186,10 +186,6 @@ typedef struct TilenetView
 
 
 
-/**** conversion ****/
-TNAPI TNERROR tilenet_convert_to_wstring(const char* src, wchar_t* dest, size_t size);
-TNAPI TNERROR tilenet_convert_to_astring(const wchar_t* src, char* dest, size_t size);
-
 /**** error management ****/
 TNAPI TNERROR tilenet_get_error_string(TNERRINFO infono, wchar_t* dest, size_t buflen);
 TNAPI TNERROR tilenet_get_error_int(TNERRINFO infono, int* dest);
