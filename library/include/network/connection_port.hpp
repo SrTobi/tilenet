@@ -15,8 +15,20 @@ class Message;
 class ConnectionPort
 {
 public:
+	typedef std::function<void(const std::shared_ptr<Message>&)> handler_type;
+	ConnectionPort();
+	~ConnectionPort();
+
 	virtual void send(const std::shared_ptr<Message>& msg) = 0;
-	virtual void setHandler(const std::function<void(const std::shared_ptr<Message>&)> func) = 0;
+	
+	void setHandler(const handler_type& func);
+	bool hasHandler() const;
+protected:
+	void handleReceive(const std::shared_ptr<Message>& msg) const;
+	virtual void onHandlerSet();
+
+private:
+	handler_type mHandler;
 };
 
 
