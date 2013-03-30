@@ -17,7 +17,7 @@ class Link;
 template<typename RelatedType, typename TargetType = RelatedType>
 class LinkTicket
 {
-	template<typename RelatedType, typename TargetType>
+	template<typename RelatedType_, typename TargetType_>
 	friend class Link;
 public:
 	typedef Link<RelatedType, TargetType> link_type;
