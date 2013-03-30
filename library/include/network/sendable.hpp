@@ -12,7 +12,7 @@ class Message;
 class Sendable
 {
 public:
-	virtual shared_ptr<Message> getState() = 0;
+	virtual shared_ptr<Message> getStateMessage() = 0;
 };
 
 
