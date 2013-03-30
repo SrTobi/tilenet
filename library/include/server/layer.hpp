@@ -5,6 +5,7 @@
 
 #include "settings.hpp"
 #include "utils/link_graph.hpp"
+#include "network/sendable.hpp"
 
 namespace srv {
 
@@ -13,6 +14,7 @@ class Frame;
 class Layer
 	: public TilenetObject
 	, public IdObject<Layer>
+	, public net::Sendable
 {
 public:
 	Layer();
