@@ -19,8 +19,6 @@ public:
 
 	virtual override void destroy();
 	virtual override shared_ptr<TilenetObject> clone();
-
-	void clear();
 };
 
 
