@@ -7,6 +7,8 @@
 #include "settings.hpp"
 
 
+class ThreadPool;
+
 namespace srv {
 
 class Service
@@ -21,14 +23,9 @@ public:
 	static Service& Inst();
 private:
 	Service();
-	void runThread();
 
 private:
-	std::mutex mMutex;
-	size_t mTargetThreadCount;
-	std::map<std::thread::id, std::thread> mThreads;
-	std::unique_ptr<boost::asio::io_service::work> mWork;
-	bool mDestroy;
+	std::unique_ptr<ThreadPool> mThreadPool;
 };
 
 
