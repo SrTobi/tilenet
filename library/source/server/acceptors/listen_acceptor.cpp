@@ -14,22 +14,22 @@ srv::ListenAcceptor::~ListenAcceptor()
 	NOT_IMPLEMENTED();
 }
 
-override void srv::ListenAcceptor::start()
+OVERRIDE void srv::ListenAcceptor::start()
 {
 	NOT_IMPLEMENTED();
 }
 
-override void srv::ListenAcceptor::stop()
+OVERRIDE void srv::ListenAcceptor::stop()
 {
 	NOT_IMPLEMENTED();
 }
 
-override void srv::ListenAcceptor::destroy()
+OVERRIDE void srv::ListenAcceptor::destroy()
 {
 	NOT_IMPLEMENTED();
 }
 
-override shared_ptr<TilenetObject> srv::ListenAcceptor::clone()
+OVERRIDE shared_ptr<TilenetObject> srv::ListenAcceptor::clone()
 {
 	NOT_IMPLEMENTED();
 }

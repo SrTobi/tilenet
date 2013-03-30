@@ -18,9 +18,9 @@ public:
 	TNID registerTile(const string& name);
 	TNID registerTile(const string& name, TNID id);
 
-	virtual override void destroy();
-	virtual override shared_ptr<TilenetObject> clone();
-	virtual override void flush();
+	virtual OVERRIDE void destroy();
+	virtual OVERRIDE shared_ptr<TilenetObject> clone();
+	virtual OVERRIDE void flush();
 };
 
 

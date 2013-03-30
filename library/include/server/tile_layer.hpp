@@ -25,10 +25,10 @@ public:
 	const Ratio& ratio() const;
 	const Rect&	size() const;
 
-	override void destroy();
-	override shared_ptr<TilenetObject> clone();
-	override void flush();
-	override shared_ptr<net::Message> getStateMessage();
+	OVERRIDE void destroy();
+	OVERRIDE shared_ptr<TilenetObject> clone();
+	OVERRIDE void flush();
+	OVERRIDE shared_ptr<net::Message> getStateMessage();
 
 
 

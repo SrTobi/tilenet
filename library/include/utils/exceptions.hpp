@@ -69,12 +69,12 @@ template<TNERROR ErrCode>
 struct SpecificCodeException
 	: public ExceptionBase
 {
-	virtual override TNERROR getErrorCode() const
+	virtual OVERRIDE TNERROR getErrorCode() const
 	{
 		return ErrCode;
 	}
 
-	virtual override const char* what() const throw()
+	virtual OVERRIDE const char* what() const throw()
 	{
 		return DefaultExceptionDescription<SpecificCodeException<ErrCode>>::Description();
 	}

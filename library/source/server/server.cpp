@@ -15,7 +15,7 @@ Acceptor::~Acceptor()
 {
 }
 
-override void Acceptor::flush()
+OVERRIDE void Acceptor::flush()
 {
 	BOOST_THROW_EXCEPTION(excp::NotSupportedException() << excp::InfoWhat(L"Acceptor can not be flushed!"));
 }

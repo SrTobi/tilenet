@@ -11,7 +11,7 @@
 
 #include "tilenet.h"
 
-#define override
+#define OVERRIDE
 
 typedef unsigned int IdType;
 typedef std::wstring string;

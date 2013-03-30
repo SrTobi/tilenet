@@ -21,9 +21,9 @@ public:
 	Acceptor();
 	virtual ~Acceptor();
 
-	virtual override void destroy() = 0;
-	virtual override shared_ptr<TilenetObject> clone() = 0;
-	override void flush();
+	virtual OVERRIDE void destroy() = 0;
+	virtual OVERRIDE shared_ptr<TilenetObject> clone() = 0;
+	OVERRIDE void flush();
 
 	virtual void start() = 0;
 	virtual void stop() = 0;
@@ -36,9 +36,9 @@ public:
 	Server(const TNSVRCONFIG* init);
 	~Server();
 
-	virtual override void destroy();
-	virtual override shared_ptr<TilenetObject> clone();
-	virtual override void flush();
+	virtual OVERRIDE void destroy();
+	virtual OVERRIDE shared_ptr<TilenetObject> clone();
+	virtual OVERRIDE void flush();
 
 	void addAcceptor(const std::shared_ptr<Acceptor>& acceptor);
 	std::shared_ptr<Participant> addParticipant(const shared_ptr<ConnectionPort>& conport);

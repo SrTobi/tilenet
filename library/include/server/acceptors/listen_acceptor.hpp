@@ -18,10 +18,10 @@ public:
 	ListenAcceptor(port_type port, uint32 maxConnections);
 	~ListenAcceptor();
 
-	virtual override void start();
-	virtual override void stop();
-	virtual override void destroy();
-	virtual override shared_ptr<TilenetObject> clone();
+	virtual OVERRIDE void start();
+	virtual OVERRIDE void stop();
+	virtual OVERRIDE void destroy();
+	virtual OVERRIDE shared_ptr<TilenetObject> clone();
 private:
 	port_type mPort;
 	uint32 mMaxConnections;

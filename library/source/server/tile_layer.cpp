@@ -30,17 +30,17 @@ const Rect& TileLayer::size() const
 	NOT_IMPLEMENTED();
 }
 
-override void TileLayer::destroy()
+OVERRIDE void TileLayer::destroy()
 {
 	NOT_IMPLEMENTED();
 }
 
-override shared_ptr<TilenetObject> TileLayer::clone()
+OVERRIDE shared_ptr<TilenetObject> TileLayer::clone()
 {
 	NOT_IMPLEMENTED();
 }
 
-override void TileLayer::flush()
+OVERRIDE void TileLayer::flush()
 {
 	NOT_IMPLEMENTED();
 }

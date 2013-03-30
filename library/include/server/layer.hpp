@@ -20,9 +20,9 @@ public:
 	Layer();
 	~Layer();
 
-	virtual override void destroy() = 0;
-	virtual override shared_ptr<TilenetObject> clone() = 0;
-	virtual override void flush() = 0;
+	virtual OVERRIDE void destroy() = 0;
+	virtual OVERRIDE shared_ptr<TilenetObject> clone() = 0;
+	virtual OVERRIDE void flush() = 0;
 };
 
 
