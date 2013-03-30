@@ -44,6 +44,14 @@ typedef uint8 byte;
 #include "utils/exceptions.hpp"
 #include "utils/tilenet_object.hpp"
 #include "utils/lexical_convert.hpp"
+#include "utils/vector.hpp"
+
+
+
+typedef basic_vector2<unsigned int> Point;
+typedef basic_vector2<unsigned int> Rect;
+typedef basic_vector2<TNRATIO>		Ratio;
+typedef basic_vector2<float>		Vector;
 
 /// @endcond
 
