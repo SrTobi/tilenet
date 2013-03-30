@@ -5,17 +5,14 @@
 namespace srv {
 
 
-
-
-
-void Layer::destroy()
+Layer::Layer()
 {
-	NOT_IMPLEMENTED();
+
 }
 
-shared_ptr<TilenetObject> Layer::clone()
+Layer::~Layer()
 {
-	NOT_IMPLEMENTED();
+
 }
 
 }
