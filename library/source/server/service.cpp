@@ -28,7 +28,7 @@ void Service::setThreadCount(size_t count)
 
 bool Service::IsInstanced()
 {
-	return Singleton;
+	return Singleton.get();
 }
 
 Service& Service::Inst()

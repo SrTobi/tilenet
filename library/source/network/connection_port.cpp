@@ -33,7 +33,7 @@ void ConnectionPort::onHandlerSet()
 
 bool ConnectionPort::hasHandler() const
 {
-	return mHandler;
+	return bool(mHandler);
 }
 
 

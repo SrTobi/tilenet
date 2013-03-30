@@ -50,7 +50,7 @@ inline std::string lexical_convert(const std::wstring& from)
 
 	if(result != conv_type::ok)
 	{
-		throw std::bad_cast("Failed to convert to wstring");
+		throw std::bad_cast();
 	}
 }
 
@@ -77,7 +77,7 @@ inline std::wstring lexical_convert(const std::string& from)
 
 	if(result != conv_type::ok)
 	{
-		throw std::bad_cast("Failed to convert to wstring");
+		throw std::bad_cast();
 	}
 
 	return std::move(to);

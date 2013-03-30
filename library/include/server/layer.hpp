@@ -4,7 +4,6 @@
 
 
 #include "settings.hpp"
-#include "utils/link_graph.hpp"
 #include "network/sendable.hpp"
 
 namespace srv {
