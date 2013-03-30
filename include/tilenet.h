@@ -180,6 +180,7 @@ typedef struct TilenetView
 	unsigned int height;
 	unsigned int x;
 	unsigned int y;
+	float z;
 	TNCOLOR color;
 } *TNVIEW;
 
@@ -198,6 +199,7 @@ TNAPI TNERROR tilenet_get_last_error();
 /**** object management *****/
 TNAPI TNERROR tilenet_destroy(TNOBJ obj);
 TNAPI TNERROR tilenet_clone(TNOBJ src, TNOBJ* dest);
+TNAPI TNERROR tilenet_flush(TNOBJ obj);
 
 /**** service managment ****/
 TNAPI TNERROR tilenet_fetch_service(size_t timeout);
@@ -215,9 +217,10 @@ TNAPI TNERROR tilenet_attach_cmdset(TNPARTICIPANT participant, TNCMDSET set);
 
 /**** layer: frame ****/
 TNAPI TNERROR tilenet_create_frame(TNLAYER* frame, TNFLAG flags);
-TNAPI TNERROR tilenet_reset_frame(TNLAYER frame);
-TNAPI TNERROR tilenet_finish_frame(TNLAYER frame);
-TNAPI TNERROR tilenet_frame_push(TNLAYER frame, TNLAYER* layer, TNVIEW* view);
+TNAPI TNERROR tilenet_clear_frame(TNLAYER frame);
+TNAPI TNERROR tilenet_frame_add(TNLAYER frame, TNLAYER* layer, TNVIEW* view);
+TNAPI TNERROR tilenet_frame_remove(TNLAYER frame, TNLAYER layer);
+TNAPI TNERROR tilenet_update_view(TNVIEW view);
 
 /**** layer: tile-layer ****/
 TNAPI TNERROR tilenet_create_tilelayer(TNLAYER* layer, unsigned int width, unsigned int height, TNRATIO xr, TNRATIO yr, TNFLAG flags);
