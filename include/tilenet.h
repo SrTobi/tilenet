@@ -228,7 +228,7 @@ TNAPI TNERROR tilenet_register_tile(TNTILESET set, const wchar_t* name, TNID* id
 /**** commands ****/
 TNAPI TNERROR tilenet_create_commandset(TNCMDSET* set, const wchar_t* name);
 TNAPI TNERROR tilenet_inherit_commands(TNCMDSET base, TNCMDSET derive);
-TNAPI TNERROR tilenet_add_command(TNCMDSET set, TNID id, const wchar_t* name, const wchar_t* defkey);
+TNAPI TNERROR tilenet_add_command(TNCMDSET set, const wchar_t* name, const wchar_t* defkey, TNID* id);
 
 #ifdef __cplusplus
 }
