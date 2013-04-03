@@ -112,7 +112,7 @@ typename IdObject<T>::id_type IdObject<T>::Register(const shared_ptr<T>& obj)
 		FreeList.pop();
 
 		tnAssert(newId < Objects.size());
-		tnAssert(!Objects.at(newId));
+		tnAssert(!Objects.at(newId).lock());
 		Objects[newId] = obj;
 	}else{
 		newId = Objects.size();
@@ -121,7 +121,7 @@ typename IdObject<T>::id_type IdObject<T>::Register(const shared_ptr<T>& obj)
 
 	newId |= (std::rand() % TNMAX_IDTAG) << TN_ID_BITLENGTH;
 	
-	obj->id = newId;
+	obj->mId = newId;
 
 	return newId;
 }
