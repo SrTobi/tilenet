@@ -213,13 +213,13 @@ TNAPI TNERROR tilenet_attach_cmdset(TNPARTICIPANT participant, TNCMDSET set);
 /**** layer: frame ****/
 TNAPI TNERROR tilenet_create_frame(TNLAYER* frame, TNFLAG flags);
 TNAPI TNERROR tilenet_clear_frame(TNLAYER frame);
-TNAPI TNERROR tilenet_frame_add(TNLAYER frame, TNLAYER* layer, TNVIEW* view);
+TNAPI TNERROR tilenet_frame_add(TNLAYER frame, TNLAYER layer, TNVIEW* view);
 TNAPI TNERROR tilenet_frame_remove(TNLAYER frame, TNLAYER layer);
 TNAPI TNERROR tilenet_update_view(TNVIEW view);
 
 /**** layer: tile-layer ****/
 TNAPI TNERROR tilenet_create_tilelayer(TNLAYER* layer, unsigned int width, unsigned int height, TNRATIO xr, TNRATIO yr, TNFLAG flags);
-TNAPI TNERROR tilenet_put_tile(TNLAYER* layer, unsigned int x, unsigned int y, TNTILE* tile);
+TNAPI TNERROR tilenet_put_tile(TNLAYER layer, unsigned int x, unsigned int y, TNTILE* tile);
 
 /**** tileset ****/
 TNAPI TNERROR tilenet_create_tileset(TNTILESET* set, const wchar_t* name, TNFLAG flags);
