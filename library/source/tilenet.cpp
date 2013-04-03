@@ -11,6 +11,13 @@
 
 #include "server/server.hpp"
 #include "server/service.hpp"
+
+#include "server/layer.hpp"
+#include "server/tile_layer.hpp"
+
+#include "server/commandset.hpp"
+#include "server/tileset.hpp"
+
 #include "server/participant.hpp"
 #include "server/acceptors/listen_acceptor.hpp"
 
@@ -418,6 +425,179 @@ TNAPI TNERROR tilenet_kick( TNPARTICIPANT participant, const wchar_t* reason )
 
 	} AUTO_CATCH(true);
 }
+
+TNAPI TNERROR tilenet_attach_layer( TNPARTICIPANT participant, TNLAYER layer )
+{
+	CHECK_NULL(layer);
+
+	try {
+		NOT_IMPLEMENTED();
+
+	} AUTO_CATCH(true);
+}
+
+TNAPI TNERROR tilenet_attach_cmdset( TNPARTICIPANT participant, TNCMDSET set )
+{
+	CHECK_NULL(set);
+
+	try {
+		NOT_IMPLEMENTED();
+
+	} AUTO_CATCH(true);
+}
+
+TNAPI TNERROR tilenet_create_frame( TNLAYER* frame, TNFLAG flags )
+{
+	try {
+		NOT_IMPLEMENTED();
+
+	} AUTO_CATCH(true);
+}
+
+TNAPI TNERROR tilenet_clear_frame( TNLAYER frame )
+{
+	CHECK_NULL(frame);
+
+	try {
+		NOT_IMPLEMENTED();
+	} AUTO_CATCH(true);
+}
+
+TNAPI TNERROR tilenet_frame_add( TNLAYER frame, TNLAYER layer, TNVIEW* view )
+{
+	CHECK_NULL(frame);
+	CHECK_NULL(layer);
+
+	try {
+		NOT_IMPLEMENTED();
+	} AUTO_CATCH(true);
+}
+
+TNAPI TNERROR tilenet_frame_remove( TNLAYER frame, TNLAYER layer )
+{
+	CHECK_NULL(frame);
+	CHECK_NULL(layer);
+
+	try {
+		NOT_IMPLEMENTED();
+	} AUTO_CATCH(true);
+}
+
+TNAPI TNERROR tilenet_update_view( TNVIEW view )
+{
+	CHECK_NULL(view);
+
+	try {
+		NOT_IMPLEMENTED();
+	} AUTO_CATCH(true);
+}
+
+TNAPI TNERROR tilenet_create_tilelayer( TNLAYER* layer, unsigned int width, unsigned int height, TNRATIO xr, TNRATIO yr, TNFLAG flags )
+{
+	try {
+		*layer = new srv::TileLayer(Rect(width, height), Ratio(xr, yr), flags);
+		srv::TileLayer::Register((*layer)->self<srv::TileLayer>());
+
+		return TNOK;
+	} AUTO_CATCH(true);
+}
+
+TNAPI TNERROR tilenet_put_tile( TNLAYER layer, unsigned int x, unsigned int y, TNTILE* tile )
+{
+	CHECK_CAST(_layer, layer, srv::TileLayer);
+	
+	try {
+		_layer->putTile(Point(x, y), tile);
+
+		return TNOK;
+	} AUTO_CATCH(true);
+}
+
+TNAPI TNERROR tilenet_create_tileset( TNTILESET* set, const wchar_t* name, TNFLAG flags )
+{
+	CHECK_NULL(set);
+	CHECK_NULL(name);
+
+	try {
+		*set = new srv::Tileset(name, flags);
+		srv::Tileset::Register((*set)->self<srv::Tileset>());
+
+		return TNOK;
+	} AUTO_CATCH(true);
+}
+
+TNAPI TNERROR tilenet_register_tile( TNTILESET set, const wchar_t* name, TNID* id )
+{
+	CHECK_CAST(_set, set, srv::Tileset);
+	CHECK_NULL(name);
+	CHECK_NULL(id);
+
+	try {
+		if(*id)
+		{
+			_set->registerTile(name, *id);
+		}else{
+			*id = _set->registerTile(name);
+		}
+		return TNOK;
+	} AUTO_CATCH(true);
+}
+
+TNAPI TNERROR tilenet_create_commandset( TNCMDSET* set, const wchar_t* name )
+{
+	CHECK_NULL(name);
+
+	try {
+		*set = new srv::CommandSet(name);
+		srv::CommandSet::Register((*set)->self<srv::CommandSet>());
+
+		return TNOK;
+	} AUTO_CATCH(true);
+}
+
+TNAPI TNERROR tilenet_inherit_commands( TNCMDSET base, TNCMDSET derive )
+{
+	CHECK_CAST(_base, base, srv::CommandSet);
+	CHECK_CAST(_derive, derive, srv::CommandSet);
+
+	try {
+		_derive->inherit(base->self<srv::CommandSet>());
+
+		return TNOK;
+	} AUTO_CATCH(true);
+}
+
+TNAPI TNERROR tilenet_add_command( TNCMDSET set, const wchar_t* name, const wchar_t* defkey, TNID* id )
+{
+	CHECK_CAST(_set, set, srv::CommandSet);
+	CHECK_NULL(name);
+	CHECK_NULL(id);
+
+	try {
+		if(*id)
+		{
+			_set->registerCmd(name, defkey, *id);
+		}else{
+			*id = _set->registerCmd(name, defkey);
+		}
+
+		return TNOK;
+	} AUTO_CATCH(true);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
