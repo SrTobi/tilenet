@@ -1,0 +1,35 @@
+Participant verbindet sich
+--------------------------
+1. Annahme der Verbindung
+2. Participant erstellen und id regestrieren
+3. Event in die Eventqueue einordnen
+
+
+Layer erstellen
+---------------
+1. Layer erstellen und registrieren
+
+
+Layer einem participant zuordnen
+--------------------------
+1. layer als attached-layer bei participant setzten
+2. layer-attach-job bei service einreichen
+3. send id of new attached layer to p.
+
+
+Frame erstellen
+---------------
+1. Frame erstellen und id registrieren
+2. User füllt frame mit layern und setzt views
+
+Frame flush
+-----------
+1. frame-flush-job einreichen
+2. alle abhänigkeiten entfernen und neue regestrieren
+3. Alle participants über neuen frameinhalt informieren
+
+Layer flush
+-----------
+1. Layer-flush-job einreichen
+2. alle participants ermitteln, die das layer sehen
+3. layerdiff senden
