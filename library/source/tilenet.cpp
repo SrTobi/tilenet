@@ -19,7 +19,11 @@
 #include "server/tileset.hpp"
 
 #include "server/participant.hpp"
+
 #include "server/acceptors/listen_acceptor.hpp"
+#include "server/acceptors/local_acceptor.hpp"
+
+
 
 /// @cond DEV
 
@@ -389,6 +393,20 @@ TNAPI TNERROR tilenet_add_listen_acceptor(TNSERVER server, unsigned short port, 
 		return TNOK;
 	} AUTO_CATCH(true);
 }
+
+TNAPI TNERROR tilenet_add_local_acceptor(TNSERVER server)
+{
+	CHECK_NULL(server);
+	CHECK_OBJ(_server, server, srv::Server);
+
+	try {
+		auto* acceptor = new srv::LocalAcceptor();
+		_server->addAcceptor(acceptor->self<srv::Acceptor>());
+
+		return TNOK;
+	} AUTO_CATCH(true);
+}
+
 
 
 TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen, size_t* fetched, size_t* timeout)
