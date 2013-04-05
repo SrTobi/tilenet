@@ -18,15 +18,17 @@ public:
 	ClientApp();
 	~ClientApp();
 
-	void start();
 	void start(const shared_ptr<net::ConnectionPort>& port);
 
+	boost::asio::io_service& service();
 private:
 	void run();
 
 private:
 	boost::asio::io_service mService;
 	shared_ptr<net::ConnectionPort> mPort;
+
+	static std::unique_ptr<ClientApp> Singleton;
 };
 
 

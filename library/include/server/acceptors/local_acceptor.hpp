@@ -4,6 +4,7 @@
 
 #include "settings.hpp"
 #include "server/server.hpp"
+#include "network/connection_port.hpp"
 
 namespace srv {
 
@@ -21,8 +22,9 @@ public:
 	virtual OVERRIDE void stop();
 	virtual OVERRIDE void destroy();
 	virtual OVERRIDE shared_ptr<TilenetObject> clone();
+
 private:
-	shared_ptr<Service> mService;
+	shared_ptr<net::ConnectionPort> mPort;
 };
 
 
