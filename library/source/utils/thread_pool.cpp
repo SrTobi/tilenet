@@ -15,7 +15,8 @@ ThreadPool::ThreadPool(io_service& ioService)
 ThreadPool::~ThreadPool()
 {
 	{
-		std::lock_guard<std::mutex> lock(mMutex);
+		// Hmmm, a lock will cause an exception on exit cleanup
+		// std::lock_guard<std::mutex> lock(mMutex);
 		mDestroy = true;
 		mWork.reset();
 	}
