@@ -37,6 +37,7 @@ typedef uint32_t uint32;
 typedef int64_t int64;
 typedef uint64_t uint64;
 typedef uint8 byte;
+typedef uint8 MsgId;
 
 
 
