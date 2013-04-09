@@ -8,11 +8,16 @@
 #include "settings.hpp"
 #include "utils/tilenet_object.hpp"
 
+
+namespace net {
+	class ConnectionPort;
+}
+
+
 namespace srv {
 
 class EventQueue;
 class Participant;
-class ConnectionPort;
 
 struct Acceptor 
 	: public TilenetObject
@@ -41,10 +46,10 @@ public:
 	virtual OVERRIDE void flush();
 
 	void addAcceptor(const std::shared_ptr<Acceptor>& acceptor);
-	std::shared_ptr<Participant> addParticipant(const shared_ptr<ConnectionPort>& conport);
+	std::shared_ptr<Participant> addParticipant(const shared_ptr<net::ConnectionPort>& conport);
 	bool fetchNextEvent(TNEVENT* dest, size_t* timeout);
 
-
+	std::shared_ptr<EventQueue> eventQueue() const;
 
 private:
 	std::shared_ptr<EventQueue> mEvents;

@@ -400,7 +400,7 @@ TNAPI TNERROR tilenet_add_local_acceptor(TNSERVER server)
 	CHECK_OBJ(_server, server, srv::Server);
 
 	try {
-		auto* acceptor = new srv::LocalAcceptor();
+		auto* acceptor = new srv::LocalAcceptor(_server->self<srv::Server>());
 		_server->addAcceptor(acceptor->self<srv::Acceptor>());
 
 		return TNOK;

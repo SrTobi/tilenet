@@ -8,7 +8,8 @@
 
 namespace srv {
 
-LocalAcceptor::LocalAcceptor()
+LocalAcceptor::LocalAcceptor(const shared_ptr<Server>& server)
+	: mServer(server)
 {
 }
 
@@ -23,7 +24,8 @@ OVERRIDE void LocalAcceptor::start()
 
 	std::tie(mPort, theirPort) = net::LocalConnectionPort::Create(Service::Inst(), cl->service());
 
-	cl->start(mPort);
+	cl->start(theirPort);
+	mServer->addParticipant(mPort);
 }
 
 OVERRIDE void LocalAcceptor::stop()

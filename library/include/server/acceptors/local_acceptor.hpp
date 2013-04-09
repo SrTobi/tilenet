@@ -15,7 +15,7 @@ struct LocalAcceptor
 {
 public:
 
-	LocalAcceptor();
+	LocalAcceptor(const shared_ptr<Server>& server);
 	~LocalAcceptor();
 
 	virtual OVERRIDE void start();
@@ -25,6 +25,7 @@ public:
 
 private:
 	shared_ptr<net::ConnectionPort> mPort;
+	shared_ptr<Server> mServer;
 };
 
 

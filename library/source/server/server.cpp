@@ -2,6 +2,8 @@
 #include "server/server.hpp"
 #include "server/event_queue.hpp"
 
+#include "server/participant.hpp"
+
 namespace srv {
 
 	
@@ -23,6 +25,7 @@ OVERRIDE void Acceptor::flush()
 
 
 Server::Server(const TNSVRCONFIG* init)
+	: mEvents(new EventQueue())
 {
 
 }
@@ -64,6 +67,23 @@ void Server::addAcceptor(const std::shared_ptr<Acceptor>& acceptor)
 	mAcceptors.push_back(acceptor);
 	acceptor->start();
 }
+
+
+std::shared_ptr<Participant> Server::addParticipant( const shared_ptr<net::ConnectionPort>& conport )
+{
+	shared_ptr<Participant> participant(new Participant(mEvents, conport));
+	Participant::Register(participant);
+
+	return participant;
+}
+
+
+
+std::shared_ptr<EventQueue> Server::eventQueue() const
+{
+	return mEvents;
+}
+
 
 
 
