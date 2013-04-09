@@ -23,6 +23,7 @@ public:
 
 
 	const std::vector<byte>& buffer() const;
+	MsgId id() const;
 
 private:
 	MsgId				mId;
