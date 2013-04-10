@@ -38,7 +38,7 @@ endif(NOT Boost_USE_STATIC_LIBS)
 add_definitions(-DTILENET_AS_LIB)
 add_definitions( -DBOOST_ALL_NO_LIB )
 
-find_package(Boost COMPONENTS system thread unit_test_framework REQUIRED)
+find_package(Boost COMPONENTS system thread serialization unit_test_framework REQUIRED)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
