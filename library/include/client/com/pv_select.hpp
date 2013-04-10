@@ -39,7 +39,7 @@ class ProtocolVersionSelect
 	: public ComHandler
 {
 public:
-	ProtocolVersionSelect();
+	ProtocolVersionSelect(const shared_ptr<ClientApp>& app, const shared_ptr<net::ConnectionPort>& port);
 	~ProtocolVersionSelect();
 
 	virtual OVERRIDE shared_ptr<ComHandler> handleMessage(const shared_ptr<net::Message>&);
@@ -49,6 +49,8 @@ private:
 private:
 	shared_ptr<ClientApp> mApp;
 	shared_ptr<net::ConnectionPort> mPort;
+	shared_ptr<ComHandler> mSelectedVersion;
+	
 	std::unordered_map<version_type, std::unique_ptr<ComHandlerFactory>> mFactories;
 
 	net::Dispatcher mDispatcher;
