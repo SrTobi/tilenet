@@ -22,6 +22,7 @@ public:
 	{
 	public:
 		LogStream(Log& log, Category cat);
+		LogStream(LogStream&& other);
 		~LogStream();
 
 		template<typename T>
@@ -42,13 +43,13 @@ public:
 	Log(const string& component);
 	~Log();
 
-	LogStream&& debug() { return log(Debug); }
-	LogStream&& info()	{ return log(Info); }
-	LogStream&& warn()	{ return log(Warning); }
-	LogStream&& error() { return log(Error); }
+	inline LogStream debug() { return log(Debug); }
+	inline LogStream info()	{ return log(Info); }
+	inline LogStream warn()	{ return log(Warning); }
+	inline LogStream error() { return log(Error); }
 
 
-	LogStream&& log(Category cat);
+	LogStream log(Category cat);
 	void log(Category cat, const string& msg);
 private:
 	const string mComponent;

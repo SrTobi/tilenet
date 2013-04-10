@@ -9,6 +9,13 @@ Log::LogStream::LogStream( Log& log, Category cat )
 {
 }
 
+Log::LogStream::LogStream(LogStream&& other )
+	: mLog(other.mLog)
+	, mCategory(other.mCategory)
+	, mStream(std::move(other.mStream))
+{
+}
+
 Log::LogStream::~LogStream()
 {
 	mLog.log(mCategory, mStream.str());
@@ -26,6 +33,12 @@ Log::Log( const string& component )
 
 Log::~Log()
 {
+}
+
+
+Log::LogStream Log::log(Category cat)
+{
+	return LogStream(*this, cat);
 }
 
 void Log::log( Category cat, const string& msg )
