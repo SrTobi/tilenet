@@ -46,13 +46,15 @@ public:
 
 	void onMessage(const shared_ptr<net::Message>& msg)
 	{
-		NOT_IMPLEMENTED();
+		mDispatcher.dispatch(msg);
 	}
 
 	void onDisconnect()
 	{
 		NOT_IMPLEMENTED();
 	}
+
+	net::Dispatcher mDispatcher;
 };
 
 
