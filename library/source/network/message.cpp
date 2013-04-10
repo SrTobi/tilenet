@@ -11,7 +11,7 @@ namespace net {
 
 
 
-Message::Message(const MsgId id, const std::vector<byte>&& msg)
+Message::Message(const msgid_type id, const std::vector<byte>&& msg)
 	: mBuffer(msg)
 	, mId(id)
 {
@@ -26,7 +26,7 @@ const std::vector<byte>& Message::buffer() const
 	return mBuffer;
 }
 
-MsgId Message::id() const
+msgid_type Message::id() const
 {
 	return mId;
 }
