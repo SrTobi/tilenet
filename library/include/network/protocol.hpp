@@ -8,15 +8,15 @@
 
 
 #define PROTOCOL_MESSAGE(_name, _target)		namespace _target{ typedef MsgFormat<ids::_target::_name> _name; } template<> struct MsgFormat<ids::_target::_name>
-#define PROTOCOL_SERIALIZER(_ar)				friend class boost::serialization::access; template<class Archive> void serialize(Archive& _ar, const unsigned int version)
-#define PROTOCOL_MAKE_VERSION(_major, _minor)	uint32(uint32(_major) << 16 | uint32(_minor))
+#define PROTOCOL_SERIALIZER(_ar)				friend class boost::serialization::access; template<class Archive> void serialize(Archive& _ar, const unsigned int archive_version)
+#define PROTOCOL_MAKE_VERSION(_major, _minor)	version_type(version_type(_major) << 16 | version_type(_minor))
 
 
 namespace proto {
 
-static const uint32 protocol_version = PROTOCOL_MAKE_VERSION(1, 0);
+static const version_type protocol_version = PROTOCOL_MAKE_VERSION(1, 0);
 
-template<MsgId Id>
+template<msgid_type Id>
 struct MsgFormat
 {
 };
@@ -35,7 +35,7 @@ namespace to_srv {
 namespace to_client {
 
 	enum Ids {
-		Handshake_P1_ProtocolVersion
+		Handshake_P1_ProtocolVersion = 100
 
 
 
@@ -47,7 +47,7 @@ namespace to_client {
 
 PROTOCOL_MESSAGE(Handshake_P1_ProtocolVersion, to_client)
 {
-	uint32 version;
+	version_type version;
 	PROTOCOL_SERIALIZER(ar)
 	{
 		ar & version;

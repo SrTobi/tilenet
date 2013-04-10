@@ -9,7 +9,7 @@
 #include "settings.hpp"
 
 namespace proto {
-	template<MsgId Id>
+	template<msgid_type Id>
 	struct MsgFormat;
 }
 
@@ -21,21 +21,21 @@ class Message
 	: public boost::noncopyable
 {
 public:
-	Message(const MsgId id, const std::vector<byte>&& msg);
+	Message(const msgid_type id, const std::vector<byte>&& msg);
 	~Message();
 
 
 	const std::vector<byte>& buffer() const;
-	MsgId id() const;
+	msgid_type id() const;
 
 private:
-	MsgId				mId;
+	msgid_type				mId;
 	std::vector<byte>	mBuffer;
 };
 
 
 
-template<MsgId Id>
+template<msgid_type Id>
 shared_ptr<Message> make_message(const proto::MsgFormat<Id>& msg)
 {
 	std::stringstream ss;
@@ -51,12 +51,12 @@ shared_ptr<Message> make_message(const proto::MsgFormat<Id>& msg)
 
 
 
-template<MsgId Id>
+template<msgid_type Id>
 void extract_message(const shared_ptr<Message>& msg, proto::MsgFormat<Id>& dest)
 {
-	std::stringstream ss(std::string(msg->buffer().begin(), msg->end()));
+	std::stringstream ss(std::string(msg->buffer().begin(), msg->buffer().end()));
 	boost::archive::text_iarchive archive(ss);
-	MsgId extrId;
+	msgid_type extrId;
 	archive >> extrId;
 
 	tnAssert(extrId == Id);
