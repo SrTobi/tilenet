@@ -8,11 +8,14 @@
 #include <boost/noncopyable.hpp>
 #include "settings.hpp"
 
+namespace proto {
+	template<MsgId Id>
+	struct MsgFormat;
+}
+
 namespace net {
 
 
-template<MsgId Id>
-struct MsgFormat;
 
 class Message
 	: public boost::noncopyable
@@ -33,7 +36,7 @@ private:
 
 
 template<MsgId Id>
-shared_ptr<Message> make_message(const MsgFormat<Id>& msg)
+shared_ptr<Message> make_message(const proto::MsgFormat<Id>& msg)
 {
 	std::stringstream ss;
 	boost::archive::text_oarchive archive(ss);
@@ -49,7 +52,7 @@ shared_ptr<Message> make_message(const MsgFormat<Id>& msg)
 
 
 template<MsgId Id>
-void extract_message(const shared_ptr<Message>& msg, MsgFormat<Id>& dest)
+void extract_message(const shared_ptr<Message>& msg, proto::MsgFormat<Id>& dest)
 {
 	std::stringstream ss(std::string(msg->buffer().begin(), msg->end()));
 	boost::archive::text_iarchive archive(ss);

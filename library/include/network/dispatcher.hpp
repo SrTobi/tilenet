@@ -17,7 +17,7 @@ class Dispatcher
 	template<MsgId Id>
 	struct DispatchHandler
 	{
-		typedef MsgFormat<Id> msg_type;
+		typedef proto::MsgFormat<Id> msg_type;
 		DispatchHandler(const std::function<void(msg_type&)>& func)
 			: mDispatcher(func)
 		{
@@ -38,7 +38,7 @@ public:
 	~Dispatcher();
 
 	template<MsgId Id>
-	void add(const std::function<void(const MsgFormat<Id>&)>& func)
+	void add(const std::function<void(const proto::MsgFormat<Id>&)>& func)
 	{
 		shared_ptr<DispatchHandler<Id>> handler(new DispatchHandler<Id>(func));
 		mHandlers.emplace(Id, std::bind<void(const shared_ptr<Message>&)>(&DispatchHandler<Id>::handle, handler, _1));
