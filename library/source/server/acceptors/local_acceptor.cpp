@@ -24,7 +24,8 @@ OVERRIDE void LocalAcceptor::start()
 
 	std::tie(mPort, theirPort) = net::LocalConnectionPort::Create(Service::Inst(), cl->service());
 
-	cl->start(theirPort);
+	cl->postConnection(theirPort);
+	cl->start();
 	mServer->addParticipant(mPort);
 }
 
