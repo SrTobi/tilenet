@@ -37,9 +37,17 @@ public:
 	Dispatcher();
 	~Dispatcher();
 
+	template<MsgId Id, typename Context>
+	void add(void (Context::*func)(const proto::MsgFormat<Id>&), Context context)
+	{
+		using namespace std::placeholders;
+		add(std::bind(func, context, _1));
+	}
+
 	template<MsgId Id>
 	void add(const std::function<void(const proto::MsgFormat<Id>&)>& func)
 	{
+		using namespace std::placeholders;
 		shared_ptr<DispatchHandler<Id>> handler(new DispatchHandler<Id>(func));
 		mHandlers.emplace(Id, std::bind<void(const shared_ptr<Message>&)>(&DispatchHandler<Id>::handle, handler, _1));
 	}
