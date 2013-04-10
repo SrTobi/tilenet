@@ -24,6 +24,7 @@ private:
 	std::unique_ptr<boost::asio::io_service::work> mWork;
 	bool mDestroy;
 	boost::asio::io_service& mService;
+	Log log;
 };
 
 

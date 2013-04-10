@@ -9,6 +9,7 @@ ThreadPool::ThreadPool(io_service& ioService)
 	: mTargetThreadCount(0)
 	, mDestroy(false)
 	, mService(ioService)
+	, log(L"ThreadPool")
 {
 }
 
@@ -73,5 +74,6 @@ void ThreadPool::runThread()
 				mWork.reset(new io_service::work(mService));
 			}
 		}
+		log.info() << L"thread count is now " << mThreads.size();
 	}
 }
