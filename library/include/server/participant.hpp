@@ -7,6 +7,7 @@
 
 namespace net {
 	class ConnectionPort;
+	class Message;
 }
 
 namespace srv {
@@ -14,19 +15,25 @@ namespace srv {
 class EventQueue;
 
 class Participant
-	: public IdObject<Participant>
+	: public std::enable_shared_from_this<Participant>
+	, public IdObject<Participant>
 {
 private:
 	class StatusHandler;
+	class HandshakeStatusHandler;
 public:
 	Participant(const shared_ptr<EventQueue>& eventQueue, const shared_ptr<net::ConnectionPort>& port);
 	~Participant();
 
 	void kick(const string& reason);
 private:
+	void handleMessage(const shared_ptr<net::Message>& msg);
+	void handleDisconnect();
+
+private:
 	shared_ptr<net::ConnectionPort> mPort;
-	std::unique_ptr<StatusHandler> mHandler;
 	shared_ptr<EventQueue> mEventQueue;
+	std::unique_ptr<StatusHandler> mHandler;
 };
 
 
