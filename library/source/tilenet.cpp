@@ -121,6 +121,10 @@ TNERROR process_exception(const excp::ExceptionBase& exp, bool reset = true)
 		errorcode = codeexcp->getErrorCode();
 	}
 
+	
+	static Log log(L"Tilenet");
+	log.error() << L"Err(" << errorcode << L"): " << exp.what();
+
 	if(reset)
 	{
 		reset_error(errorcode, exp.why());
@@ -135,10 +139,18 @@ TNERROR process_exception(const excp::ExceptionBase& exp, bool reset = true)
 
 #ifdef TILENET_DEBUG
 
-		add_errinfo(TNERRI_INTERNALDEBUGDESCRIPTION, lexical_convert<string>(boost::diagnostic_information(exp)));
+		string info = lexical_convert<string>(boost::diagnostic_information(exp));
+
+		add_errinfo(TNERRI_INTERNALDEBUGDESCRIPTION, info);
+		log.error()
+			<< "Error information:"
+			<< "\n---------------------------\n"
+			<< info
+			<< "\n---------------------------\n";
 
 #endif // TILENET_DEBUG
 	}
+
 
 	return errorcode;
 }
