@@ -46,7 +46,7 @@ typedef uint8 MsgId;
 #include "utils/tilenet_object.hpp"
 #include "utils/lexical_convert.hpp"
 #include "utils/vector.hpp"
-
+#include "utils/log.hpp"
 
 
 typedef basic_vector2<unsigned int> Point;

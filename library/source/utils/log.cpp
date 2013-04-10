@@ -15,6 +15,7 @@ Log::LogStream::~LogStream()
 }
 
 Log::Log()
+	: mComponent(L"unknown")
 {
 }
 
@@ -31,6 +32,8 @@ void Log::log( Category cat, const string& msg )
 {
 	static std::mutex Mutex;
 	std::lock_guard<std::mutex> lock(Mutex);
+
+	std::wcout << L'[' << std::setw(10) << std::setfill(L' ') << mComponent << L']';
 
 	switch (cat)
 	{
