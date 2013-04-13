@@ -26,7 +26,7 @@ namespace ids {
 namespace to_srv {
 
 	enum Ids {
-
+		Handshake_P3_Confirmation	= 001
 
 	};
 
@@ -35,9 +35,8 @@ namespace to_srv {
 namespace to_client {
 
 	enum Ids {
-		Handshake_P1_ProtocolVersion = 100
-
-
+		Handshake_P1_ProtocolVersion = 100,
+		Handshake_P2_ServerInformation = 101
 
 	};
 
