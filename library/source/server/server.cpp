@@ -71,8 +71,7 @@ void Server::addAcceptor(const std::shared_ptr<Acceptor>& acceptor)
 
 std::shared_ptr<Participant> Server::addParticipant( const shared_ptr<net::ConnectionPort>& conport )
 {
-	shared_ptr<Participant> participant(new Participant(mEvents, conport));
-	Participant::Register(participant);
+	shared_ptr<Participant> participant = Participant::Create(mEvents, conport);
 
 	return participant;
 }

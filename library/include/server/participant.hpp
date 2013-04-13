@@ -22,11 +22,16 @@ private:
 	class StatusHandler;
 	class HandshakeStatusHandler;
 public:
-	Participant(const shared_ptr<EventQueue>& eventQueue, const shared_ptr<net::ConnectionPort>& port);
 	~Participant();
 
 	void kick(const string& reason);
+
+	static shared_ptr<Participant> Create(const shared_ptr<EventQueue>& eventQueue, const shared_ptr<net::ConnectionPort>& port);
 private:
+	Participant(const shared_ptr<EventQueue>& eventQueue, const shared_ptr<net::ConnectionPort>& port);
+
+	void init();
+
 	void handleMessage(const shared_ptr<net::Message>& msg);
 	void handleDisconnect();
 

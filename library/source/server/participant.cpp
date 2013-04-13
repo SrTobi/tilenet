@@ -63,17 +63,21 @@ Participant::Participant( const shared_ptr<EventQueue>& eventQueue, const shared
 	: mPort(port)
 	, mEventQueue(eventQueue)
 {
-	using namespace std::placeholders;
-
-	mHandler.reset(new HandshakeStatusHandler(this));
-	
-	mPort->setDisconnectHandler(std::bind(&Participant::handleDisconnect, shared_from_this()));
-	mPort->setHandler(std::bind(&Participant::handleMessage, shared_from_this(), _1));
 }
 
 Participant::~Participant()
 {
 	NOT_IMPLEMENTED();
+}
+
+void Participant::init()
+{
+	using namespace std::placeholders;
+
+	mPort->setDisconnectHandler(std::bind(&Participant::handleDisconnect, shared_from_this()));
+	mPort->setHandler(std::bind(&Participant::handleMessage, shared_from_this(), _1));
+
+	mHandler.reset(new HandshakeStatusHandler(this));
 }
 
 void Participant::kick( const string& reason )
@@ -89,6 +93,15 @@ void Participant::handleMessage( const shared_ptr<net::Message>& msg )
 void Participant::handleDisconnect()
 {
 	mHandler->onDisconnect();
+}
+
+shared_ptr<Participant> Participant::Create( const shared_ptr<EventQueue>& eventQueue, const shared_ptr<net::ConnectionPort>& port )
+{
+	shared_ptr<Participant> p(new Participant(eventQueue, port));
+	Register(p);
+	p->init();
+
+	return p;
 }
 
 }
