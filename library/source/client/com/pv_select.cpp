@@ -24,7 +24,15 @@ OVERRIDE shared_ptr<ComHandler> ProtocolVersionSelect::handleMessage(const share
 
 void ProtocolVersionSelect::handleHandshake( const proto::to_client::Handshake_P1_ProtocolVersion& p )
 {
-	NOT_IMPLEMENTED();
+	auto it = mFactories.find(p.version);
+
+	if(it == mFactories.end())
+	{
+		// Version was not found!!!
+		NOT_IMPLEMENTED();
+	}
+
+	mSelectedVersion = it->second->create(mApp, mPort);
 }
 
 
