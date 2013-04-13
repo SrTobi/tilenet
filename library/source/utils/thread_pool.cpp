@@ -51,29 +51,38 @@ void ThreadPool::setThreadCount(size_t count)
 
 void ThreadPool::runThread()
 {
-	bool need = true;
-	while(need)
-	{
-		mService.run();
-
-		std::lock_guard<std::mutex> lock(mMutex);
-
-		if(mDestroy)
-			return;
-
-		if(mThreads.size() > mTargetThreadCount)
+	try {
+		bool need = true;
+		while(need)
 		{
-			need = false;
-			auto it = mThreads.find(std::this_thread::get_id());
-			tnAssert(it != mThreads.end());
-			it->second.detach();
-			mThreads.erase(it);
-		}else{
-			if(!mWork)
+			mService.run();
+
+			std::lock_guard<std::mutex> lock(mMutex);
+
+			if(mDestroy)
+				return;
+
+			if(mThreads.size() > mTargetThreadCount)
 			{
-				mWork.reset(new io_service::work(mService));
+				need = false;
+				auto it = mThreads.find(std::this_thread::get_id());
+				tnAssert(it != mThreads.end());
+				it->second.detach();
+				mThreads.erase(it);
+			}else{
+				if(!mWork)
+				{
+					mWork.reset(new io_service::work(mService));
+				}
 			}
+			log.info() << L"thread count is now " << mThreads.size();
 		}
-		log.info() << L"thread count is now " << mThreads.size();
+	}catch(...)
+	{
+		log.error()
+			<< L"Exception in worker thread!"
+			<< L"\n------------------------\n"
+			<< lexical_convert<string>(boost::current_exception_diagnostic_information())
+			<< L"\n------------------------";
 	}
 }

@@ -14,6 +14,7 @@ std::unique_ptr<ClientApp> ClientApp::Singleton;
 
 
 ClientApp::ClientApp()
+	: log(L"client")
 {
 	if(Singleton)
 	{
@@ -48,9 +49,18 @@ boost::asio::io_service& ClientApp::service()
 
 void ClientApp::run()
 {
-	mBusyWork.reset(new boost::asio::io_service::work(mService));
+	try {
+		mBusyWork.reset(new boost::asio::io_service::work(mService));
 
-	mService.run();
+		mService.run();
+	}catch(...)
+	{
+		log.error()
+			<< L"Exception in worker thread!"
+			<< L"\n------------------------\n"
+			<< lexical_convert<string>(boost::current_exception_diagnostic_information())
+			<< L"\n------------------------";
+	}
 }
 
 void ClientApp::postConnection( const shared_ptr<net::ConnectionPort>& port )

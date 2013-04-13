@@ -38,6 +38,7 @@ private:
 	std::shared_ptr<com::ComHandler> mComHandler;
 	std::shared_ptr<net::ConnectionPort> mPort;
 	std::unique_ptr<boost::asio::io_service::work> mBusyWork;
+	Log	log;
 
 	static std::unique_ptr<ClientApp> Singleton;
 };

@@ -53,7 +53,15 @@ struct ExceptionBase : public boost::exception, std::exception
  * @brief Exception thrown by not implemented code
  *
  **/
-struct NotImplException: public ExceptionBase {};
+struct NotImplException: public ExceptionBase
+{
+	virtual OVERRIDE const char* what() const throw()
+	{
+		return "Section is not implemented!";
+	}
+
+
+};
 
 /**
  * @brief Exception having a certain error code which could be used directly with the c api
