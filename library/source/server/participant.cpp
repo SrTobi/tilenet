@@ -1,5 +1,6 @@
 #include "includes.hpp"
 #include "server/participant.hpp"
+#include "server/server.hpp"
 
 #include "network/protocol.hpp"
 #include "network/message.hpp"
@@ -38,10 +39,23 @@ public:
 	HandshakeStatusHandler(Participant* p)
 		: StatusHandler(p)
 	{
-		proto::to_client::Handshake_P1_ProtocolVersion handshake;
-		handshake.version = proto::protocol_version;
+		{
+			proto::to_client::Handshake_P1_ProtocolVersion handshake;
+			handshake.version = proto::protocol_version;
 
-		port()->send(net::make_message(handshake));
+			port()->send(net::make_message(handshake));
+		}
+
+		{
+			proto::to_client::Handshake_P2_ServerInformation handshake2;
+
+			handshake2.server_name = p->server()->serverName();
+			handshake2.server_info = p->server()->serverInfo();
+			handshake2.package_name = p->server()->packageName();
+			handshake2.package_interface = p->server()->packageInterface();
+
+			port()->send(net::make_message(handshake2));
+		}
 	}
 
 	void onMessage(const shared_ptr<net::Message>& msg)
@@ -59,9 +73,10 @@ public:
 
 
 
-Participant::Participant( const shared_ptr<EventQueue>& eventQueue, const shared_ptr<net::ConnectionPort>& port )
+Participant::Participant( const shared_ptr<EventQueue>& eventQueue, const shared_ptr<net::ConnectionPort>& port, const shared_ptr<Server>& server)
 	: mPort(port)
 	, mEventQueue(eventQueue)
+	, mServer(server)
 {
 }
 
@@ -95,13 +110,18 @@ void Participant::handleDisconnect()
 	mHandler->onDisconnect();
 }
 
-shared_ptr<Participant> Participant::Create( const shared_ptr<EventQueue>& eventQueue, const shared_ptr<net::ConnectionPort>& port )
+shared_ptr<Participant> Participant::Create( const shared_ptr<EventQueue>& eventQueue, const shared_ptr<net::ConnectionPort>& port, const shared_ptr<Server>& server)
 {
-	shared_ptr<Participant> p(new Participant(eventQueue, port));
+	shared_ptr<Participant> p(new Participant(eventQueue, port, server));
 	Register(p);
 	p->init();
 
 	return p;
+}
+
+const shared_ptr<Server>& Participant::server() const
+{
+	return mServer;
 }
 
 }

@@ -12,6 +12,7 @@ namespace net {
 
 namespace srv {
 
+class Server;
 class EventQueue;
 
 class Participant
@@ -26,9 +27,11 @@ public:
 
 	void kick(const string& reason);
 
-	static shared_ptr<Participant> Create(const shared_ptr<EventQueue>& eventQueue, const shared_ptr<net::ConnectionPort>& port);
+	const shared_ptr<Server>& server() const;
+
+	static shared_ptr<Participant> Create(const shared_ptr<EventQueue>& eventQueue, const shared_ptr<net::ConnectionPort>& port, const shared_ptr<Server>& server);
 private:
-	Participant(const shared_ptr<EventQueue>& eventQueue, const shared_ptr<net::ConnectionPort>& port);
+	Participant(const shared_ptr<EventQueue>& eventQueue, const shared_ptr<net::ConnectionPort>& port, const shared_ptr<Server>& server);
 
 	void init();
 
@@ -36,6 +39,7 @@ private:
 	void handleDisconnect();
 
 private:
+	const shared_ptr<Server> mServer;
 	shared_ptr<net::ConnectionPort> mPort;
 	shared_ptr<EventQueue> mEventQueue;
 	std::unique_ptr<StatusHandler> mHandler;
