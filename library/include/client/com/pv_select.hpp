@@ -27,11 +27,12 @@ public:
 
 template<typename Handler>
 class ComHandlerFactorySpecialization
+	: public ComHandlerFactory
 {
 public:
 	virtual OVERRIDE shared_ptr<ComHandler> create(const shared_ptr<ClientApp>& app, const shared_ptr<net::ConnectionPort>& port)
 	{
-		return new Handler(app, port);
+		return shared_ptr<ComHandler>(new Handler(app, port));
 	}
 };
 
@@ -44,7 +45,13 @@ public:
 
 	virtual OVERRIDE shared_ptr<ComHandler> handleMessage(const shared_ptr<net::Message>&);
 private:
-	void handleHandshake(const proto::to_client::Handshake_P1_ProtocolVersion& p);
+	template<typename Handler>
+	void add(version_type version)
+	{
+		mFactories.emplace(version, std::unique_ptr<ComHandlerFactory>(new ComHandlerFactorySpecialization<Handler>()));
+	}
+
+	void handleHandshake(const proto::ComInitializing_ProtocolVersion& p);
 
 private:
 	shared_ptr<ClientApp> mApp;

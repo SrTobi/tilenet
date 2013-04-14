@@ -9,7 +9,8 @@
 #include "settings.hpp"
 
 namespace proto {
-	template<msgid_type Id>
+	namespace versions{ enum Version; }
+	template<msgid_type Id, versions::Version V>
 	struct MsgFormat;
 }
 
@@ -35,8 +36,8 @@ private:
 
 
 
-template<msgid_type Id>
-shared_ptr<Message> make_message(const proto::MsgFormat<Id>& msg)
+template<msgid_type Id, proto::versions::Version V>
+shared_ptr<Message> make_message(const proto::MsgFormat<Id, V>& msg)
 {
 	std::stringstream ss;
 	boost::archive::text_oarchive archive(ss);
@@ -51,8 +52,8 @@ shared_ptr<Message> make_message(const proto::MsgFormat<Id>& msg)
 
 
 
-template<msgid_type Id>
-void extract_message(const shared_ptr<Message>& msg, proto::MsgFormat<Id>& dest)
+template<msgid_type Id, proto::versions::Version V>
+void extract_message(const shared_ptr<Message>& msg, proto::MsgFormat<Id, V>& dest)
 {
 	std::stringstream ss(std::string(msg->buffer().begin(), msg->buffer().end()));
 	boost::archive::text_iarchive archive(ss);

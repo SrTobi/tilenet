@@ -14,10 +14,10 @@ class Message;
 
 class Dispatcher
 {
-	template<msgid_type Id>
+	template<msgid_type Id, proto::versions::Version V>
 	struct DispatchHandler
 	{
-		typedef proto::MsgFormat<Id> msg_type;
+		typedef proto::MsgFormat<Id, V> msg_type;
 		DispatchHandler(const std::function<void(msg_type&)>& func)
 			: mDispatcher(func)
 		{
@@ -37,14 +37,14 @@ public:
 	Dispatcher();
 	~Dispatcher();
 
-	template<msgid_type Id, typename FuncContext, typename CallContext>
-	void add(void (FuncContext::*func)(const proto::MsgFormat<Id>&), CallContext context)
+	template<msgid_type Id, proto::versions::Version V, typename FuncContext, typename CallContext>
+	void add(void (FuncContext::*func)(const proto::MsgFormat<Id, V>&), CallContext context)
 	{
 		using namespace std::placeholders;
 
 		//add(std::bind(func, context, _1));
-		shared_ptr<DispatchHandler<Id>> handler(new DispatchHandler<Id>(std::bind(func, context, _1)));
-		mHandlers.emplace(Id, std::bind(&DispatchHandler<Id>::handle, handler, _1));
+		shared_ptr<DispatchHandler<Id, V>> handler(new DispatchHandler<Id, V>(std::bind(func, context, _1)));
+		mHandlers.emplace(Id, std::bind(&DispatchHandler<Id, V>::handle, handler, _1));
 	}
 
 	/*template<msgid_type Id>

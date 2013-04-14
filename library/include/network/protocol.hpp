@@ -7,73 +7,43 @@
 #include "message.hpp"
 
 
-#define PROTOCOL_MESSAGE(_name, _target)		namespace _target{ typedef MsgFormat<ids::_target::_name> _name; } template<> struct MsgFormat<ids::_target::_name>
-#define PROTOCOL_SERIALIZER(_ar)				friend class boost::serialization::access; template<class Archive> void serialize(Archive& _ar, const unsigned int archive_version)
 #define PROTOCOL_MAKE_VERSION(_major, _minor)	version_type(version_type(_major) << 16 | version_type(_minor))
+#define PROTOCOL_SET_CURRENT_VERSION(_v) namespace proto{namespace _v {} namespace curv = _v; }
 
 
 namespace proto {
 
-static const version_type protocol_version = PROTOCOL_MAKE_VERSION(1, 0);
+namespace versions {
 
-template<msgid_type Id>
-struct MsgFormat
-{
-};
-
-namespace ids {
-
-namespace to_srv {
-
-	enum Ids {
-		Handshake_P3_Confirmation	= 001
-
+	enum Version
+	{
+		NoVersion,
+		v1_0
 	};
 
 }
 
-namespace to_client {
-
-	enum Ids {
-		Handshake_P1_ProtocolVersion = 100,
-		Handshake_P2_ServerInformation = 101
-
-	};
-
-}
-
-}
-
-PROTOCOL_MESSAGE(Handshake_P1_ProtocolVersion, to_client)
+template<>
+struct MsgFormat<0x01, versions::NoVersion>
 {
 	version_type version;
-	PROTOCOL_SERIALIZER(ar)
+	template<typename Archive>
+	void serialize(Archive& ar, unsigned int archive_version)
 	{
 		ar & version;
 	}
 };
+typedef MsgFormat<1, versions::NoVersion> ComInitializing_ProtocolVersion;
 
-PROTOCOL_MESSAGE(Handshake_P2_ServerInformation, to_client)
+template<msgid_type Id, versions::Version V>
+struct MsgFormat
 {
-	string server_name;
-	string server_info;
-	string package_name;
-	string package_interface;
-
-	PROTOCOL_SERIALIZER(ar)
-	{
-		ar & server_name & server_info & package_name & package_interface;
-	}
 };
-
-
-
-
 }
 
 
+#include "v1.0/protocol_v1_0.hpp"
 
-
-
+PROTOCOL_SET_CURRENT_VERSION(v1_0);
 
 #endif

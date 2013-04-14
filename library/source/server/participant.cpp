@@ -40,14 +40,14 @@ public:
 		: StatusHandler(p)
 	{
 		{
-			proto::to_client::Handshake_P1_ProtocolVersion handshake;
-			handshake.version = proto::protocol_version;
+			proto::ComInitializing_ProtocolVersion handshake;
+			handshake.version = proto::curv::protocol_version;
 
 			port()->send(net::make_message(handshake));
 		}
 
 		{
-			proto::to_client::Handshake_P2_ServerInformation handshake2;
+			proto::curv::to_client::Handshake_P2_ServerInformation handshake2;
 
 			handshake2.server_name = p->server()->serverName();
 			handshake2.server_info = p->server()->serverInfo();
