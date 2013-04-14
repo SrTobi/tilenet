@@ -21,7 +21,6 @@ MACRO(ADD_PRECOMPILED_HEADER _targetName _input)
 		ENDIF(arg STREQUAL FORCEINCLUDE)
 	ENDFOREACH(arg)
 
-	message(${_inputWe})
 	IF(MSVC)
 		GET_TARGET_PROPERTY(sources ${_targetName} SOURCES)
 		SET(_sourceFound FALSE)
