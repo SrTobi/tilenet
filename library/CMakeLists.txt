@@ -1,62 +1,43 @@
+# macro for adding source
+macro(add_library_source files subdirectories)
+
+	# Glob files of this scope
+	file(GLOB library_current_source "${files}")
+
+	# add subdirectories
+	foreach(dir ${subdirectories})
+	#	message("Include: '${dir}'")
+		add_subdirectory(${dir})
+	endforeach(dir)
+
+	# add source to library_source
+	set(library_source "${library_source};${library_current_source}" PARENT_SCOPE)
+endmacro(add_library_source)
+
+include_directories("include")
+
+#include subdirectories
+add_subdirectory("include")
+add_subdirectory("source")
+
+#set all source files for the global scope
+set(library_all_source ${library_source} PARENT_SCOPE)
 
 
-file(GLOB library_client_include "include/client/*.hpp")
-file(GLOB library_client_source "source/client/*.cpp")
-
-file(GLOB library_client_com_include "include/client/com/*.hpp")
-file(GLOB library_client_com_source "source/client/com/*.cpp")
-
-file(GLOB library_server_include "include/server/*.hpp")
-file(GLOB library_server_source "source/server/*.cpp")
-
-file(GLOB library_network_include "include/network/*.hpp")
-file(GLOB library_network_source "source/network/*.cpp")
-
-file(GLOB library_server_acceptors_include "include/server/acceptors/*.hpp")
-file(GLOB library_server_acceptors_source "source/server/acceptors/*.cpp")
-
-file(GLOB library_utils_include "include/utils/*.hpp")
-file(GLOB library_utils_source "source/utils/*.cpp")
-
-file(GLOB library_include "include/*.hpp")
-file(GLOB library_source "source/*.cpp")
-
-set(library_all_source 	${tilenet_include_file}
-						${library_source} ${library_include}
-						${library_client_source} ${library_client_include}
-						${library_client_com_source} ${library_client_com_include}
-						${library_server_source} ${library_server_include}
-						${library_server_acceptors_include} ${library_server_acceptors_source}
-						${library_network_source} ${library_network_include}
-						${library_utils_source} ${library_utils_include})
-						
-set(library_all_source ${library_all_source} PARENT_SCOPE)
-
-include_directories(include)
-
-add_library(tilenet ${library_all_source} )
+add_library(tilenet ${library_source} )
 target_link_libraries(tilenet ${Boost_LIBRARIES})
 
 add_precompiled_header(tilenet	${tilenet_library_pch_file})
 
-source_group("include" FILES ${tilenet_include_file})
-source_group("include" FILES ${library_include})
-source_group("source" FILES ${library_source})
 
-source_group("include\\client" FILES ${library_client_include})
-source_group("source\\client" FILES ${library_client_source})
+# set source groups for the files
+foreach(f ${library_source})
+	string(REPLACE "${CMAKE_SOURCE_DIR}/library/" "" striped ${f})
+	get_filename_component(pathed ${striped} PATH)
+	string(REPLACE "/" "\\" group_name ${pathed})
+	source_group("${group_name}" FILES "${f}")
+endforeach(f)
 
-source_group("include\\client\\com" FILES ${library_client_com_include})
-source_group("source\\client\\com" FILES ${library_client_com_source})
 
-source_group("include\\server" FILES ${library_server_include})
-source_group("source\\server" FILES ${library_server_source})
 
-source_group("include\\network" FILES ${library_network_include})
-source_group("source\\network" FILES ${library_network_source})
 
-source_group("include\\server\\acceptors" FILES ${library_server_acceptors_include})
-source_group("source\\server\\acceptors" FILES ${library_server_acceptors_source})
-
-source_group("include\\utils" FILES ${library_utils_include})
-source_group("source\\utils" FILES ${library_utils_source})
