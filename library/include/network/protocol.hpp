@@ -53,7 +53,18 @@ PROTOCOL_MESSAGE(Handshake_P1_ProtocolVersion, to_client)
 	}
 };
 
+PROTOCOL_MESSAGE(Handshake_P2_ServerInformation, to_client)
+{
+	string server_name;
+	string server_info;
+	string package_name;
+	string package_interface;
 
+	PROTOCOL_SERIALIZER(ar)
+	{
+		ar & server_name & server_info & package_name & package_interface;
+	}
+};
 
 
 
