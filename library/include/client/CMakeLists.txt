@@ -1,3 +1,4 @@
 
+add_subdirectory("com")
 
-add_library_source("*.hpp" "com")
+add_current_directory_to_library_source()

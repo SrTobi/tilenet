@@ -1,18 +1,13 @@
 # macro for adding source
-macro(add_library_source files subdirectories)
+macro(add_current_directory_to_library_source)
 
 	# Glob files of this scope
-	file(GLOB library_current_source "${files}")
-
-	# add subdirectories
-	foreach(dir ${subdirectories})
-	#	message("Include: '${dir}'")
-		add_subdirectory(${dir})
-	endforeach(dir)
+	file(GLOB library_current_source "*.cpp")
+	file(GLOB library_current_includes "*.hpp")
 
 	# add source to library_source
-	set(library_source "${library_source};${library_current_source}" PARENT_SCOPE)
-endmacro(add_library_source)
+	set(library_source "${library_source};${library_current_source};${library_current_includes}" PARENT_SCOPE)
+endmacro(add_current_directory_to_library_source)
 
 include_directories("include")
 

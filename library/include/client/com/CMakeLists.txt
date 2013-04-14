@@ -1,3 +1,3 @@
 
-
-add_library_source("*.hpp" "v1")
+add_subdirectory("v1")
+add_current_directory_to_library_source()
