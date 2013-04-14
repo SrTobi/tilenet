@@ -26,6 +26,10 @@ OVERRIDE void Acceptor::flush()
 
 Server::Server(const TNSVRCONFIG* init)
 	: mEvents(new EventQueue())
+	, mServerName(init->name)
+	, mServerInfo(init->info)
+	, mPackageName(init->pkg)
+	, mPackageInterface(init->pkgi)
 {
 
 }
@@ -71,7 +75,7 @@ void Server::addAcceptor(const std::shared_ptr<Acceptor>& acceptor)
 
 std::shared_ptr<Participant> Server::addParticipant( const shared_ptr<net::ConnectionPort>& conport )
 {
-	shared_ptr<Participant> participant = Participant::Create(mEvents, conport);
+	shared_ptr<Participant> participant = Participant::Create(mEvents, conport, self<Server>());
 
 	return participant;
 }
@@ -82,6 +86,30 @@ std::shared_ptr<EventQueue> Server::eventQueue() const
 {
 	return mEvents;
 }
+
+const string& Server::serverName() const
+{
+	return mServerName;
+}
+
+const string& Server::serverInfo() const
+{
+	return mServerInfo;
+}
+
+const string& Server::packageName() const
+{
+	return mPackageName;
+}
+
+const string& Server::packageInterface() const
+{
+	return mPackageInterface;
+}
+
+
+
+
 
 
 

@@ -51,7 +51,16 @@ public:
 
 	std::shared_ptr<EventQueue> eventQueue() const;
 
+	const string& serverName() const;
+	const string& serverInfo() const;
+	const string& packageName() const;
+	const string& packageInterface() const;
 private:
+	const string mServerName;
+	const string mServerInfo;
+	const string mPackageName;
+	const string mPackageInterface;
+
 	std::shared_ptr<EventQueue> mEvents;
 	std::list<std::shared_ptr<Acceptor>> mAcceptors;
 };
