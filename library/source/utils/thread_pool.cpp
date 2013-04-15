@@ -34,9 +34,11 @@ void ThreadPool::setThreadCount(size_t count)
 	if(mTargetThreadCount == count)
 		return;
 
+	bool addThreads = mTargetThreadCount < count;
+
 	mTargetThreadCount = count;
 
-	if(mTargetThreadCount < count)
+	if(addThreads)
 	{
 		while(mThreads.size() < count)
 		{
