@@ -19,7 +19,7 @@ public:
 	{
 	}
 
-	virtual void onMessage(const shared_ptr<net::Message>& msg) = 0;
+	virtual shared_ptr<StatusHandler> onMessage(const shared_ptr<net::Message>& msg) = 0;
 	virtual void onDisconnect() = 0;
 
 	Participant* participant() const { return mParticipant; }
@@ -39,6 +39,10 @@ public:
 	HandshakeStatusHandler(Participant* p)
 		: StatusHandler(p)
 	{
+		// Register handlers
+		mDispatcher.add(&HandshakeStatusHandler::handleHandshakeConfirmation, this);
+
+		// Send some messages to the participant
 		{
 			proto::ComInitializing_ProtocolVersion handshake;
 			handshake.version = proto::curv::protocol_version;
@@ -58,9 +62,11 @@ public:
 		}
 	}
 
-	void onMessage(const shared_ptr<net::Message>& msg)
+
+	shared_ptr<StatusHandler> onMessage(const shared_ptr<net::Message>& msg)
 	{
 		mDispatcher.dispatch(msg);
+		return mNextHandler;
 	}
 
 	void onDisconnect()
@@ -68,6 +74,21 @@ public:
 		NOT_IMPLEMENTED();
 	}
 
+private:
+	void handleHandshakeConfirmation(const proto::curv::to_srv::Handshake_P3_Confirmation& confirmation)
+	{
+		if(!confirmation.accept_handshake)
+		{
+			// Ok... they don't want to be our participant
+			NOT_IMPLEMENTED();
+		}
+
+		NOT_IMPLEMENTED();
+	}
+
+
+private:
+	shared_ptr<StatusHandler> mNextHandler;
 	net::Dispatcher mDispatcher;
 };
 
@@ -102,7 +123,10 @@ void Participant::kick( const string& reason )
 
 void Participant::handleMessage( const shared_ptr<net::Message>& msg )
 {
-	mHandler->onMessage(msg);
+	shared_ptr<StatusHandler> handler = mHandler->onMessage(msg);
+
+	if(handler)
+		mHandler = handler;
 }
 
 void Participant::handleDisconnect()

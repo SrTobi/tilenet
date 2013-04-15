@@ -5,6 +5,8 @@
 
 #include "settings.hpp"
 
+#include "network/protocol.hpp"
+
 namespace net {
 	class ConnectionPort;
 	class Message;
@@ -42,7 +44,7 @@ private:
 	const shared_ptr<Server> mServer;
 	shared_ptr<net::ConnectionPort> mPort;
 	shared_ptr<EventQueue> mEventQueue;
-	std::unique_ptr<StatusHandler> mHandler;
+	shared_ptr<StatusHandler> mHandler;
 };
 
 

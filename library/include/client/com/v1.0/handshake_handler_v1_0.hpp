@@ -37,6 +37,8 @@ private:
 private:
 	shared_ptr<ComHandler> mNextHandler;
 	net::Dispatcher mDispatcher;
+	const shared_ptr<ClientApp> mApp;
+	const shared_ptr<net::ConnectionPort> mPort;
 };
 
 
