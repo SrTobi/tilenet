@@ -51,8 +51,15 @@ PROTOCOL_MESSAGE(Handshake_P2_ServerInformation, to_client)
 };
 
 
+PROTOCOL_MESSAGE(Handshake_P3_Confirmation, to_srv)
+{
+	bool accept_handshake;
 
-
+	PROTOCOL_SERIALIZER(ar)
+	{
+		ar & accept_handshake;
+	}
+};
 }
 
 #undef PROTOCOL_THIS_VERSION
