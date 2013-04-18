@@ -37,6 +37,9 @@ bool EventQueue::pop(TNEVENT* event, std::chrono::milliseconds timeout)
 {
 	std::unique_lock<std::mutex> lock(mMutex);
 
+	if(!timeout.count())
+		return false;
+
 	auto start_time = std::chrono::system_clock::now();
 	while(mQueue.empty())
 	{

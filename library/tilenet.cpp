@@ -430,12 +430,13 @@ TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen
 	CHECK_OBJ(_server, server, srv::Server);
 
 	try {
-		
+		size_t zero_time = 0;
+
 		*fetched = 0;
 		while(*fetched < buflen && _server->fetchNextEvent(dest + *fetched, timeout))
 		{
 			++(*fetched);
-			timeout = nullptr;
+			timeout = &zero_time;
 		}
 
 		return TNOK;
