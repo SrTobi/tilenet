@@ -2,7 +2,7 @@ file(GLOB link_test_source "link-test/*.cpp")
 source_group("tests\\link-test" FILES ${link_test_source})
 
 set(test_library_module "library-module.cpp")
-include_directories("${PROJECT_SOURCE_DIR}/library/include")
+include_directories("${PROJECT_SOURCE_DIR}/library")
 
 
 source_group("tests" FILES ${test_settings} ${test_library_module})

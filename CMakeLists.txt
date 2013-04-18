@@ -42,7 +42,7 @@ find_package(Boost COMPONENTS system thread serialization unit_test_framework RE
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
-set(tilenet_library_pch_file	"${PROJECT_SOURCE_DIR}/library/include/includes.hpp")
+set(tilenet_library_pch_file	"${PROJECT_SOURCE_DIR}/library/includes.hpp")
 set(tilenet_include_file		"${PROJECT_SOURCE_DIR}/include/tilenet.h")
 
 
