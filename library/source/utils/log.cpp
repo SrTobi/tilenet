@@ -12,7 +12,9 @@ Log::LogStream::LogStream( Log& log, Category cat )
 Log::LogStream::LogStream(LogStream&& other )
 	: mLog(other.mLog)
 	, mCategory(other.mCategory)
-	, mStream(std::move(other.mStream))
+	// HACK: workaroung for gcc
+	//, mStream(std::move(other.mStream))
+	, mStream(other.mStream.str())
 {
 }
 
