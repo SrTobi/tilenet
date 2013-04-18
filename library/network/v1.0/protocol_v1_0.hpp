@@ -20,7 +20,7 @@ namespace ids {
 namespace to_srv {
 
 	enum Ids {
-		Handshake_P3_Confirmation	= 0x10
+		Handshake_P3_accessrequest	= 0x10
 
 	};
 
@@ -29,9 +29,9 @@ namespace to_srv {
 namespace to_client {
 
 	enum Ids {
-		Handshake_P1_ProtocolVersion = 0x70,
-		Handshake_P2_ServerInformation = 0x71
-
+		Handshake_P1_ProtocolVersion	= 0x70,
+		Handshake_P2_ServerInformation	= 0x71,
+		Handshake_P4_AcceptesGranted	= 0x72
 	};
 
 }
@@ -53,13 +53,23 @@ PROTOCOL_MESSAGE(Handshake_P2_ServerInformation, to_client)
 };
 
 
-PROTOCOL_MESSAGE(Handshake_P3_Confirmation, to_srv)
+PROTOCOL_MESSAGE(Handshake_P3_accessrequest, to_srv)
 {
 	bool accept_handshake;
 
 	PROTOCOL_SERIALIZER(ar)
 	{
 		ar & accept_handshake;
+	}
+};
+
+PROTOCOL_MESSAGE(Handshake_P4_AcceptesGranted, to_client)
+{
+	bool access_granted;
+
+	PROTOCOL_SERIALIZER(ar)
+	{
+		ar & access_granted;
 	}
 };
 }

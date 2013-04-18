@@ -2,7 +2,8 @@
 #include "network/message.hpp"
 #include "network/connection_port.hpp"
 
-#include "client/com/v1.0/handshake_handler_v1_0.hpp"
+#include "handshake_handler_v1_0.hpp"
+#include "main_com_handler_v1_0.hpp"
 
 
 namespace client {
@@ -17,7 +18,8 @@ HandshakeHandler::HandshakeHandler(const shared_ptr<ClientApp>& app, const share
 	tnAssert(app);
 	tnAssert(port);
 
-	mDispatcher.add(&HandshakeHandler::handleHandshake, this);
+	mDispatcher.add(&HandshakeHandler::handleServerInformation, this);
+	mDispatcher.add(&HandshakeHandler::handleAccessGranted, this);
 }
 
 HandshakeHandler::~HandshakeHandler()
@@ -31,15 +33,22 @@ OVERRIDE shared_ptr<ComHandler> HandshakeHandler::handleMessage( const shared_pt
 	return mNextHandler;
 }
 
-void HandshakeHandler::handleHandshake( const proto::v1_0::to_client::Handshake_P2_ServerInformation& handshake )
+void HandshakeHandler::handleServerInformation( const proto::v1_0::to_client::Handshake_P2_ServerInformation& handshake )
 {
-	proto::v1_0::to_srv::Handshake_P3_Confirmation confirmation;
+	proto::v1_0::to_srv::Handshake_P3_accessrequest confirmation;
 
 	confirmation.accept_handshake = true;
 	mPort->send(net::make_message(confirmation));
 
 
 }
+
+void HandshakeHandler::handleAccessGranted( const proto::v1_0::to_client::Handshake_P4_AcceptesGranted& handshake )
+{
+	// Yea, we 
+	mNextHandler.reset(new MainComHandler(mApp, mPort));
+}
+
 
 
 }}}

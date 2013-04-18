@@ -1,6 +1,8 @@
 #include "includes.hpp"
-#include "server/participant.hpp"
-#include "server/server.hpp"
+
+#include "participant.hpp"
+#include "server.hpp"
+#include "event_queue.hpp"
 
 #include "network/protocol.hpp"
 #include "network/message.hpp"
@@ -75,7 +77,7 @@ public:
 	}
 
 private:
-	void handleHandshakeConfirmation(const proto::curv::to_srv::Handshake_P3_Confirmation& confirmation)
+	void handleHandshakeConfirmation(const proto::curv::to_srv::Handshake_P3_accessrequest& confirmation)
 	{
 		if(!confirmation.accept_handshake)
 		{
@@ -83,7 +85,21 @@ private:
 			NOT_IMPLEMENTED();
 		}
 
-		NOT_IMPLEMENTED();
+		// accept the participant
+		{
+			TNEVENT e;
+			e.type = TNEV_CONNECT;
+			e.participant = participant()->id();
+			equeue()->push(e);
+		}
+
+		{
+			proto::curv::to_client::Handshake_P4_AcceptesGranted granted;
+			granted.access_granted = true;
+
+			port()->send(net::make_message(granted));
+		}
+		
 	}
 
 
