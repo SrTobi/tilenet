@@ -4,7 +4,7 @@
 
 
 #include "settings.hpp"
-#include "message.hpp"
+//#include "message.hpp"
 
 
 #define PROTOCOL_MAKE_VERSION(_major, _minor)	version_type(version_type(_major) << 16 | version_type(_minor))
@@ -22,6 +22,10 @@ namespace versions {
 	};
 
 }
+
+template<msgid_type Id, versions::Version V>
+struct MsgFormat;
+
 
 template<>
 struct MsgFormat<0x01, versions::NoVersion>

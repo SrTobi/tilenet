@@ -2,6 +2,8 @@
 #ifndef _PROTOCOL_1_0_HPP
 #define _PROTOCOL_1_0_HPP
 
+#include <boost/serialization/access.hpp>
+
 #include "settings.hpp"
 #include "../protocol.hpp"
 

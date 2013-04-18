@@ -2,17 +2,14 @@
 #ifndef _MESSAGE_HPP
 #define _MESSAGE_HPP
 
-#include <strstream>
+#include <sstream>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/noncopyable.hpp>
 #include "settings.hpp"
 
-namespace proto {
-	namespace versions{ enum Version; }
-	template<msgid_type Id, versions::Version V>
-	struct MsgFormat;
-}
+#include "protocol.hpp"
+
 
 namespace net {
 
@@ -41,7 +38,9 @@ shared_ptr<Message> make_message(const proto::MsgFormat<Id, V>& msg)
 {
 	std::stringstream ss;
 	boost::archive::text_oarchive archive(ss);
-	archive << Id << msg;
+
+	msgid_type msgId = Id;
+	archive << msgId << msg;
 
 	std::string buf = ss.str();
 
