@@ -1,5 +1,8 @@
 #include "includes.hpp"
-#include "server/service.hpp"
+
+#include "service.hpp"
+#include "jobs/service_job.hpp"
+
 #include "utils/thread_pool.hpp"
 
 
@@ -43,6 +46,12 @@ void Service::Shutdown()
 {
 	Singleton.reset();
 }
+
+void Service::enqueJob( const shared_ptr<ServiceJob>& job )
+{
+	post(std::bind(&ServiceJob::process, job));
+}
+
 
 
 }
