@@ -10,22 +10,28 @@
 
 namespace srv {
 
+class Participant;
+class Layer;
+
+namespace job {
 
 class AttachLayerJob
 	: public ServiceJob
 {
 public:
-	AttachLayerJob();
+	AttachLayerJob(const shared_ptr<Participant>& participant, const shared_ptr<Layer>& layer);
 	~AttachLayerJob();
 
 	virtual OVERRIDE void process();
 
 private:
+	const shared_ptr<Participant> mParticipant;
+	const shared_ptr<Layer> mLayer;
 };
 
 
 
-}
+}}
 
 
 

@@ -16,6 +16,8 @@ namespace srv {
 
 class Server;
 class EventQueue;
+class Layer;
+
 
 class Participant
 	: public std::enable_shared_from_this<Participant>
@@ -28,6 +30,7 @@ public:
 	~Participant();
 
 	void kick(const string& reason);
+	void attachLayer(const shared_ptr<Layer>& layer);
 
 	const shared_ptr<Server>& server() const;
 
@@ -45,6 +48,8 @@ private:
 	shared_ptr<net::ConnectionPort> mPort;
 	shared_ptr<EventQueue> mEventQueue;
 	shared_ptr<StatusHandler> mHandler;
+
+	shared_ptr<Layer> mAttachedLayer;
 };
 
 

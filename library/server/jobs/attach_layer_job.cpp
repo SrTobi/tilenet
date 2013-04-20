@@ -4,11 +4,13 @@
 
 
 namespace srv {
+namespace job {
 
 
 
-
-AttachLayerJob::AttachLayerJob()
+AttachLayerJob::AttachLayerJob(const shared_ptr<Participant>& participant, const shared_ptr<Layer>& layer)
+	: mParticipant(participant)
+	, mLayer(layer)
 {
 
 }
@@ -25,4 +27,4 @@ void AttachLayerJob::process()
 	NOT_IMPLEMENTED();
 }
 
-}
+}}

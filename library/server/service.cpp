@@ -23,6 +23,11 @@ Service::~Service()
 
 }
 
+void Service::enqueJob( const shared_ptr<job::ServiceJob>& job )
+{
+	post(std::bind(&job::ServiceJob::process, job));
+}
+
 void Service::setThreadCount(size_t count)
 {
 	mThreadPool->setThreadCount(count);
@@ -47,10 +52,6 @@ void Service::Shutdown()
 	Singleton.reset();
 }
 
-void Service::enqueJob( const shared_ptr<ServiceJob>& job )
-{
-	post(std::bind(&ServiceJob::process, job));
-}
 
 
 

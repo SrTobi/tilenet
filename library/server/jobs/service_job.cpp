@@ -4,7 +4,7 @@
 
 
 namespace srv {
-
+namespace job {
 
 
 ServiceJob::ServiceJob()
@@ -16,4 +16,4 @@ ServiceJob::~ServiceJob()
 }
 
 
-}
+}}

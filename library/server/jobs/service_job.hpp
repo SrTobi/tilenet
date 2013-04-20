@@ -8,6 +8,7 @@
 
 
 namespace srv {
+namespace job {
 
 class ServiceJob
 {
@@ -19,7 +20,7 @@ public:
 };
 
 
-}
+}}
 
 
 #endif
