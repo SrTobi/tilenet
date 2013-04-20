@@ -11,7 +11,9 @@ class ThreadPool;
 
 namespace srv {
 
-class ServiceJob;
+namespace job {
+	class ServiceJob;
+}
 
 class Service
 	: public boost::asio::io_service
@@ -19,7 +21,7 @@ class Service
 public:
 	~Service();
 
-	void enqueJob(const shared_ptr<ServiceJob>& job);
+	void enqueJob(const shared_ptr<job::ServiceJob>& job);
 
 	void setThreadCount(size_t count);
 

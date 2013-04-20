@@ -20,9 +20,13 @@
 
 #include "server/participant.hpp"
 
+// Acceptors
 #include "server/acceptors/listen_acceptor.hpp"
 #include "server/acceptors/local_acceptor.hpp"
 
+// Jobs
+#include "server/jobs/service_job.hpp"
+#include "server/jobs/attach_layer_job.hpp"
 
 
 /// @cond DEV
@@ -460,10 +464,13 @@ TNAPI TNERROR tilenet_kick( TNPARTICIPANT participant, const wchar_t* reason )
 TNAPI TNERROR tilenet_attach_layer( TNPARTICIPANT participant, TNLAYER layer )
 {
 	CHECK_NULL(layer);
+	CHECK_CAST(_layer, layer, srv::Layer);
 
 	try {
-		NOT_IMPLEMENTED();
-
+		shared_ptr<srv::Participant> p = srv::Participant::Resolve(participant);
+		
+		p->attachLayer(_layer->self<srv::Layer>());
+		return TNOK;
 	} AUTO_CATCH(true);
 }
 

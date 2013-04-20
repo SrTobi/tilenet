@@ -2,12 +2,16 @@
 
 #include "participant.hpp"
 #include "server.hpp"
+#include "service.hpp"
 #include "event_queue.hpp"
 
 #include "network/protocol.hpp"
 #include "network/message.hpp"
 #include "network/connection_port.hpp"
 #include "network/dispatcher.hpp"
+
+#include "jobs/service_job.hpp"
+#include "jobs/attach_layer_job.hpp"
 
 namespace srv {
 
@@ -137,6 +141,13 @@ void Participant::kick( const string& reason )
 	NOT_IMPLEMENTED();
 }
 
+void Participant::attachLayer( const shared_ptr<Layer>& layer )
+{
+	mAttachedLayer = layer;
+	shared_ptr<job::AttachLayerJob> job(new job::AttachLayerJob(shared_from_this(), layer));
+	Service::Inst().enqueJob(job);
+}
+
 void Participant::handleMessage( const shared_ptr<net::Message>& msg )
 {
 	shared_ptr<StatusHandler> handler = mHandler->onMessage(msg);
@@ -163,5 +174,6 @@ const shared_ptr<Server>& Participant::server() const
 {
 	return mServer;
 }
+
 
 }
