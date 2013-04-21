@@ -8,6 +8,8 @@
 
 
 #define PROTOCOL_MAKE_VERSION(_major, _minor)	version_type(version_type(_major) << 16 | version_type(_minor))
+#define PROTOCOL_MAJOR_VERSION(_version) version_type(_version >> 16)
+#define PROTOCOL_MINOR_VERSION(_version) version_type(_version & 0xFFFF)
 #define PROTOCOL_SET_CURRENT_VERSION(_v) namespace proto{namespace _v {} namespace curv = _v; }
 
 
