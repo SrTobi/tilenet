@@ -4,6 +4,7 @@
 
 #define EVENT_BUF_LENGTH 100
 
+TNLAYER testLayer;
 
 void do_event(TNEVENT& e)
 {
@@ -11,6 +12,8 @@ void do_event(TNEVENT& e)
 	{
 	case TNEV_CONNECT:
 		std::cout << "Player connected!\n";
+
+		tilenet_attach_layer(e.participant, testLayer);
 		break;
 	case TNEV_DISCONNECT:
 		std::cout << "Player disconnected!\n";
@@ -36,6 +39,8 @@ int main()
 
 	tilenet_create_server(&srv, &config);
 	tilenet_add_local_acceptor(srv);
+
+	tilenet_create_tilelayer(&testLayer, 10, 10, TNSTDRATIO, TNSTDRATIO, 0);
 
 	while(true)
 	{
