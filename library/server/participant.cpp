@@ -91,6 +91,8 @@ private:
 
 		// accept the participant
 		{
+			Log(L"Service").info()	<< L"Participant connected!";
+
 			TNEVENT e;
 			e.type = TNEV_CONNECT;
 			e.participant = participant()->id();

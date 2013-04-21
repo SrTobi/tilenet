@@ -30,6 +30,8 @@ OVERRIDE shared_ptr<ComHandler> ProtocolVersionSelect::handleMessage(const share
 
 void ProtocolVersionSelect::handleHandshake( const proto::ComInitializing_ProtocolVersion& p )
 {
+	Log(L"client-com").info() << L"Server wants to use protocol version " << PROTOCOL_MAJOR_VERSION(p.version) << L"." << PROTOCOL_MINOR_VERSION(p.version);
+
 	auto it = mFactories.find(p.version);
 
 	if(it == mFactories.end())

@@ -35,6 +35,12 @@ OVERRIDE shared_ptr<ComHandler> HandshakeHandler::handleMessage( const shared_pt
 
 void HandshakeHandler::handleServerInformation( const proto::v1_0::to_client::Handshake_P2_ServerInformation& handshake )
 {
+	Log(L"client-com").info()	<< L"Server information:"
+								<< L"\nName:      " << handshake.server_name
+								<< L"\nInfo:      " << handshake.server_info
+								<< L"\nPackage:   " << handshake.package_name
+								<< L"\nInterface: " << handshake.package_interface;
+
 	proto::v1_0::to_srv::Handshake_P3_accessrequest confirmation;
 
 	confirmation.accept_handshake = true;
