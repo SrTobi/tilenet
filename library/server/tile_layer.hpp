@@ -6,7 +6,6 @@
 
 #include "layer.hpp"
 #include "utils/field.hpp"
-#include "tiles/tile.hpp"
 
 namespace net {
 	class Message;
@@ -37,7 +36,7 @@ public:
 
 
 private:
-	Field<Tile> mTileField;
+	Field<TNTILE> mTileField;
 	Ratio	mRatio;
 };
 
