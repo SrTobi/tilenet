@@ -11,13 +11,13 @@ template<typename Type>
 class Field
 {
 public:
-	typedef std::vector<value_type> storage_type;
+	typedef std::vector<Type> storage_type;
 	typedef typename storage_type::value_type value_type;
 	typedef Rect size_type;
 	typedef typename storage_type::reference reference;
 	typedef typename storage_type::const_reference const_reference;
 	typedef typename storage_type::pointer pointer;
-	typedef typename storage_type::const_pointer pointer;
+	typedef typename storage_type::const_pointer const_pointer;
 
 	Field(const size_type& size)
 		: mStorage(size.area())
