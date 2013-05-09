@@ -24,7 +24,7 @@ using std::weak_ptr;
 #endif
 
 
-#define NOT_IMPLEMENTED()	BOOST_THROW_EXCEPTION(excp::NotImplException());
+#define NOT_IMPLEMENTED()	assert(!"Not implemented"); BOOST_THROW_EXCEPTION(excp::NotImplException());
 #define tnAssert(_expr)		assert(_expr)
 #define tilenet_vcast		dynamic_cast
 
