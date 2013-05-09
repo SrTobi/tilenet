@@ -3,8 +3,10 @@
 #define _TILELAYER_HPP
 
 #include "settings.hpp"
-#include "layer.hpp"
 
+#include "layer.hpp"
+#include "utils/field.hpp"
+#include "tiles/tile.hpp"
 
 namespace net {
 	class Message;
@@ -35,6 +37,8 @@ public:
 
 
 private:
+	Field<Tile> mTileField;
+	Ratio	mRatio;
 };
 
 

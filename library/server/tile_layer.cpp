@@ -6,13 +6,13 @@ namespace srv {
 
 
 TileLayer::TileLayer(const Rect& size, const Ratio& ratio, TNFLAG flags)
+	: mTileField(size)
+	, mRatio(ratio)
 {
-	NOT_IMPLEMENTED();
 }
 
 TileLayer::~TileLayer()
 {
-	NOT_IMPLEMENTED();
 }
 
 void TileLayer::putTile(const Point& pos, TNTILE* tile)
@@ -22,12 +22,12 @@ void TileLayer::putTile(const Point& pos, TNTILE* tile)
 
 const Ratio& TileLayer::ratio() const
 {
-	NOT_IMPLEMENTED();
+	return mRatio;
 }
 
 const Rect& TileLayer::size() const
 {
-	NOT_IMPLEMENTED();
+	return mTileField.size();
 }
 
 OVERRIDE void TileLayer::destroy()
