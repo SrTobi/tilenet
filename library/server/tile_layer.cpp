@@ -17,7 +17,8 @@ TileLayer::~TileLayer()
 
 void TileLayer::putTile(const Point& pos, TNTILE* tile)
 {
-	NOT_IMPLEMENTED();
+	std::lock_guard<std::mutex> guard(mMutex);
+	mTileField.at(pos) = *tile;
 }
 
 const Ratio& TileLayer::ratio() const

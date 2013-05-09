@@ -2,6 +2,8 @@
 #ifndef _TILELAYER_HPP
 #define _TILELAYER_HPP
 
+#include <mutex>
+
 #include "settings.hpp"
 
 #include "layer.hpp"
@@ -36,8 +38,9 @@ public:
 
 
 private:
-	Field<TNTILE> mTileField;
-	Ratio	mRatio;
+	std::mutex		mMutex;
+	Field<TNTILE>	mTileField;
+	const Ratio		mRatio;
 };
 
 
