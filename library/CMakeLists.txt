@@ -26,10 +26,13 @@ set(library_source "${library_source};${library_current_source};${library_curren
 set(library_all_source ${library_source} PARENT_SCOPE)
 
 
-add_library(tilenet ${library_source} )
+add_library(tilenet ${library_source} ${tilenet_include_file} )
 target_link_libraries(tilenet ${Boost_LIBRARIES})
 
 add_precompiled_header(tilenet	${tilenet_library_pch_file})
+
+
+source_group("include" FILES "${tilenet_include_file}")
 
 # set source groups for the files
 foreach(f ${library_source})
