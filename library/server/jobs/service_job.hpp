@@ -16,7 +16,7 @@ public:
 	ServiceJob();
 	~ServiceJob();
 
-	virtual void process() = 0;
+	virtual OVERRIDE void process() = 0;
 };
 
 
