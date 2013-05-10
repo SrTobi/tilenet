@@ -9,5 +9,5 @@ source_group("tests" FILES ${test_settings} ${test_library_module})
 source_group("library" FILES ${library_all_source})
 
 add_executable(library-test ${test_library_module} ${test_settings} ${library_all_source} ${link_test_source})
-target_link_libraries(library-test ${Boost_LIBRARIES})
+target_link_libraries(library-test ${tilenet_dependency_libs})
 add_precompiled_header(library-test	${tilenet_library_pch_file})

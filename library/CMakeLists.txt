@@ -27,7 +27,7 @@ set(library_all_source ${library_source} PARENT_SCOPE)
 
 
 add_library(tilenet ${library_source} ${tilenet_include_file} )
-target_link_libraries(tilenet ${Boost_LIBRARIES})
+target_link_libraries(tilenet ${tilenet_dependency_libs} )
 
 add_precompiled_header(tilenet	${tilenet_library_pch_file})
 
