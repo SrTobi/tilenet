@@ -29,6 +29,13 @@
 #include <boost/unordered_map.hpp>
 #include <boost/asio.hpp>
 
+
+// ********** sfml *********** //
+#include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+
+
 #ifdef TILENET_TESTS
 //#include <boost/test/test_tools.hpp>
 #endif

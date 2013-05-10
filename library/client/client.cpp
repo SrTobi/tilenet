@@ -1,6 +1,7 @@
 #include "includes.hpp"
 
 #include "client/client.hpp"
+#include "client/client_window.hpp"
 
 #include "client/com/com_handler.hpp"
 #include "client/com/pv_select.hpp"
@@ -15,6 +16,7 @@ std::unique_ptr<ClientApp> ClientApp::Singleton;
 
 ClientApp::ClientApp()
 	: log(L"client")
+	, mWindow(new ClientWindow())
 {
 	if(Singleton)
 	{
@@ -22,6 +24,8 @@ ClientApp::ClientApp()
 		NOT_IMPLEMENTED();
 	}
 	Singleton.reset(this);
+
+	mService.post(std::bind(&ClientWindow::init, mWindow));
 }
 
 ClientApp::~ClientApp()
