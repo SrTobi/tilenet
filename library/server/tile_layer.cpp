@@ -1,6 +1,9 @@
 #include "includes.hpp"
 #include "server/tile_layer.hpp"
 
+#include "server/layer.hpp"
+#include "network/message.hpp"
+#include "network/connection_port.hpp"
 
 namespace srv {
 
@@ -48,7 +51,16 @@ OVERRIDE void TileLayer::flush()
 
 shared_ptr<net::Message> TileLayer::getStateMessage()
 {
-	NOT_IMPLEMENTED();
+	std::lock_guard<std::mutex> guard(mMutex);
+	proto::curv::to_client::LayerControl_SendFullLayer fullLayer;
+
+	fullLayer.layerId = id();
+	fullLayer.xratio = ratio().x;
+	fullLayer.yratio = ratio().y;
+	fullLayer.width = size().w;
+	fullLayer.height = size().h;
+
+	return net::make_message(fullLayer);
 }
 
 
