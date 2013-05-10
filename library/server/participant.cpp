@@ -177,5 +177,11 @@ const shared_ptr<Server>& Participant::server() const
 	return mServer;
 }
 
+const shared_ptr<net::ConnectionPort>& Participant::port() const
+{
+	return mPort;
+}
+
+
 
 }

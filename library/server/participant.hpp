@@ -33,6 +33,7 @@ public:
 	void attachLayer(const shared_ptr<Layer>& layer);
 
 	const shared_ptr<Server>& server() const;
+	const shared_ptr<net::ConnectionPort>& port() const;
 
 	static shared_ptr<Participant> Create(const shared_ptr<EventQueue>& eventQueue, const shared_ptr<net::ConnectionPort>& port, const shared_ptr<Server>& server);
 private:
