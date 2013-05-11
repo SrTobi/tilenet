@@ -25,6 +25,16 @@ using std::weak_ptr;
 
 
 #define NOT_IMPLEMENTED()	assert(!"Not implemented"); BOOST_THROW_EXCEPTION(excp::NotImplException());
+#define IMPLEMENTATION_TODO(_text)	{																\
+										static bool BOOST_JOIN(_found_, __LINE__) = false;			\
+										if(! BOOST_JOIN(_found_, __LINE__))							\
+										{															\
+											std::clog << "Not Implemented: "<< _text << std::endl;	\
+											BOOST_JOIN(_found_, __LINE__) = true;					\
+										}															\
+									}
+
+
 #define tnAssert(_expr)		assert(_expr)
 #define tilenet_vcast		dynamic_cast
 
