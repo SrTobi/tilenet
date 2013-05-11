@@ -16,7 +16,7 @@ std::unique_ptr<ClientApp> ClientApp::Singleton;
 
 ClientApp::ClientApp()
 	: log(L"client")
-	, mWindow(new ClientWindow())
+	, mRunning(false)
 {
 	if(Singleton)
 	{
@@ -24,8 +24,6 @@ ClientApp::ClientApp()
 		NOT_IMPLEMENTED();
 	}
 	Singleton.reset(this);
-
-	mService.post(std::bind(&ClientWindow::init, mWindow));
 }
 
 ClientApp::~ClientApp()
@@ -35,13 +33,20 @@ ClientApp::~ClientApp()
 
 void ClientApp::start()
 {
+	tnAssert(!mRunning);
+
+	// Setup window and its initialization
+	mWindow.reset(new ClientWindow(shared_from_this()));
+	mService.post(std::bind(&ClientWindow::init, mWindow));
+
+	mRunning = true;
 	std::thread clientThread(&ClientApp::run, shared_from_this());
 	clientThread.detach();
 }
 
 void ClientApp::stop( bool now /*= false*/ )
 {
-	mBusyWork.reset();
+	mRunning = false;
 	if(now)
 		mService.stop();
 }
@@ -54,9 +59,12 @@ boost::asio::io_service& ClientApp::service()
 void ClientApp::run()
 {
 	try {
-		mBusyWork.reset(new boost::asio::io_service::work(mService));
+		while(mRunning)
+		{
+			mService.poll();
 
-		mService.run();
+			processWindow();
+		}
 	}catch(...)
 	{
 		log.error()
@@ -86,6 +94,18 @@ void ClientApp::handleMessage( const shared_ptr<net::Message>& msg )
 	if(newHandler)
 		mComHandler = newHandler;
 }
+
+const std::shared_ptr<ClientWindow>& ClientApp::window() const
+{
+	return mWindow;
+}
+
+void ClientApp::processWindow()
+{
+	mWindow->process();
+}
+
+
 
 
 }

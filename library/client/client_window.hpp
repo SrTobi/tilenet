@@ -5,21 +5,29 @@
 #include <SFML/Window.hpp>
 
 #include "settings.hpp"
+#include "render_interface.hpp"
 
 namespace client {
 
 
+class ClientApp;
+
 class ClientWindow
 {
 public:
-	ClientWindow();
+	ClientWindow(const shared_ptr<ClientApp>& app);
 	~ClientWindow();
 
 	void init();
 	void process();
 
+	void setLayerRenderer(const shared_ptr<RenderInterface>& renderer);
+
 private:
-	sf::RenderWindow mRenderWindow;
+	shared_ptr<sf::RenderWindow> mRenderWindow;
+	shared_ptr<RenderInterface> mRenderer;
+
+	weak_ptr<ClientApp> mApp;
 };
 
 
