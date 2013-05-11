@@ -7,6 +7,8 @@
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/thread/shared_lock_guard.hpp>
 #include <mutex>
+#include <vector>
+#include <queue>
 
 #include "settings.hpp"
 

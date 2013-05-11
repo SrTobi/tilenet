@@ -4,6 +4,7 @@
 
 
 #include <boost/asio/io_service.hpp>
+#include <thread>
 
 #include "settings.hpp"
 

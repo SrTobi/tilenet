@@ -1,12 +1,12 @@
 #ifndef _INCLUDES_HPP
 #define _INCLUDES_HPP
 
-
-#ifdef TILENET_USE_PRECOMPILED_HEADER
-
 #ifdef _MSC_VER
 #include <sdkddkver.h>
 #endif
+
+#ifdef TILENET_USE_PRECOMPILED_HEADER
+
 
 // ********** std ********** //
 #include <type_traits>

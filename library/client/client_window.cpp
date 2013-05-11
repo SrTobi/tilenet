@@ -1,5 +1,7 @@
 #include "includes.hpp"
 
+#include <SFML/Window/Event.hpp>
+
 #include "client_window.hpp"
 #include "client.hpp"
 

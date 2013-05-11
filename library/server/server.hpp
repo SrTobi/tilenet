@@ -4,6 +4,7 @@
 
 #include <stack>
 #include <vector>
+#include <list>
 
 #include "settings.hpp"
 #include "utils/tilenet_object.hpp"

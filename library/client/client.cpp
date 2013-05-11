@@ -1,5 +1,7 @@
 #include "includes.hpp"
 
+#include <thread>
+
 #include "client/client.hpp"
 #include "client/client_window.hpp"
 

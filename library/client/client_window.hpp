@@ -2,7 +2,7 @@
 #ifndef _CLIENT_WINDOW_HPP
 #define _CLIENT_WINDOW_HPP
 
-#include <SFML/Window.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 #include "settings.hpp"
 #include "render_interface.hpp"
