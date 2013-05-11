@@ -55,7 +55,6 @@ link_directories(${Boost_LIBRARY_DIRS})
 link_directories(${BOOST_LIBRARYDIR})
 
 set(tilenet_dependency_libs ${Boost_LIBRARIES} ${SFML_LIBRARIES})
-message("${tilenet_dependency_libs}")
 
 
 add_subdirectory(library)
