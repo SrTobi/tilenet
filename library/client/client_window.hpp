@@ -24,7 +24,7 @@ public:
 	void setLayerRenderer(const shared_ptr<RenderInterface>& renderer);
 
 private:
-	shared_ptr<sf::RenderWindow> mRenderWindow;
+	sf::RenderWindow mRenderWindow;
 	shared_ptr<RenderInterface> mRenderer;
 
 	weak_ptr<ClientApp> mApp;

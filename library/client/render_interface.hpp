@@ -14,9 +14,7 @@ namespace client {
 class RenderInterface
 {
 public:
-	virtual void init(const shared_ptr<sf::RenderTarget>& target) = 0;
-
-	virtual void render() = 0;
+	virtual void render(sf::RenderTarget& target) = 0;
 };
 
 

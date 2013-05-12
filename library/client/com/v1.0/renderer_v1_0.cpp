@@ -6,6 +6,23 @@ namespace client{
 namespace com {
 namespace v1_0 {
 
+class Renderer::Layer
+{
+public:
+
+	virtual void render(sf::RenderTarget& target) = 0;
+
+private:
+};
+
+
+
+
+
+
+
+
+
 
 
 Renderer::Renderer( const shared_ptr<ClientWindow>& window )
@@ -17,17 +34,17 @@ Renderer::~Renderer()
 {
 }
 
-OVERRIDE void Renderer::init( const shared_ptr<sf::RenderTarget>& target )
+
+void Renderer::render(sf::RenderTarget& target)
 {
-	tnAssert(!mTarget.lock());
+	// Set background
+	target.clear(mBGCOlor);
 
-	mTarget = target;
-}
+	// Render layers
+	auto topLayer = layer(mTopLayerId);
 
-
-void Renderer::render()
-{
-	NOT_IMPLEMENTED();
+	if(topLayer)
+		topLayer->render(target);
 }
 
 
@@ -36,6 +53,16 @@ void Renderer::setTopLayer( TNID id )
 	mTopLayerId = id;
 
 	IMPLEMENTATION_TODO("Clear all layers or something intelligent!");
+}
+
+shared_ptr<Renderer::Layer> Renderer::layer( TNID id ) const
+{
+	auto it = mIdToLayerMapping.find(id);
+
+	if(it == mIdToLayerMapping.end())
+		return shared_ptr<Layer>();
+
+	return it->second;
 }
 
 }}}

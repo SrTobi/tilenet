@@ -18,28 +18,34 @@ class ClientWindow;
 namespace com {
 namespace v1_0 {
 
-class RenderLayer;
 
 
 class Renderer
 	: public RenderInterface
 {
+	class Layer;
+	class FrameLayer;
+	class RenderLayer;
 public:
 	Renderer(const shared_ptr<ClientWindow>& window);
 	~Renderer();
 
 
-	virtual OVERRIDE void init(const shared_ptr<sf::RenderTarget>& target);
-	virtual OVERRIDE void render();
+	virtual OVERRIDE void render(sf::RenderTarget& target);
 
 	void setTopLayer(TNID id);
+
+private:
+	shared_ptr<Layer> layer(TNID id) const;
 
 private:
 	weak_ptr<sf::RenderTarget> mTarget;
 	weak_ptr<ClientWindow> mWindow;
 
-	std::unordered_map<TNID, shared_ptr<RenderLayer>> mLayerList;
+	std::unordered_map<TNID, shared_ptr<Layer>> mIdToLayerMapping;
 	TNID mTopLayerId;
+
+	sf::Color mBGCOlor;
 };
 
 

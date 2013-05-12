@@ -10,8 +10,7 @@ namespace client {
 
 
 ClientWindow::ClientWindow(const shared_ptr<ClientApp>& app)
-	: mRenderWindow(new sf::RenderWindow())
-	, mApp(app)
+	: mApp(app)
 {
 }
 
@@ -22,9 +21,9 @@ ClientWindow::~ClientWindow()
 
 void ClientWindow::init()
 {
-	mRenderWindow->create(sf::VideoMode(800, 600), "tilenet");
+	mRenderWindow.create(sf::VideoMode(800, 600), "tilenet");
 
-	if(!mRenderWindow->isOpen())
+	if(!mRenderWindow.isOpen())
 	{
 		NOT_IMPLEMENTED();
 	}
@@ -33,7 +32,7 @@ void ClientWindow::init()
 void ClientWindow::process()
 {
 	// Check for the window
-	if(!mRenderWindow->isOpen())
+	if(!mRenderWindow.isOpen())
 	{
 		auto app = mApp.lock();
 		tnAssert(app);
@@ -42,23 +41,24 @@ void ClientWindow::process()
 
 	// Process event loop
 	sf::Event event;
-	while (mRenderWindow->pollEvent(event))
+	while (mRenderWindow.pollEvent(event))
 	{
 		if (event.type == sf::Event::Closed)
-			mRenderWindow->close();
+			mRenderWindow.close();
 	}
 
 	// If a renderer is set, then render
 	if(mRenderer)
 	{
-		mRenderer->render();
+		mRenderer->render(mRenderWindow);
 	}
+
+	mRenderWindow.display();
 }
 
 void ClientWindow::setLayerRenderer( const shared_ptr<RenderInterface>& renderer )
 {
 	mRenderer = renderer;
-	mRenderer->init(mRenderWindow);
 }
 
 
