@@ -1,6 +1,7 @@
 #include "includes.hpp"
 
 #include <thread>
+#include <chrono>
 
 #include "client/client.hpp"
 #include "client/client_window.hpp"
@@ -18,7 +19,8 @@ std::unique_ptr<ClientApp> ClientApp::Singleton;
 
 ClientApp::ClientApp()
 	: log(L"client")
-	, mRunning(false)
+	, mFrameRate(30.0)
+	, mWindowProcessTimer(mService)
 {
 	if(Singleton)
 	{
@@ -35,20 +37,16 @@ ClientApp::~ClientApp()
 
 void ClientApp::start()
 {
-	tnAssert(!mRunning);
+	tnAssert(!mBusyWork);
 
-	// Setup window and its initialization
-	mWindow.reset(new ClientWindow(shared_from_this()));
-	mService.post(std::bind(&ClientWindow::init, mWindow));
-
-	mRunning = true;
+	mBusyWork.reset(new boost::asio::io_service::work(mService));
 	std::thread clientThread(&ClientApp::run, shared_from_this());
 	clientThread.detach();
 }
 
 void ClientApp::stop( bool now /*= false*/ )
 {
-	mRunning = false;
+	mBusyWork.reset();
 	if(now)
 		mService.stop();
 }
@@ -60,13 +58,17 @@ boost::asio::io_service& ClientApp::service()
 
 void ClientApp::run()
 {
-	try {
-		while(mRunning)
-		{
-			mService.poll();
+	// Setup window and its initialization
+	mWindow.reset(new ClientWindow(shared_from_this()));
+	mService.post(std::bind(&ClientWindow::init, mWindow));
 
-			processWindow();
-		}
+	// Setup window processing
+	mService.post(std::bind(&ClientApp::processWindow, shared_from_this()));
+
+	try {
+		tnAssert(mBusyWork);
+		mService.run();
+
 	}catch(...)
 	{
 		log.error()
@@ -104,7 +106,27 @@ const std::shared_ptr<ClientWindow>& ClientApp::window() const
 
 void ClientApp::processWindow()
 {
+	using namespace std::chrono;
+
+	milliseconds timePerFrame(int(1.0f / mFrameRate * 1000.0f));
+
+	// process window and measure the time needed
+	steady_clock::time_point start = steady_clock::now();
 	mWindow->process();
+	steady_clock::time_point end = steady_clock::now();
+
+	// call this function again, but wait until one frame time has expired
+	auto timeInFrameLeft(timePerFrame - (end - start));
+
+	auto callBinding(std::bind(&ClientApp::processWindow, shared_from_this()));
+
+	if(timeInFrameLeft.count() <= 0)
+	{
+		mService.post(std::move(callBinding));
+	}else{
+		mWindowProcessTimer.expires_from_now(timeInFrameLeft);
+		mWindowProcessTimer.async_wait(std::move(callBinding));
+	}
 }
 
 

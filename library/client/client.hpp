@@ -4,6 +4,7 @@
 
 
 #include <boost/asio/io_service.hpp>
+#include <boost/asio/steady_timer.hpp>
 
 #include "settings.hpp"
 #include "network/connection_port.hpp"
@@ -23,6 +24,7 @@ class ClientWindow;
 class ClientApp
 	: public std::enable_shared_from_this<ClientApp>
 {
+	typedef boost::asio::basic_waitable_timer<std::chrono::steady_clock> steady_timer;
 public:
 	ClientApp();
 	~ClientApp();
@@ -44,8 +46,11 @@ private:
 	std::shared_ptr<com::ComHandler> mComHandler;
 	std::shared_ptr<net::ConnectionPort> mPort;
 	std::shared_ptr<ClientWindow> mWindow;
+	std::unique_ptr<boost::asio::io_service::work> mBusyWork;
+	steady_timer mWindowProcessTimer;
+	float mFrameRate;
 	Log	log;
-	bool mRunning;
+
 
 	static std::unique_ptr<ClientApp> Singleton;
 };
