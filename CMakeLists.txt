@@ -40,7 +40,7 @@ add_definitions( -DBOOST_ALL_NO_LIB )
 
 # find packages
 find_package(Boost COMPONENTS system thread serialization unit_test_framework REQUIRED)
-find_package(SFML COMPONENTS system main window graphics audio REQUIRED)
+find_package(SFML COMPONENTS system window graphics audio REQUIRED)
 
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
