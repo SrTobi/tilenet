@@ -52,6 +52,8 @@ inline std::string lexical_convert(const std::wstring& from)
 	{
 		throw std::bad_cast();
 	}
+
+	return std::move(to);
 }
 
 
