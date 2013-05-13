@@ -57,6 +57,7 @@ void ThreadPool::runThread()
 		bool need = true;
 		while(need)
 		{
+			mService.reset();
 			mService.run();
 
 			std::lock_guard<std::mutex> lock(mMutex);
