@@ -7,7 +7,7 @@ namespace client {
 
 
 	
-Messenger::Messenger(unsigned int maxEntries, unsigned int entryLiveTime, unsigned int textSize)
+Messenger::Messenger(unsigned int maxEntries, duration entryLiveTime, unsigned int textSize)
 	:	mEntryLiveTime(entryLiveTime),
 		mMaxEntries(maxEntries),
 		mTextSize(textSize)

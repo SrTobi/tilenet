@@ -22,7 +22,7 @@ ClientApp::ClientApp()
 	: log(L"client")
 	, mFrameRate(30.0)
 	, mWindowProcessTimer(mService)
-	, mMessenger(new Messenger(10, 1000, 13))
+	, mMessenger(new Messenger(10, std::chrono::milliseconds(2000), 13))
 {
 	if(Singleton)
 	{
