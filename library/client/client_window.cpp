@@ -4,13 +4,15 @@
 
 #include "client_window.hpp"
 #include "client.hpp"
+#include "messenger.hpp"
 
 namespace client {
 
 
 
-ClientWindow::ClientWindow(const shared_ptr<ClientApp>& app)
+ClientWindow::ClientWindow(const shared_ptr<ClientApp>& app, const shared_ptr<Messenger>& messenger)
 	: mApp(app)
+	, mMessenger(messenger)
 {
 }
 
@@ -47,12 +49,17 @@ void ClientWindow::process()
 			mRenderWindow.close();
 	}
 
+	mRenderWindow.clear();
+
 	// If a renderer is set, then render
 	if(mRenderer)
 	{
 		mRenderer->render(mRenderWindow);
 	}
 
+
+
+	mMessenger->render(mRenderWindow);
 	mRenderWindow.display();
 }
 

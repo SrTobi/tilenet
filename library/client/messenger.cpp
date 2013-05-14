@@ -1,5 +1,5 @@
 #include "includes.hpp"
-#include "messanger.hpp"
+#include "messenger.hpp"
 
 
 
@@ -7,15 +7,14 @@ namespace client {
 
 
 	
-Messenger::Messenger(sf::RenderTarget& graphics, unsigned int maxEntries, unsigned int entryLiveTime, unsigned int textSize)
+Messenger::Messenger(unsigned int maxEntries, unsigned int entryLiveTime, unsigned int textSize)
 	:	mEntryLiveTime(entryLiveTime),
 		mMaxEntries(maxEntries),
-		mTextSize(textSize),
-		mGraphics(graphics)
+		mTextSize(textSize)
 {
 	if(!mFont.loadFromFile("cour.ttf"))
 	{
-		Log(L"client").error() << "Failed to load font for messanger!";
+		Log(L"client").error() << "Failed to load font for messenger!";
 	}
 }
 
@@ -23,7 +22,7 @@ Messenger::~Messenger()
 {
 }
 
-void Messenger::render()
+void Messenger::render(sf::RenderTarget& g)
 {
 	// if too many entries exists, pop some
 	while(mEntries.size() > mMaxEntries)
@@ -43,7 +42,7 @@ void Messenger::render()
 
 		text.setPosition(5.0f, ypos);
 
-		mGraphics.draw(text);
+		g.draw(text);
 
 		ypos += mFont.getLineSpacing(mTextSize);
 	}

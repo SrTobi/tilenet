@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _MESSANGER_H
-#define _MESSANGER_H
+#ifndef _MESSENGER_H
+#define _MESSENGER_H
 
 #include <list>
 #include <SFML/System/String.hpp>
@@ -27,10 +27,10 @@ class Messenger
 		sf::Clock	myLiveTime;
 	};
 public:
-	Messenger(sf::RenderTarget& graphics, unsigned int maxEntries, unsigned int entryLiveTime, unsigned int textSize);
+	Messenger(unsigned int maxEntries, unsigned int entryLiveTime, unsigned int textSize);
 	~Messenger();
 
-	void render();
+	void render(sf::RenderTarget& g);
 
 	void add(const std::wstring& text, sf::Color color = sf::Color::White);
 
@@ -43,7 +43,6 @@ private:
 	unsigned int					mTextSize;
 
 	sf::Font						mFont;
-	sf::RenderTarget&				mGraphics;
 };
 
 

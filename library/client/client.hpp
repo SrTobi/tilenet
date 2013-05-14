@@ -18,7 +18,7 @@ namespace com {
 	class ComHandler;
 }
 
-
+class Messenger;
 class ClientWindow;
 
 class ClientApp
@@ -46,6 +46,7 @@ private:
 	std::shared_ptr<com::ComHandler> mComHandler;
 	std::shared_ptr<net::ConnectionPort> mPort;
 	std::shared_ptr<ClientWindow> mWindow;
+	std::shared_ptr<Messenger> mMessenger;
 	std::unique_ptr<boost::asio::io_service::work> mBusyWork;
 	steady_timer mWindowProcessTimer;
 	float mFrameRate;

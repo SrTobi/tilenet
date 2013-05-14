@@ -3,8 +3,9 @@
 #include <thread>
 #include <chrono>
 
-#include "client/client.hpp"
-#include "client/client_window.hpp"
+#include "client.hpp"
+#include "client_window.hpp"
+#include "messenger.hpp"
 
 #include "client/com/com_handler.hpp"
 #include "client/com/pv_select.hpp"
@@ -21,6 +22,7 @@ ClientApp::ClientApp()
 	: log(L"client")
 	, mFrameRate(30.0)
 	, mWindowProcessTimer(mService)
+	, mMessenger(new Messenger(10, 1000, 13))
 {
 	if(Singleton)
 	{
@@ -59,7 +61,7 @@ boost::asio::io_service& ClientApp::service()
 void ClientApp::run()
 {
 	// Setup window and its initialization
-	mWindow.reset(new ClientWindow(shared_from_this()));
+	mWindow.reset(new ClientWindow(shared_from_this(), mMessenger));
 	mService.post(std::bind(&ClientWindow::init, mWindow));
 
 	// Setup window processing
@@ -93,6 +95,7 @@ void ClientApp::handleNewConnection( const shared_ptr<net::ConnectionPort>& port
 
 void ClientApp::handleMessage( const shared_ptr<net::Message>& msg )
 {
+	mMessenger->add(L"Message!!!");
 	tnAssert(mComHandler);
 	auto newHandler = mComHandler->handleMessage(msg);
 	if(newHandler)

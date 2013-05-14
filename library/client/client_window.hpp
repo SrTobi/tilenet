@@ -11,11 +11,12 @@ namespace client {
 
 
 class ClientApp;
+class Messenger;
 
 class ClientWindow
 {
 public:
-	ClientWindow(const shared_ptr<ClientApp>& app);
+	ClientWindow(const shared_ptr<ClientApp>& app, const shared_ptr<Messenger>& messenger);
 	~ClientWindow();
 
 	void init();
@@ -26,6 +27,7 @@ public:
 private:
 	sf::RenderWindow mRenderWindow;
 	shared_ptr<RenderInterface> mRenderer;
+	shared_ptr<Messenger> mMessenger;
 
 	weak_ptr<ClientApp> mApp;
 };
