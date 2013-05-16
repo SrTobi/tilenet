@@ -13,9 +13,10 @@ set(Option_DEFAULT_MAKE_DOXYGEN_TARGET OFF)
 endif(MSVC)
 
 
-option(Tilenet_USE_PRE_COMPILED_HEADER	"Use precompiled header for compilation" ON)
-option(Tilenet_BUILD_SHARED_LIB			"Build tilenet as shared library" OFF)
-option(Tilenet_MAKE_DOXYGEN_TARGET		"Create a doxygen build target" ${Option_DEFAULT_MAKE_DOXYGEN_TARGET})
+option(Tilenet_USE_PRE_COMPILED_HEADER		"Use precompiled header for compilation" ON)
+option(Tilenet_BUILD_SHARED_LIB				"Build tilenet as shared library" OFF)
+option(Tilenet_MAKE_DOXYGEN_TARGET			"Create a doxygen build target" ${Option_DEFAULT_MAKE_DOXYGEN_TARGET})
+option(Tilenet_RETHROW_THREAD_EXCEPTIONS	"Rethrow exceptions in worker threads, instead of catch them silently" ON)
 
 if(Tilenet_USE_PRE_COMPILED_HEADER)
 	add_subdirectory("extras/pch")
@@ -28,12 +29,16 @@ else(Tilenet_USE_PRE_COMPILED_HEADER)
 
 endif(Tilenet_USE_PRE_COMPILED_HEADER)
 
+if(Tilenet_RETHROW_THREAD_EXCEPTIONS)
+	add_definitions(-DTILENET_RETHROW_THREAD_EXCEPTIONS)
+endif(Tilenet_RETHROW_THREAD_EXCEPTIONS)
+
 if(NOT MSVC)
-ADD_DEFINITIONS("-std=c++0x")
+	ADD_DEFINITIONS("-std=c++0x")
 endif(NOT MSVC)
 
 if(NOT Boost_USE_STATIC_LIBS)
-add_definitions(-DBOOST_TEST_DYN_LINK) 
+	add_definitions(-DBOOST_TEST_DYN_LINK) 
 endif(NOT Boost_USE_STATIC_LIBS)
 add_definitions(-DTILENET_AS_LIB)
 add_definitions( -DBOOST_ALL_NO_LIB )

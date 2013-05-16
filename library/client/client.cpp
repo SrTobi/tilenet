@@ -71,13 +71,17 @@ void ClientApp::run()
 		tnAssert(mBusyWork);
 		mService.run();
 
-	}catch(...)
-	{
+	} catch(...) {
 		log.error()
 			<< L"Exception in worker thread!"
 			<< L"\n------------------------\n"
 			<< lexical_convert<string>(boost::current_exception_diagnostic_information())
 			<< L"\n------------------------";
+
+#ifdef TILENET_RETHROW_THREAD_EXCEPTIONS
+		throw;
+#endif
+
 	}
 }
 

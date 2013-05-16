@@ -87,5 +87,9 @@ void ThreadPool::runThread()
 			<< L"\n------------------------\n"
 			<< lexical_convert<string>(boost::current_exception_diagnostic_information())
 			<< L"\n------------------------";
+
+#ifdef TILENET_RETHROW_THREAD_EXCEPTIONS
+		throw;
+#endif
 	}
 }
