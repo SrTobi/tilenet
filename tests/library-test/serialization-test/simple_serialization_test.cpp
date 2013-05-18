@@ -109,3 +109,59 @@ BOOST_AUTO_TEST_CASE(simple_sequence_serializer_test2)
 
 	BOOST_CHECK(std::equal(buffer.begin(), buffer.end(), expected.begin()));
 }
+
+
+BOOST_AUTO_TEST_CASE(simple_type_serializer_test1)
+{
+	std::wstring expected = L"rect{5 19}";
+	std::vector<char> buffer;
+	{
+		net::ProtocolSerializer<> s(buffer);
+
+		{
+			net::TypeInserter<> ti(s, "rect");
+			ti.serializer() << 5 << 19;
+		}
+	}
+
+	BOOST_CHECK(std::equal(buffer.begin(), buffer.end(), expected.begin()));
+}
+
+BOOST_AUTO_TEST_CASE(simple_type_serializer_test2)
+{
+	std::wstring expected = L"person{\"tobi\" 20 {1,2,3,4,5}}";
+	std::vector<char> buffer;
+	{
+		net::ProtocolSerializer<> s(buffer);
+
+		{
+			net::TypeInserter<> ti(s, "person");
+			ti.serializer() << L"tobi" << 20;
+
+			net::SequenceInserter<> seq(ti.serializer());
+
+			for(int i = 1; i <= 5; ++i)
+				seq.newElement() << i;
+		}
+	}
+
+	BOOST_CHECK(std::equal(buffer.begin(), buffer.end(), expected.begin()));
+}
+
+
+
+
+
+BOOST_AUTO_TEST_CASE(simple_container_serializer_test2)
+{
+	int list[] = {1,2,3,100,101};
+	std::wstring expected = L"{1,2,3,100,101}";
+	std::vector<char> buffer;
+	{
+		net::ProtocolSerializer<> s(buffer);
+		s << net::serialize_container(list);
+
+	}
+
+	BOOST_CHECK(std::equal(buffer.begin(), buffer.end(), expected.begin()));
+}

@@ -34,6 +34,8 @@ public:
 	template<typename Buffer>
 	friend class SequenceInserter;
 	template<typename Buffer>
+	friend class TypeInserter;
+	template<typename Buffer>
 	friend class BinaryInserter;
 
 public:
@@ -223,15 +225,53 @@ public:
 		insert_back('}');
 	}
 
-	ProtocolSerializer<Buffer>& newElement()
+	serializer_type& newElement()
 	{
-		mChildSerializer.reset(new ProtocolSerializer<Buffer>(serializer().buffer(), ','));
+		mChildSerializer.reset(new serializer_type(serializer().buffer(), ','));
+		return *mChildSerializer;
+	}
+
+private:
+	std::unique_ptr<serializer_type> mChildSerializer;
+};
+
+
+template<typename Buffer = default_serialization_buffer>
+class TypeInserter
+	: public SpecificInserter<Buffer>
+{
+public:
+	typedef typename SpecificInserter<Buffer>::buffer_type buffer_type;
+	typedef typename SpecificInserter<Buffer>::serializer_type serializer_type;
+
+	TypeInserter(serializer_type& serializer, const std::string& name)
+		: SpecificInserter(serializer)
+		, mChildSerializer(new serializer_type(serializer.buffer()))
+	{
+		//TODO: check name
+		{
+			serializer_type interSerializer(serializer.buffer());
+			DirectInserter<> insertDirect(interSerializer);
+			insertDirect(name.begin(), name.end());
+		}
+		insert_back('{');
+	}
+
+	~TypeInserter()
+	{
+		mChildSerializer.reset();
+		insert_back('}');
+	}
+
+	serializer_type& serializer()
+	{
 		return *mChildSerializer;
 	}
 
 private:
 	std::unique_ptr<ProtocolSerializer<Buffer>> mChildSerializer;
 };
+
 
 template<typename Buffer, typename T>
 void serialize_primitive(ProtocolSerializer<Buffer>& serializer, const T& v)
@@ -289,6 +329,37 @@ ProtocolSerializer<Buffer>& operator <<(ProtocolSerializer<Buffer>& serializer, 
 {
 	StringInserter<Buffer> insert(serializer);
 	insert(str);
+
+	return serializer;
+}
+
+template<typename C>
+struct SerializationContainer
+{
+
+	SerializationContainer(const C& container)
+		: container(container)
+	{
+	}
+
+	const C& container;
+};
+
+template<typename C>
+SerializationContainer<C> serialize_container(const C& container)
+{
+	return SerializationContainer<C>(container);
+}
+
+template<typename Buffer, typename C>
+ProtocolSerializer<Buffer>& operator <<(ProtocolSerializer<Buffer>& serializer, const SerializationContainer<C>& cont)
+{
+	SequenceInserter<> sequence(serializer);
+
+	for(auto& v : cont.container)
+	{
+		sequence.newElement() << v;
+	}
 
 	return serializer;
 }
