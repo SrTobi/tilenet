@@ -12,6 +12,7 @@ endmacro(add_test_component)
 
 add_test_component("link-test")
 add_test_component("lexical_convert-test")
+add_test_component("serialization-test")
 
 set(test_library_module "library-module.cpp")
 include_directories("${PROJECT_SOURCE_DIR}/library")
