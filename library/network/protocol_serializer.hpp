@@ -53,6 +53,12 @@ public:
 			mBuffer.push_back(mEndSign);
 	}
 
+	template<typename T>
+	ProtocolSerializer& operator &(const T& v)
+	{
+		return *this << v;
+	}
+
 private:
 	void beginInserting()
 	{
