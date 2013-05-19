@@ -151,7 +151,7 @@ BOOST_AUTO_TEST_CASE(simple_type_serializer_test2)
 
 
 
-
+/*
 BOOST_AUTO_TEST_CASE(simple_container_serializer_test2)
 {
 	int list[] = {1,2,3,100,101};
@@ -164,4 +164,4 @@ BOOST_AUTO_TEST_CASE(simple_container_serializer_test2)
 	}
 
 	BOOST_CHECK(std::equal(buffer.begin(), buffer.end(), expected.begin()));
-}
+}*/

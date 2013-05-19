@@ -34,7 +34,7 @@ struct MsgFormat<0x01, versions::NoVersion>
 {
 	version_type version;
 	template<typename Archive>
-	void serialize(Archive& ar, unsigned int archive_version)
+	void serialize(Archive& ar)
 	{
 		ar & version;
 	}

@@ -291,6 +291,12 @@ void serialize_primitive(ProtocolSerializer<Buffer>& serializer, const T& v)
 	insert(str.begin(), str.end());
 }
 
+template<typename Buffer>
+void serialize_primitive(ProtocolSerializer<Buffer>& serializer, const unsigned char& uc)
+{
+	serialize_primitive(serializer, unsigned int(uc));
+}
+
 #define PRIMITIVE_SERIALIZATION(_type) template<typename Buffer> ProtocolSerializer<Buffer>& operator <<(ProtocolSerializer<Buffer>& serializer, _type v) { serialize_primitive(serializer, v); return serializer; }
 
 
@@ -319,7 +325,7 @@ PRIMITIVE_SERIALIZATION(long);
 PRIMITIVE_SERIALIZATION(unsigned long);
 PRIMITIVE_SERIALIZATION(long long);
 PRIMITIVE_SERIALIZATION(unsigned long long);
-
+#undef PRIMITIVE_SERIALIZATION
 
 template<typename Buffer>
 ProtocolSerializer<Buffer>& operator <<(ProtocolSerializer<Buffer>& serializer, const wchar_t* str)
@@ -338,7 +344,7 @@ ProtocolSerializer<Buffer>& operator <<(ProtocolSerializer<Buffer>& serializer, 
 
 	return serializer;
 }
-
+/*
 template<typename C>
 struct SerializationContainer
 {
@@ -366,6 +372,17 @@ ProtocolSerializer<Buffer>& operator <<(ProtocolSerializer<Buffer>& serializer, 
 	{
 		sequence.newElement() << v;
 	}
+
+	return serializer;
+}*/
+
+/*
+ * Serializer for classes
+ */
+template<typename Buffer, typename M>
+ProtocolSerializer<Buffer>& operator <<(ProtocolSerializer<Buffer>& serializer, const M& msg)
+{
+	const_cast<M&>(msg).serialize(serializer);
 
 	return serializer;
 }

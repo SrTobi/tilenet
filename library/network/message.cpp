@@ -11,8 +11,13 @@ namespace net {
 
 
 
+<<<<<<< HEAD
 Message::Message(const msgid_type id, std::vector<byte>&& msg)
 	: mBuffer(std::move(msg))
+=======
+Message::Message(const msgid_type id, const buffer_type&& msg)
+	: mBuffer(msg)
+>>>>>>> new Serializer integrated.
 	, mId(id)
 {
 }
@@ -21,7 +26,7 @@ Message::~Message()
 {
 }
 
-const std::vector<byte>& Message::buffer() const
+const Message::buffer_type& Message::buffer() const
 {
 	return mBuffer;
 }
