@@ -2,7 +2,7 @@
 #ifndef _PROTOCOL_DESERIALIZER_HPP
 #define _PROTOCOL_DESERIALIZER_HPP
 
-#include <codecvt>
+#include <locale>
 #include "settings.hpp"
 
 
@@ -30,17 +30,17 @@ public:
 	static_assert(std::is_same<value_type, char>::value, "Iterator must iterate over char");
 
 public:
-	template<typename Iter>
+	template<typename Iter_>
 	friend class SpecificExtractor;
-	template<typename Iter>
+	template<typename Iter_>
 	friend class DirectExtractor;
-	template<typename Iter>
+	template<typename Iter_>
 	friend class StringExtractor;
-	template<typename Iter>
+	template<typename Iter_>
 	friend class SequenceExtractor;
-	template<typename Iter>
+	template<typename Iter_>
 	friend class TypeExtractor;
-	template<typename Iter>
+	template<typename Iter_>
 	friend class BinaryExtractor;
 
 public:
@@ -140,21 +140,22 @@ class DirectExtractor
 	: public SpecificExtractor<Iter>
 {
 public:
-	typedef typename SpecificExtractor<Iter>::input_iterator input_iterator;
-	typedef typename SpecificExtractor<Iter>::deserializer_type deserializer_type;
-	typedef typename SpecificExtractor<Iter>::range_type range_type;
+	typedef SpecificExtractor<Iter> base_type;
+	typedef typename base_type::input_iterator input_iterator;
+	typedef typename base_type::deserializer_type deserializer_type;
+	typedef typename base_type::range_type range_type;
 
 	DirectExtractor(deserializer_type& deserializer)
-		: SpecificExtractor(deserializer)
+		: base_type(deserializer)
 		, mBegin(deserializer.begin())
 	{
 	}
 
 	range_type operator ()()
 	{
-		while (next());
+		while (this->next());
 
-		return range_type(mBegin, input_begin());
+		return range_type(mBegin, this->input_begin());
 	}
 
 private:
@@ -168,14 +169,15 @@ class StringExtractor
 	: public SpecificExtractor<Iter>
 {
 public:
-	typedef typename SpecificExtractor<Iter>::input_iterator input_iterator;
-	typedef typename SpecificExtractor<Iter>::deserializer_type deserializer_type;
-	typedef typename SpecificExtractor<Iter>::range_type range_type;
+	typedef SpecificExtractor<Iter> base_type;
+	typedef typename base_type::input_iterator input_iterator;
+	typedef typename base_type::deserializer_type deserializer_type;
+	typedef typename base_type::range_type range_type;
 
 	StringExtractor(deserializer_type& deserializer)
-		: SpecificExtractor(deserializer)
+		: base_type(deserializer)
 	{
-		if(*input_begin() != '\"')
+		if(*this->input_begin() != '\"')
 			NOT_IMPLEMENTED();
 		std::string utf8;
 
@@ -211,11 +213,10 @@ public:
 
 		} while(c != '\"');
 
-		++input_begin();
+		++this->input_begin();
 
 
-		std::wstring_convert<std::codecvt_utf8<wchar_t> > converter;
-		mExtractedString = converter.from_bytes(utf8);
+		mExtractedString = from_utf8_string<std::wstring::value_type>(utf8);
 	}
 
 	const std::wstring& operator ()() const
@@ -226,11 +227,11 @@ public:
 private:
 	char consume()
 	{
-		++input_begin();
-		if(input_begin() == input_end())
+		++this->input_begin();
+		if(this->input_begin() == this->input_end())
 			NOT_IMPLEMENTED();
 
-		return *input_begin();
+		return *this->input_begin();
 	}
 
 private:
@@ -247,7 +248,7 @@ public:
 	class SequenceIterator
 		: public std::iterator<std::input_iterator_tag, ProtocolDeserializer<Iter>, void>
 	{
-		template<typename Iter>
+		template<typename Iter_>
 		friend class SequenceExtractor;
 	public:
 		typedef std::iterator<std::input_iterator_tag, ProtocolDeserializer<Iter>, void> base_type;
@@ -319,27 +320,28 @@ public:
 		SequenceExtractor<Iter>* mExtractor;
 	};
 public:
+	typedef SpecificExtractor<Iter> base_type;
 	typedef SequenceIterator									iterator;
 	typedef typename SpecificExtractor<Iter>::input_iterator input_iterator;
 	typedef typename SpecificExtractor<Iter>::deserializer_type deserializer_type;
 	typedef typename SpecificExtractor<Iter>::range_type range_type;
 
 	SequenceExtractor(deserializer_type& deserializer)
-		: SpecificExtractor(deserializer)
+		: base_type(deserializer)
 	{
-		if(*input_begin() != '{')
+		if(*this->input_begin() != '{')
 			NOT_IMPLEMENTED(/* thorw */);
 
 		// Skip '{'
-		next();
+		this->next();
 	}
 
 	~SequenceExtractor()
 	{
-		if(*input_begin() != '}')
+		if(*this->input_begin() != '}')
 			NOT_IMPLEMENTED(/*Throw something*/);
 
-		next();
+		this->next();
 	}
 
 	iterator begin() { return iterator(this); }
@@ -349,23 +351,23 @@ public:
 	{
 		if(mChildDeserializer)
 		{
-			char separator = *deserializer().begin();
+			char separator = *this->deserializer().begin();
 
 			if(separator == ',')
 			{
-				next(); // consume ','
+				this->next(); // consume ','
 			}else{
 				NOT_IMPLEMENTED(/* throw! */)
 			}
 		}
-		mChildDeserializer.reset(new deserializer_type(deserializer().range()));
+		mChildDeserializer.reset(new deserializer_type(this->deserializer().range()));
 		return *mChildDeserializer;
 	}
 
 private:
 	bool hasNext()
 	{
-		return (*input_begin() != '}');
+		return (*this->input_begin() != '}');
 	}
 
 	deserializer_type& currentElement()

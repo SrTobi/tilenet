@@ -3,7 +3,7 @@
 #define _PROTOCOL_SERIALIZER_HPP
 
 #include <vector>
-#include <codecvt>
+#include <locale>
 #include <boost/concept_check.hpp>
 #include <boost/noncopyable.hpp>
 #include "settings.hpp"
@@ -25,17 +25,17 @@ public:
 	static_assert(std::is_same<typename buffer_type::value_type, char>::value, "Buffer must contain char");
 
 public:
-	template<typename Buffer>
+	template<typename Buffer_>
 	friend class SpecificInserter;
-	template<typename Buffer>
+	template<typename Buffer_>
 	friend class DirectInserter;
-	template<typename Buffer>
+	template<typename Buffer_>
 	friend class StringInserter;
-	template<typename Buffer>
+	template<typename Buffer_>
 	friend class SequenceInserter;
-	template<typename Buffer>
+	template<typename Buffer_>
 	friend class TypeInserter;
-	template<typename Buffer>
+	template<typename Buffer_>
 	friend class BinaryInserter;
 
 public:
@@ -112,7 +112,7 @@ protected:
 	template<typename Iter>
 	void insert_back(Iter begin, Iter end)
 	{
-		std::copy(begin, end, std::back_inserter(mBuffer.buffer()));
+		std::copy(begin, end, std::back_inserter(mSerializer.buffer()));
 	}
 
 	serializer_type& serializer() { return mSerializer; }
@@ -129,14 +129,14 @@ public:
 	typedef typename SpecificInserter<Buffer>::serializer_type serializer_type;
 
 	DirectInserter(serializer_type& serializer)
-		: SpecificInserter(serializer)
+		: SpecificInserter<Buffer>(serializer)
 	{
 	}
 
 	void operator ()(char c)
 	{
 		tnAssert(c > 0 && c <= 127);
-		insert_back(c);
+		this->insert_back(c);
 	}
 
 	template<typename Iter>
@@ -154,18 +154,19 @@ class StringInserter
 	: public SpecificInserter<Buffer>
 {
 public:
-	typedef typename SpecificInserter<Buffer>::buffer_type buffer_type;
-	typedef typename SpecificInserter<Buffer>::serializer_type serializer_type;
+	typedef SpecificInserter<Buffer> base_type;
+	typedef typename base_type::buffer_type buffer_type;
+	typedef typename base_type::serializer_type serializer_type;
 
 	StringInserter(serializer_type& serializer)
-		: SpecificInserter(serializer)
+		: base_type(serializer)
 	{
-		insert_back('\"');
+		this->insert_back('\"');
 	}
 
 	~StringInserter()
 	{
-		insert_back('\"');
+		this->insert_back('\"');
 	}
 
 	// Do not use this version!
@@ -176,31 +177,30 @@ public:
 
 	void operator ()(const std::wstring& wstr)
 	{
-		std::wstring_convert<std::codecvt_utf8<wchar_t> > converter;
-		std::string utf8 = converter.to_bytes(wstr);
+		std::string utf8 = to_utf8_string(wstr);
 
 		for(char c : utf8)
 		{
 			switch(c)
 			{
 			case '\\':
-				insert_back('\\');
-				insert_back('\\');
+				this->insert_back('\\');
+				this->insert_back('\\');
 				break;
 			case '\n':
-				insert_back('\\');
-				insert_back('n');
+				this->insert_back('\\');
+				this->insert_back('n');
 				break;
 			case '\t':
-				insert_back('\\');
-				insert_back('t');
+				this->insert_back('\\');
+				this->insert_back('t');
 				break;
 			case '\"':
-				insert_back('\\');
-				insert_back('\"');
+				this->insert_back('\\');
+				this->insert_back('\"');
 				break;
 			default:
-				insert_back(c);
+				this->insert_back(c);
 				break;
 			}
 		}
@@ -214,26 +214,27 @@ class SequenceInserter
 	: public SpecificInserter<Buffer>
 {
 public:
-	typedef typename SpecificInserter<Buffer>::buffer_type buffer_type;
-	typedef typename SpecificInserter<Buffer>::serializer_type serializer_type;
+	typedef SpecificInserter<Buffer> base_type;
+	typedef typename base_type::buffer_type buffer_type;
+	typedef typename base_type::serializer_type serializer_type;
 
 	SequenceInserter(serializer_type& serializer)
-		: SpecificInserter(serializer)
+		: base_type(serializer)
 	{
-		insert_back('{');
+		this->insert_back('{');
 	}
 
 	~SequenceInserter()
 	{
 		mChildSerializer.reset();
-		if(serializer().buffer().back() == ',')
-			serializer().buffer().pop_back();
-		insert_back('}');
+		if(this->serializer().buffer().back() == ',')
+			this->serializer().buffer().pop_back();
+		this->insert_back('}');
 	}
 
 	serializer_type& newElement()
 	{
-		mChildSerializer.reset(new serializer_type(serializer().buffer(), ','));
+		mChildSerializer.reset(new serializer_type(this->serializer().buffer(), ','));
 		return *mChildSerializer;
 	}
 
@@ -247,11 +248,12 @@ class TypeInserter
 	: public SpecificInserter<Buffer>
 {
 public:
-	typedef typename SpecificInserter<Buffer>::buffer_type buffer_type;
-	typedef typename SpecificInserter<Buffer>::serializer_type serializer_type;
+	typedef SpecificInserter<Buffer> base_type;
+	typedef typename base_type::buffer_type buffer_type;
+	typedef typename base_type::serializer_type serializer_type;
 
 	TypeInserter(serializer_type& serializer, const std::string& name)
-		: SpecificInserter(serializer)
+		: base_type(serializer)
 		, mChildSerializer(new serializer_type(serializer.buffer()))
 	{
 		//TODO: check name
@@ -260,13 +262,13 @@ public:
 			DirectInserter<> insertDirect(interSerializer);
 			insertDirect(name.begin(), name.end());
 		}
-		insert_back('{');
+		this->insert_back('{');
 	}
 
 	~TypeInserter()
 	{
 		mChildSerializer.reset();
-		insert_back('}');
+		this->insert_back('}');
 	}
 
 	serializer_type& serializer()
@@ -294,7 +296,7 @@ void serialize_primitive(ProtocolSerializer<Buffer>& serializer, const T& v)
 template<typename Buffer>
 void serialize_primitive(ProtocolSerializer<Buffer>& serializer, const unsigned char& uc)
 {
-	serialize_primitive(serializer, unsigned int(uc));
+	serialize_primitive(serializer, (unsigned int)(uc));
 }
 
 #define PRIMITIVE_SERIALIZATION(_type) template<typename Buffer> ProtocolSerializer<Buffer>& operator <<(ProtocolSerializer<Buffer>& serializer, _type v) { serialize_primitive(serializer, v); return serializer; }
