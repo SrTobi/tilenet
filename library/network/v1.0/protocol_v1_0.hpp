@@ -3,10 +3,11 @@
 #define _PROTOCOL_1_0_HPP
 
 #include <boost/serialization/access.hpp>
-#include <boost/serialization/vector.hpp>
+#include <boost/serialization/list.hpp>
 
 #include "settings.hpp"
 #include "../protocol.hpp"
+#include "protocol_tile.hpp"
 
 #define PROTOCOL_THIS_VERSION					v1_0
 #define PROTOCOL_MESSAGE(_name, _target)		namespace PROTOCOL_THIS_VERSION { namespace _target{ typedef MsgFormat<PROTOCOL_THIS_VERSION::ids::_target::_name, ::proto::versions::PROTOCOL_THIS_VERSION> _name; }} template<> struct MsgFormat<PROTOCOL_THIS_VERSION::ids::_target::_name, ::proto::versions::PROTOCOL_THIS_VERSION>
@@ -93,7 +94,7 @@ PROTOCOL_MESSAGE(LayerControl_SendFullLayer, to_client)
 {
 	TNID layerId;
 	uint16 xratio, yratio, width, height;
-	std::vector<string> layerContent;
+	std::list<net::PTile> layerContent;
 
 	PROTOCOL_SERIALIZER(ar)
 	{
