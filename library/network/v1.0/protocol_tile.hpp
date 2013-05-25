@@ -50,6 +50,14 @@ private:
 			return std::unique_ptr<DataContainer>(new TileDataContainer(*this));
 		}
 
+
+		template<typename Archive>
+		void serialize(Archive& ar, unsigned int)
+		{
+			ar & boost::serialization::base_object<DataContainer>(*this); 
+			ar & data;
+		}
+
 		T data;
 	};
 
@@ -81,6 +89,8 @@ private:
 	template<typename Archive>
 	void serialize(Archive& ar, unsigned int version)
 	{
+		ar.template register_type<TileDataContainer<StdTileData>>();
+		ar.template register_type<TileDataContainer<CharTileData>>();
 		ar & mData;
 	}
 
@@ -97,6 +107,12 @@ struct StdTileData
 	TNID tile_id;
 	TNFLAG modifier;
 	TNCOLOR color;
+
+	template<typename Archive>
+	void serialize(Archive& ar, unsigned int)
+	{
+		ar & tileset_id & tile_id & modifier & color;
+	}
 };
 
 
@@ -108,6 +124,12 @@ struct CharTileData
 	wchar_t character;
 	TNFLAG modifier;
 	TNCOLOR color;
+
+	template<typename Archive>
+	void serialize(Archive& ar, unsigned int)
+	{
+		ar & tileset_id & character & modifier & color;
+	}
 };
 
 
