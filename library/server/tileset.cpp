@@ -6,23 +6,13 @@ namespace srv {
 	
 
 Tileset::Tileset( const string& name, TNFLAG flags )
+	: mName(name)
+	, mFlags(flags)
 {
-	NOT_IMPLEMENTED();
 }
 
 Tileset::~Tileset()
 {
-	NOT_IMPLEMENTED();
-}
-
-TNID Tileset::registerTile( const string& name )
-{
-	NOT_IMPLEMENTED();
-}
-
-TNID Tileset::registerTile( const string& name, TNID id )
-{
-	NOT_IMPLEMENTED();
 }
 
 void Tileset::destroy()
@@ -39,5 +29,12 @@ void Tileset::flush()
 {
 	NOT_IMPLEMENTED();
 }
+
+const string& Tileset::name() const
+{
+	return mName;
+}
+
+
 
 }

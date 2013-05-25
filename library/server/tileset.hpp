@@ -3,6 +3,7 @@
 #define _TILESET_HPP
 
 #include "settings.hpp"
+#include "network/v1.0/protocol_tile.hpp"
 
 
 namespace srv {
@@ -15,12 +16,17 @@ public:
 	Tileset(const string& name, TNFLAG flags);
 	~Tileset();
 
-	TNID registerTile(const string& name);
-	TNID registerTile(const string& name, TNID id);
 
 	virtual OVERRIDE void destroy();
 	virtual OVERRIDE shared_ptr<TilenetObject> clone();
 	virtual OVERRIDE void flush();
+
+	virtual net::PTile&& constructTile(TNTILE* tile) = 0;
+	const string& name() const;
+
+private:
+	string mName;
+	TNFLAG mFlags;
 };
 
 
