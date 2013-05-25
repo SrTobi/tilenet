@@ -38,7 +38,7 @@ PTile::PTile( const PTile& other )
 
 PTile::PTile( PTile&& other )
 {
-	assign(other);
+	assign(std::move(other));
 }
 
 PTile::~PTile()
@@ -59,15 +59,15 @@ PTile& PTile::operator=( const PTile& other )
 	return *this;
 }
 
-PTile& PTile::operator=( const PTile&& other )
+PTile& PTile::operator=( PTile&& other )
 {
-	assign(other);
+	assign(std::move(other));
 	return *this;
 }
 
 void PTile::assign( const PTile& other )
 {
-	mData = other.mData->clone();
+	mData = other.mData ? other.mData->clone() : nullptr ;
 }
 
 void PTile::assign( PTile&& other )

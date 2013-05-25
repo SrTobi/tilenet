@@ -62,7 +62,7 @@ public:
 	~PTile();
 
 	PTile& operator =(const PTile& other);
-	PTile& operator =(const PTile&& other);
+	PTile& operator =(PTile&& other);
 
 	void assign(const PTile& other);
 	void assign(PTile&& other);
