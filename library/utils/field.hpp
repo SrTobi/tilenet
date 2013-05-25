@@ -21,6 +21,7 @@ public:
 
 	Field(const size_type& size)
 		: mStorage(size.area())
+		, mSize(size)
 	{
 	}
 
