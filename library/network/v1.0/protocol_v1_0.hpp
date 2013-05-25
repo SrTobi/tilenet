@@ -4,7 +4,9 @@
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/list.hpp>
+#include <boost/serialization/vector.hpp>
 
+#include <vector>
 
 #include "settings.hpp"
 #include "../protocol.hpp"
@@ -96,7 +98,7 @@ PROTOCOL_MESSAGE(LayerControl_SendFullLayer, to_client)
 {
 	TNID layerId;
 	uint16 xratio, yratio, width, height;
-	std::list<net::PTile> layerContent;
+	std::vector<net::PTile> layerContent;
 
 	PROTOCOL_SERIALIZER(ar)
 	{
