@@ -26,7 +26,7 @@ public:
 	virtual OVERRIDE shared_ptr<TilenetObject> clone();
 	virtual OVERRIDE void flush();
 
-	virtual OVERRIDE net::PTile&& constructTile(TNTILE* tile);
+	virtual OVERRIDE net::PTile constructTile(TNTILE* tile);
 	const string& getTileName(TNID id) const;
 
 private:

@@ -62,7 +62,7 @@ TNID StdTileset::registerTile( const string& name, TNID id )
 	return id;
 }
 
-OVERRIDE net::PTile&& StdTileset::constructTile(TNTILE* tile)
+OVERRIDE net::PTile StdTileset::constructTile(TNTILE* tile)
 {
 	tnAssert(tile->tileset == id());
 
