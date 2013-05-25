@@ -132,10 +132,10 @@ typedef struct TilenetEvent
 	TNEVTYPE		type;			//! Type of an event
 	TNPARTICIPANT	participant;	//! Participant the event coming from
 
-	typedef union
+	union
 	{
 		//! In case of an keyevent this will contain information
-		typedef struct
+		struct
 		{
 			TNID	cmd;		//! An associated command
 			wchar_t ch;			//! The character pressed on the keyboard
@@ -147,17 +147,17 @@ typedef struct TilenetEvent
 
 typedef struct TilenetTile
 {
-	TNTILESET tileset;
+	TNID tileset;
 
-	typedef union
+	union
 	{
-		typedef struct {
+		struct {
 			TNID	id;
 			TNFLAG	modifier;
 			TNCOLOR color;
 		} stdset;
 
-		typedef struct {
+		struct {
 			wchar_t ch;
 			TNFLAG	modifier;
 			TNCOLOR color;
@@ -209,7 +209,6 @@ TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen
 /**** participant managment ****/
 TNAPI TNERROR tilenet_kick(TNPARTICIPANT participant, const wchar_t* reason);
 TNAPI TNERROR tilenet_attach_layer(TNPARTICIPANT participant, TNLAYER layer);
-TNAPI TNERROR tilenet_attach_cmdset(TNPARTICIPANT participant, TNCMDSET set);
 
 /**** layer: frame ****/
 TNAPI TNERROR tilenet_create_frame(TNLAYER* frame, TNFLAG flags);
@@ -226,10 +225,6 @@ TNAPI TNERROR tilenet_put_tile(TNLAYER layer, unsigned int x, unsigned int y, TN
 TNAPI TNERROR tilenet_create_tileset(TNTILESET* set, const wchar_t* name, TNFLAG flags);
 TNAPI TNERROR tilenet_register_tile(TNTILESET set, const wchar_t* name, TNID* id);
 
-/**** commands ****/
-TNAPI TNERROR tilenet_create_commandset(TNCMDSET* set, const wchar_t* name);
-TNAPI TNERROR tilenet_inherit_commands(TNCMDSET base, TNCMDSET derive);
-TNAPI TNERROR tilenet_add_command(TNCMDSET set, const wchar_t* name, const wchar_t* defkey, TNID* id);
 
 #ifdef __cplusplus
 }

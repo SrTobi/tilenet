@@ -16,7 +16,7 @@
 #include "server/tile_layer.hpp"
 
 #include "server/commandset.hpp"
-#include "server/tileset.hpp"
+#include "server/std_tileset.hpp"
 
 #include "server/participant.hpp"
 
@@ -474,15 +474,6 @@ TNAPI TNERROR tilenet_attach_layer( TNPARTICIPANT participant, TNLAYER layer )
 	} AUTO_CATCH(true);
 }
 
-TNAPI TNERROR tilenet_attach_cmdset( TNPARTICIPANT participant, TNCMDSET set )
-{
-	CHECK_NULL(set);
-
-	try {
-		NOT_IMPLEMENTED();
-
-	} AUTO_CATCH(true);
-}
 
 TNAPI TNERROR tilenet_create_frame( TNLAYER* frame, TNFLAG flags )
 {
@@ -557,7 +548,7 @@ TNAPI TNERROR tilenet_create_tileset( TNTILESET* set, const wchar_t* name, TNFLA
 	CHECK_NULL(name);
 
 	try {
-		*set = new srv::Tileset(name, flags);
+		*set = new srv::StdTileset(name, flags);
 		srv::Tileset::Register((*set)->self<srv::Tileset>());
 
 		return TNOK;
@@ -566,7 +557,7 @@ TNAPI TNERROR tilenet_create_tileset( TNTILESET* set, const wchar_t* name, TNFLA
 
 TNAPI TNERROR tilenet_register_tile( TNTILESET set, const wchar_t* name, TNID* id )
 {
-	CHECK_CAST(_set, set, srv::Tileset);
+	CHECK_CAST(_set, set, srv::StdTileset);
 	CHECK_NULL(name);
 	CHECK_NULL(id);
 
@@ -580,50 +571,6 @@ TNAPI TNERROR tilenet_register_tile( TNTILESET set, const wchar_t* name, TNID* i
 		return TNOK;
 	} AUTO_CATCH(true);
 }
-
-TNAPI TNERROR tilenet_create_commandset( TNCMDSET* set, const wchar_t* name )
-{
-	CHECK_NULL(name);
-
-	try {
-		*set = new srv::CommandSet(name);
-		srv::CommandSet::Register((*set)->self<srv::CommandSet>());
-
-		return TNOK;
-	} AUTO_CATCH(true);
-}
-
-TNAPI TNERROR tilenet_inherit_commands( TNCMDSET base, TNCMDSET derive )
-{
-	CHECK_CAST(_base, base, srv::CommandSet);
-	CHECK_CAST(_derive, derive, srv::CommandSet);
-
-	try {
-		_derive->inherit(base->self<srv::CommandSet>());
-
-		return TNOK;
-	} AUTO_CATCH(true);
-}
-
-TNAPI TNERROR tilenet_add_command( TNCMDSET set, const wchar_t* name, const wchar_t* defkey, TNID* id )
-{
-	CHECK_CAST(_set, set, srv::CommandSet);
-	CHECK_NULL(name);
-	CHECK_NULL(id);
-
-	try {
-		if(*id)
-		{
-			_set->registerCmd(name, defkey, *id);
-		}else{
-			*id = _set->registerCmd(name, defkey);
-		}
-
-		return TNOK;
-	} AUTO_CATCH(true);
-}
-
-
 
 
 
