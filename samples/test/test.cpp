@@ -3,8 +3,30 @@
 
 
 #define EVENT_BUF_LENGTH 100
+#define COL_WHITE 0xFFFFFFFF
 
+TNID testTileId = 0;
+TNID testSetId;
+TNTILESET testSet;
 TNLAYER testLayer;
+
+
+void init_testlayer()
+{
+	tilenet_create_tileset(&testSet, &testSetId, L"test-tileset", 0);
+	tilenet_register_tile(testSet, L"", &testTileId);
+
+	tilenet_create_tilelayer(&testLayer, 10, 10, TNSTDRATIO, TNSTDRATIO, 0);
+
+	TNTILE tile;
+	tile.tileset = testSetId;
+	tile.data.stdset.id = testTileId;
+	tile.data.stdset.color = COL_WHITE;
+	tile.data.stdset.modifier = 0;
+
+	tilenet_put_tile(testLayer, 0, 0, &tile);
+
+}
 
 void do_event(TNEVENT& e)
 {
@@ -35,12 +57,13 @@ int main()
 	config.pkgi = L"test-interface";
 	config.options = 0;
 
+	init_testlayer();
+
 	tilenet_set_service_thread_count(1);
 
 	tilenet_create_server(&srv, &config);
 	tilenet_add_local_acceptor(srv);
 
-	tilenet_create_tilelayer(&testLayer, 10, 10, TNSTDRATIO, TNSTDRATIO, 0);
 
 	while(true)
 	{

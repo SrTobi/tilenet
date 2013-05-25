@@ -222,7 +222,7 @@ TNAPI TNERROR tilenet_create_tilelayer(TNLAYER* layer, unsigned int width, unsig
 TNAPI TNERROR tilenet_put_tile(TNLAYER layer, unsigned int x, unsigned int y, TNTILE* tile);
 
 /**** tileset ****/
-TNAPI TNERROR tilenet_create_tileset(TNTILESET* set, const wchar_t* name, TNFLAG flags);
+TNAPI TNERROR tilenet_create_tileset(TNTILESET* set, TNID* id, const wchar_t* name, TNFLAG flags);
 TNAPI TNERROR tilenet_register_tile(TNTILESET set, const wchar_t* name, TNID* id);
 
 
