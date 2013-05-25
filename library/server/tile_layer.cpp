@@ -7,6 +7,9 @@
 #include "network/message.hpp"
 #include "network/connection_port.hpp"
 
+#include "server/service.hpp"
+#include "server/jobs/send_full_layer_job.hpp"
+
 namespace srv {
 
 
@@ -58,7 +61,8 @@ OVERRIDE shared_ptr<TilenetObject> TileLayer::clone()
 
 OVERRIDE void TileLayer::flush()
 {
-	NOT_IMPLEMENTED();
+	shared_ptr<job::SendFullLayerJob> job(new job::SendFullLayerJob(self<TileLayer>()));
+	Service::Inst().enqueJob(job);
 }
 
 shared_ptr<net::Message> TileLayer::getStateMessage()
