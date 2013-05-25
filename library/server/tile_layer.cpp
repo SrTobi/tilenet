@@ -1,7 +1,9 @@
 #include "includes.hpp"
-#include "server/tile_layer.hpp"
 
-#include "server/layer.hpp"
+#include "tile_layer.hpp"
+#include "tileset.hpp"
+#include "layer.hpp"
+
 #include "network/message.hpp"
 #include "network/connection_port.hpp"
 
@@ -12,11 +14,21 @@ TileLayer::TileLayer(const Rect& size, const Ratio& ratio, TNFLAG flags)
 	: mTileField(size)
 	, mRatio(ratio)
 {
+	clear();
 }
 
 TileLayer::~TileLayer()
 {
 }
+
+
+void TileLayer::clear()
+{
+	// Clear the layer
+	auto& storage = mTileField.storage();
+	memset(storage.data(), 0, storage.size() * sizeof(TNTILE));
+}
+
 
 void TileLayer::putTile(const Point& pos, TNTILE* tile)
 {
@@ -59,6 +71,25 @@ shared_ptr<net::Message> TileLayer::getStateMessage()
 	fullLayer.yratio = ratio().y;
 	fullLayer.width = size().w;
 	fullLayer.height = size().h;
+
+	auto& storage = mTileField.storage();
+	auto& content = fullLayer.layerContent;
+	content.reserve(storage.size());
+
+	for(auto& tile : mTileField.storage())
+	{
+		std::shared_ptr<Tileset> tileset;
+		if(tile.tileset && (tileset = Tileset::Resolve(tile.tileset)))
+		{
+			content.push_back(tileset->constructTile(&tile));
+		}else{
+			content.push_back(net::PTile());
+		}
+	}
+
+	tnAssert(content.size() == size().area());
+	tnAssert(storage.size() == content.size());
+	
 
 	return net::make_message(fullLayer);
 }

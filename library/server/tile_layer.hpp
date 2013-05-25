@@ -23,6 +23,7 @@ public:
 	TileLayer(const Rect& size, const Ratio& ratio, TNFLAG flags);
 	~TileLayer();
 
+	void clear();
 	void putTile(const Point& pos, TNTILE* tile);
 
 	const Ratio& ratio() const;
