@@ -1,7 +1,26 @@
 #include "includes.hpp"
 #include "renderer_v1_0.hpp"
 
+#include "utils/field.hpp"
+
 #include "client/tile_manager.hpp"
+
+
+
+sf::Color to_sf_color(TNCOLOR c)
+{
+	sf::Color color;
+
+	color.a = TNGET_ALPHA(c);
+	color.r = TNGET_RED(c);
+	color.g = TNGET_GREEN(c);
+	color.b = TNGET_BLUE(c);
+
+	return color;
+}
+
+
+
 
 namespace client{
 namespace com {
@@ -12,6 +31,7 @@ class Renderer::Layer
 public:
 
 	virtual void render(sf::RenderTarget& target) = 0;
+	virtual void putTile(const Point& pos, const net::PTile& ptile) = 0;
 
 private:
 };
@@ -25,7 +45,7 @@ private:
 	{
 	public:
 		virtual ~Tile() {}
-		virtual void render(sf::RenderTarget& target) = 0;
+		virtual void render(sf::RenderTarget& target, const Point& pos) = 0;
 	};
 
 	class StdIdTile
@@ -40,7 +60,7 @@ private:
 		{
 		}
 
-		virtual OVERRIDE void render(sf::RenderTarget& target)
+		virtual OVERRIDE void render(sf::RenderTarget& target, const Point& pos)
 		{
 			std::shared_ptr<sf::Sprite> sprite = mSprite.lock();
 
@@ -51,6 +71,7 @@ private:
 
 			if(sprite)
 			{
+				sprite->setPosition(float(pos.x), float(pos.y));
 				sprite->setColor(mColor);
 				target.draw(*sprite);
 			}
@@ -65,19 +86,50 @@ private:
 	};
 public:
 	RenderLayer(const Rect& size, const Ratio& ratio, const shared_ptr<TileManager>& manager)
-		: mSize(size)
-		, mRatio(ratio)
+		: mRatio(ratio)
 		, mTileManager(manager)
+		, mTileField(size)
 	{
 	}
 
 	OVERRIDE void render(sf::RenderTarget& target)
 	{
+		for(unsigned int x = 0; x < mTileField.size().w; ++x)
+		{
+			for(unsigned int y = 0; y < mTileField.size().h; ++y)
+			{
+				Point pos(x, y);
+				auto& tile = mTileField.at(pos);
 
+				if(tile)
+					tile->render(target, pos);
+			}
+		}
 	}
 
+
+	virtual OVERRIDE void putTile(const Point& pos, const net::PTile& ptile)
+	{
+		auto& tile = mTileField.at(pos);
+
+		switch(ptile.type())
+		{
+		case net::PTile::NullTileType:
+			break;
+		case net::PTile::StdTileType:
+			{
+				auto& data = ptile.data<net::StdTileData>();
+				tile.reset(new StdIdTile(data.tile_id, data.tileset_id, to_sf_color(data.color), mTileManager));
+			}
+			break;
+		default:
+			NOT_IMPLEMENTED();
+		}
+	}
+
+
 private:
-	Rect mSize;
+	Field<std::unique_ptr<Tile>> mTileField;
 	Ratio mRatio;
 	shared_ptr<TileManager> mTileManager;
 };
@@ -138,7 +190,14 @@ void Renderer::defineLayer( TNID id, Rect size, Ratio r )
 
 void Renderer::putTile( TNID layerid, Point pos, const net::PTile& tile )
 {
+	auto it = mIdToLayerMapping.find(layerid);
 
+	if(it == mIdToLayerMapping.end())
+	{
+		NOT_IMPLEMENTED();
+	}
+
+	it->second->putTile(pos, tile);
 }
 
 }}}
