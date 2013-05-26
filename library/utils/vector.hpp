@@ -52,6 +52,7 @@ public:
 	inline double distance(const basic_vector2& v) const { return std::sqrt(distanceQuad(v));}
 	inline double distanceQuad(const basic_vector2& v) const { basic_vector2<double> delta(v - *this); delta*=delta; return delta.x + delta.y; }
 	inline bool isInRange(const basic_vector2& v, double epsilon = 0.000000001) const { return distanceQuad(v) < epsilon; }
+	inline T fieldIndex(const T width) const { return width * y + x; }
 
 	operator basic_vector2<int>	 ()		const {return basic_vector2<int>(static_cast<int>(x), static_cast<int>(y));}
 	operator basic_vector2<float> ()	const {return basic_vector2<float>(static_cast<float>(x), static_cast<float>(y));}
