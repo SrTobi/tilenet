@@ -52,7 +52,7 @@ void HandshakeHandler::handleServerInformation( const proto::v1_0::to_client::Ha
 void HandshakeHandler::handleAccessGranted( const proto::v1_0::to_client::Handshake_P4_AcceptesGranted& handshake )
 {
 	// Yea, we 
-	mNextHandler.reset(new MainComHandler(mApp, mPort));
+	mNextHandler = MainComHandler::Create(mApp, mPort);
 }
 
 
