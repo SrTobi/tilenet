@@ -94,14 +94,23 @@ typedef unsigned int	TNRATIO;
 typedef unsigned int	TNID;
 typedef uint32_t		TNPARTICIPANT;
 
-#define TNSTDRATIO				1000
-#define TN_ID_BITLENGTH			28
-#define TN_TAG_BITLENGTH		((sizeof(TNID)*8) - TN_ID_BITLENGTH)
-#define TNEXTRACTTAG(_p)		(_p >> TN_ID_BITLENGTH)
-#define TNEXTRACTID(_p)			(_p & TNMAX_ID)
-#define TNMAX_ID				((1 << TN_ID_BITLENGTH) - 1)
-#define TNMAX_IDTAG				((1 << TN_TAG_BITLENGTH) - 1)
-#define TNMAX_PARTICIPANTS		(TNMAX_ID + 1);
+#define TNSTDRATIO						1000
+#define TN_ID_BITLENGTH					28
+#define TN_TAG_BITLENGTH				((sizeof(TNID)*8) - TN_ID_BITLENGTH)
+#define TNEXTRACTTAG(_p)				(_p >> TN_ID_BITLENGTH)
+#define TNEXTRACTID(_p)					(_p & TNMAX_ID)
+#define TNMAX_ID						((1 << TN_ID_BITLENGTH) - 1)
+#define TNMAX_IDTAG						((1 << TN_TAG_BITLENGTH) - 1)
+#define TNMAX_PARTICIPANTS				(TNMAX_ID + 1);
+#define TNGET_ALPHA(_color)				(((_color) >> 24) & 0xFF)
+#define TNGET_RED(_color)				(((_color) >> 16) & 0xFF)
+#define TNGET_GREEN(_color)				(((_color) >> 8) & 0xFF)
+#define TNGET_BLUE(_color)				((_color) & 0xFF)
+#define TNMAKE_ALPHA(_color)			(((_color) & 0xFF) << 24)
+#define TNMAKE_RED(_color)				(((_color) & 0xFF) << 16)
+#define TNMAKE_GREEN(_color)			(((_color) & 0xFF) << 8)
+#define TNMAKE_BLUE(_color)				((_color) & 0xFF)
+#define TNMAKE_COLOR(_a, _r, _g, _b)	(TNMAKE_ALPHA(_a) | TNMAKE_ALPHA(_r) | TNMAKE_ALPHA(_g) | TNMAKE_ALPHA(_b))
 
 /**** objects ****/
 struct TilenetObject;
