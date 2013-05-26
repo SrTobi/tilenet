@@ -37,7 +37,7 @@ void AttachLayerJob::process()
 	{
 		proto::curv::to_client::LayerControl_AttachLayer attach;
 
-		attach.layerId = mParticipant->id();
+		attach.layerId = mLayer->id();
 		mParticipant->port()->send(net::make_message(attach));
 	}
 
