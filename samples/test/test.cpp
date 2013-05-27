@@ -13,8 +13,8 @@ TNLAYER testLayer;
 
 void init_testlayer()
 {
-	tilenet_create_tileset(&testSet, &testSetId, L"test-tileset", 0);
-	tilenet_register_tile(testSet, L"", &testTileId);
+	tilenet_create_tileset(&testSet, &testSetId, L"#debug-std-tileset", 0);
+	tilenet_register_tile(testSet, L"test-a", &testTileId);
 
 	tilenet_create_tilelayer(&testLayer, 10, 10, TNSTDRATIO, TNSTDRATIO, 0);
 

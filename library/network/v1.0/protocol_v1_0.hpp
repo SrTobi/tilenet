@@ -96,7 +96,7 @@ PROTOCOL_MESSAGE(Request_TileName, to_srv)
 
 	PROTOCOL_SERIALIZER(ar)
 	{
-		ar & tileId;
+		ar & tilesetId & tileId;
 	}
 };
 
@@ -120,7 +120,7 @@ PROTOCOL_MESSAGE(Answer_TileNameRequest, to_client)
 
 	PROTOCOL_SERIALIZER(ar)
 	{
-		ar & tileId & tileName;
+		ar & tilesetId & tileId & tileName;
 	}
 };
 

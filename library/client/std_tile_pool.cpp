@@ -21,7 +21,7 @@ StdTilePool::~StdTilePool()
 
 }
 
-shared_ptr<sf::Sprite> StdTilePool::getStdTile( const string& name )
+shared_ptr<sf::Sprite> StdTilePool::getStdTile( const string& name ) const
 {
 	auto it = mTilesAssociation.find(name);
 
@@ -108,8 +108,8 @@ void StdTilePool::addStdTile( unsigned int col, unsigned int row, const string& 
 						std::make_shared<sf::Sprite>(	mTileImage, 
 														sf::IntRect(col * TILE_WIDTH,
 																	row * TILE_HEIGHT,
-																	(col+1) * TILE_WIDTH,
-																	(row+1) * TILE_HEIGHT
+																	/*(col+1) **/ TILE_WIDTH,
+																	/*(row+1) **/ TILE_HEIGHT
 														)
 			)
 		)

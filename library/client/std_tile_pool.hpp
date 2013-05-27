@@ -2,6 +2,7 @@
 #ifndef _STDTILEPOOL_H
 #define _STDTILEPOOL_H
 
+#include <unordered_map>
 
 
 #include "settings.hpp"
@@ -17,7 +18,7 @@ public:
 	StdTilePool();
 	~StdTilePool();
 
-	shared_ptr<sf::Sprite> getStdTile(const string& name);
+	shared_ptr<sf::Sprite> getStdTile(const string& name) const;
 	bool isStdTileName(const string& name);
 
 	const sf::Texture& getTexture() const;
@@ -28,7 +29,7 @@ private:
 	void addStdTile(unsigned int col, unsigned int row, const string& name);
 	void init();
 
-	std::map<string, shared_ptr<sf::Sprite> > mTilesAssociation;
+	std::unordered_map<string, shared_ptr<sf::Sprite> > mTilesAssociation;
 	sf::Texture mTileImage;
 
 

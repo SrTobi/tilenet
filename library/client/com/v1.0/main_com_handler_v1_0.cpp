@@ -34,6 +34,8 @@ void MainComHandler::init()
 	mRenderer = std::make_shared<Renderer>(mApp->window(), mTileManager);
 
 	mWindow->setLayerRenderer(mRenderer);
+
+	mTileManager->debug_load_test_tileset(L"debug-tileset.txt");
 }
 
 

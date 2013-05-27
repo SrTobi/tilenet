@@ -1,6 +1,9 @@
 #include "includes.hpp"
-#include "tile_manager.hpp"
 
+#include <fstream>
+
+#include "tile_manager.hpp"
+#include "std_tile_pool.hpp"
 
 namespace client {
 
@@ -10,15 +13,35 @@ namespace client {
 class TileManager::Tileset
 {
 public:
+	Tileset()
+		: mTilesetId(0)
+	{
+	}
+
 	virtual ~Tileset() {}
+
+
+	void setId(TNID id)
+	{
+		tnAssert(mTilesetId == 0);
+		mTilesetId = id;
+	}
+
+	TNID id() const
+	{
+		return mTilesetId;
+	}
+
+private:
+	TNID mTilesetId;
 };
 
 class TileManager::StdIdTileset
+	: public Tileset
 {
 public:
 	StdIdTileset(const shared_ptr<RequestService>& service)
 		: mService(service)
-		, mTilesetId(0)
 	{
 	}
 	
@@ -27,18 +50,24 @@ public:
 	}
 
 
-	shared_ptr<sf::Sprite> getSpriteById(TNID id) const
+	shared_ptr<sf::Sprite> getSpriteById(TNID tile_id) const
 	{
-		auto it = mIdToSpriteMapping.find(id);
+		auto it = mIdToSpriteMapping.find(tile_id);
 
 		if(it == mIdToSpriteMapping.end())
 		{
-			tnAssert(mTilesetId);
-			mService->requestStdIdTileName(id, mTilesetId);
+			tnAssert(id());
+			mService->requestStdIdTileName(tile_id, id());
 			return nullptr;
 		}
 
 		return it->second;
+	}
+
+	void addTile(const string& name, const shared_ptr<sf::Sprite>& sprite)
+	{
+		tnAssert(sprite);
+		mNameToSpriteMapping[name] = sprite;
 	}
 
 	void identifyTile(const string& name, TNID id)
@@ -53,17 +82,11 @@ public:
 		mIdToSpriteMapping[id] = it->second;
 	}
 
-	void setId(TNID id)
-	{
-		mTilesetId = id;
-	}
-
 
 private:
 	std::unordered_map<TNID, shared_ptr<sf::Sprite>> mIdToSpriteMapping;
 	std::unordered_map<string, shared_ptr<sf::Sprite>> mNameToSpriteMapping;
 	shared_ptr<RequestService> mService;
-	TNID mTilesetId;
 };
 
 
@@ -113,6 +136,7 @@ void TileManager::identifyTileset( const string& tileset_name, TNID tileset_id )
 		NOT_IMPLEMENTED();
 	}
 
+	it->second->setId(tileset_id);
 	mIdToTilesetMapping[tileset_id] = it->second;
 }
 
@@ -139,7 +163,54 @@ void TileManager::identifyStdIdTile( TNID tileset_id, const string& tile_name, T
 
 void TileManager::debug_load_test_tileset( const string& filename )
 {
-	NOT_IMPLEMENTED();
+	Log loadLog(L"tile-load");
+
+	loadLog.debug() << L"Load debug tileset from \"" << filename << "\"";
+
+	std::wifstream file(filename);
+
+	if(!file.is_open())
+	{
+		loadLog.error() << "Failed to load tile source!";
+		return;
+	}
+
+	auto tileset = std::make_shared<StdIdTileset>(mService);
+	mNameToTilesetMapping[L"#debug-std-tileset"] = tileset;
+
+
+	const auto& pool = StdTilePool::Inst();
+
+
+	string line;
+	int lineNum = 1;
+
+	while(std::getline(file, line))
+	{
+		std::wistringstream iss(line);
+
+		// skip comments
+		if(line.size() && line.find(L"//") == string::npos)
+		{
+			string name;
+			string std_tile_name;
+			iss >> name >> std_tile_name;
+
+			if(iss.fail() || !iss.eof())
+			{
+				loadLog.error() << L"Failed to parse line " << lineNum;
+				return;
+			}
+
+			auto sprite = pool.getStdTile(std_tile_name);
+
+			tileset->addTile(name, sprite);
+		}
+
+		++lineNum;
+	}
+
+	loadLog.debug() << mNameToTilesetMapping.size() << " tiles loaded";
 }
 
 
