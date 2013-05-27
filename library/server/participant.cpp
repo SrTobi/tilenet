@@ -4,6 +4,8 @@
 #include "server.hpp"
 #include "service.hpp"
 #include "event_queue.hpp"
+#include "tileset.hpp"
+#include "std_tileset.hpp"
 
 #include "network/protocol.hpp"
 #include "network/message.hpp"
@@ -38,6 +40,80 @@ private:
 };
 
 
+class Participant::MainStatusHandler
+	: public StatusHandler
+{
+public:
+	MainStatusHandler(Participant* p)
+		: StatusHandler(p)
+	{
+		mDispatcher.add(&MainStatusHandler::handleRequestTilesetName, this);
+		mDispatcher.add(&MainStatusHandler::handleRequestTileName, this);
+	}
+
+
+private:
+	shared_ptr<StatusHandler> onMessage(const shared_ptr<net::Message>& msg)
+	{
+		mDispatcher.dispatch(msg);
+		return mNextHandler;
+	}
+
+	void onDisconnect()
+	{
+		NOT_IMPLEMENTED();
+	}
+
+	void handleRequestTilesetName(const proto::curv::to_srv::Request_TilesetName& req)
+	{
+		auto tileset = Tileset::Resolve(req.tilesetId);
+
+		if(tileset)
+		{
+			proto::curv::to_client::Answer_TilesetNameRequest answ;
+
+			answ.tilesetId = req.tilesetId;
+			answ.tilesetName = tileset->name();
+
+			port()->send(net::make_message(answ));
+		}else{
+			NOT_IMPLEMENTED();
+		}
+	}
+
+	void handleRequestTileName(const proto::curv::to_srv::Request_TileName& req)
+	{
+
+		auto tileset = std::dynamic_pointer_cast<StdTileset>(Tileset::Resolve(req.tilesetId));
+
+		if(!tileset)
+		{
+			NOT_IMPLEMENTED();
+		}
+
+		// Todo: try {} catch
+		const string& tilename = tileset->getTileName(req.tileId);
+
+
+		{
+			proto::curv::to_client::Answer_TileNameRequest answ;
+
+			answ.tilesetId = req.tilesetId;
+			answ.tileId = req.tileId;
+			answ.tileName = tilename;
+
+			port()->send(net::make_message(answ));
+		}
+	}
+
+private:
+	shared_ptr<StatusHandler> mNextHandler;
+	net::Dispatcher mDispatcher;
+};
+
+
+
+
 class Participant::HandshakeStatusHandler
 	: public StatusHandler
 {
@@ -47,6 +123,7 @@ public:
 	{
 		// Register handlers
 		mDispatcher.add(&HandshakeStatusHandler::handleHandshakeConfirmation, this);
+
 
 		// Send some messages to the participant
 		{
@@ -69,6 +146,7 @@ public:
 	}
 
 
+private:
 	shared_ptr<StatusHandler> onMessage(const shared_ptr<net::Message>& msg)
 	{
 		mDispatcher.dispatch(msg);
@@ -80,7 +158,6 @@ public:
 		NOT_IMPLEMENTED();
 	}
 
-private:
 	void handleHandshakeConfirmation(const proto::curv::to_srv::Handshake_P3_accessrequest& confirmation)
 	{
 		if(!confirmation.accept_handshake)
@@ -106,6 +183,7 @@ private:
 			port()->send(net::make_message(granted));
 		}
 		
+		mNextHandler = std::make_shared<MainStatusHandler>(participant());
 	}
 
 
@@ -113,7 +191,6 @@ private:
 	shared_ptr<StatusHandler> mNextHandler;
 	net::Dispatcher mDispatcher;
 };
-
 
 
 Participant::Participant( const shared_ptr<EventQueue>& eventQueue, const shared_ptr<net::ConnectionPort>& port, const shared_ptr<Server>& server)

@@ -8,8 +8,7 @@
 #include "client/client.hpp"
 #include "client/client_window.hpp"
 
-#include "renderer_v1_0.hpp"
-
+#include "network/message.hpp"
 
 namespace client {
 namespace com {
@@ -25,6 +24,8 @@ MainComHandler::MainComHandler( const shared_ptr<ClientApp>& app, const shared_p
 {
 	mDispatcher.add(&MainComHandler::handleLayerControl_attachLayer, this);
 	mDispatcher.add(&MainComHandler::handleLayerControl_sendFullLayer, this);
+	mDispatcher.add(&MainComHandler::handleAnswer_TileNameRequest, this);
+	mDispatcher.add(&MainComHandler::handleAnswer_TilesetNameRequest, this);
 }
 
 void MainComHandler::init()
@@ -84,13 +85,43 @@ shared_ptr<MainComHandler> MainComHandler::Create( const shared_ptr<ClientApp>& 
 
 void MainComHandler::requestTilesetName( TNID id )
 {
-	NOT_IMPLEMENTED();
+	if(mRequestedTilesets.count(id) != 0)
+		return;
+	mRequestedTilesets.insert(id);
+
+	proto::v1_0::to_srv::Request_TilesetName req;
+
+	req.tilesetId = id;
+
+	mPort->send(net::make_message(req));
 }
 
-void MainComHandler::requestStdIdTileName( TNID id )
+void MainComHandler::requestStdIdTileName(TNID tile_id, TNID tileset_id)
 {
-	NOT_IMPLEMENTED();
+	auto id_pair = std::make_pair(tile_id, tileset_id);
+	if(mRequestedTiles.count(id_pair) != 0)
+		return;
+	mRequestedTiles.insert(id_pair);
+
+	proto::v1_0::to_srv::Request_TileName req;
+
+	req.tilesetId = tileset_id;
+	req.tileId = tile_id;
+
+	mPort->send(net::make_message(req));
 }
+
+void MainComHandler::handleAnswer_TileNameRequest( const proto::v1_0::to_client::Answer_TileNameRequest& answ )
+{
+	mTileManager->identifyStdIdTile(answ.tilesetId, answ.tileName, answ.tileId);
+}
+
+void MainComHandler::handleAnswer_TilesetNameRequest( const proto::v1_0::to_client::Answer_TilesetNameRequest& answ )
+{
+	mTileManager->identifyTileset(answ.tilesetName, answ.tilesetId);
+}
+
+
 
 
 

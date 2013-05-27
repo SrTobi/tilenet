@@ -2,6 +2,8 @@
 #ifndef _MAIN_COM_HANDLER_V1_0_HPP
 #define _MAIN_COM_HANDLER_V1_0_HPP
 
+#include <unordered_set>
+
 #include "settings.hpp"
 
 #include "network/dispatcher.hpp"
@@ -42,13 +44,15 @@ public:
 
 private:
 	virtual OVERRIDE void requestTilesetName( TNID id );
-	virtual OVERRIDE void requestStdIdTileName( TNID id );
+	virtual OVERRIDE void requestStdIdTileName(TNID tile_id, TNID tileset_id );
 
 
 private:
 	void handleLayerControl_attachLayer(const proto::v1_0::to_client::LayerControl_AttachLayer& msg);
 	void handleLayerControl_sendFullLayer(const proto::v1_0::to_client::LayerControl_SendFullLayer& msg);
 
+	void handleAnswer_TileNameRequest(const proto::v1_0::to_client::Answer_TileNameRequest& answ);
+	void handleAnswer_TilesetNameRequest(const proto::v1_0::to_client::Answer_TilesetNameRequest& answ);
 private:
 	shared_ptr<ComHandler> mNextHandler;
 	net::Dispatcher mDispatcher;
@@ -57,6 +61,9 @@ private:
 	shared_ptr<ClientWindow> mWindow;
 	shared_ptr<Renderer> mRenderer;
 	shared_ptr<TileManager> mTileManager;
+
+	std::unordered_set<TNID> mRequestedTilesets;
+	std::unordered_set<std::pair<TNID, TNID>> mRequestedTiles;
 };
 
 

@@ -26,6 +26,7 @@ class Participant
 private:
 	class StatusHandler;
 	class HandshakeStatusHandler;
+	class MainStatusHandler;
 public:
 	~Participant();
 

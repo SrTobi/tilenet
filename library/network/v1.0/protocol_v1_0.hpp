@@ -26,8 +26,10 @@ namespace ids {
 namespace to_srv {
 
 	enum Ids {
-		Handshake_P3_accessrequest	= 0x10
+		Handshake_P3_accessrequest	= 0x10,
 
+		Request_TilesetName			= 0x31,
+		Request_TileName				= 0x32
 	};
 
 }
@@ -42,7 +44,10 @@ namespace to_client {
 		LayerControl_AttachLayer		= 0x90,
 		LayerControl_SendFrame			= 0x91,
 		LayerControl_SendFullLayer		= 0x92,
-		LayerConrtol_RemoveLayer		= 0x93
+		LayerConrtol_RemoveLayer		= 0x93,
+
+		Answer_TilesetNameRequest		= 0xA0,
+		Answer_TileNameRequest			= 0xA1
 	};
 
 }
@@ -73,6 +78,53 @@ PROTOCOL_MESSAGE(Handshake_P3_accessrequest, to_srv)
 		ar & accept_handshake;
 	}
 };
+
+PROTOCOL_MESSAGE(Request_TilesetName, to_srv)
+{
+	TNID tilesetId;
+
+	PROTOCOL_SERIALIZER(ar)
+	{
+		ar & tilesetId;
+	}
+};
+
+PROTOCOL_MESSAGE(Request_TileName, to_srv)
+{
+	TNID tilesetId;
+	TNID tileId;
+
+	PROTOCOL_SERIALIZER(ar)
+	{
+		ar & tileId;
+	}
+};
+
+
+PROTOCOL_MESSAGE(Answer_TilesetNameRequest, to_client)
+{
+	TNID tilesetId;
+	string tilesetName;
+
+	PROTOCOL_SERIALIZER(ar)
+	{
+		ar & tilesetId & tilesetName;
+	}
+};
+
+PROTOCOL_MESSAGE(Answer_TileNameRequest, to_client)
+{
+	TNID tilesetId;
+	TNID tileId;
+	string tileName;
+
+	PROTOCOL_SERIALIZER(ar)
+	{
+		ar & tileId & tileName;
+	}
+};
+
+
 
 PROTOCOL_MESSAGE(Handshake_P4_AcceptesGranted, to_client)
 {

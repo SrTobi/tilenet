@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <string>
 #include <memory>
+#include <functional>
 
 
 #include "tilenet.h"
@@ -66,6 +67,19 @@ typedef basic_vector2<unsigned int> Point;
 typedef basic_vector2<unsigned int> Rect;
 typedef basic_vector2<TNRATIO>		Ratio;
 typedef basic_vector2<float>		Vector;
+
+
+template<typename _Ty1, typename _Ty2>
+struct std::hash<std::pair<_Ty1, _Ty2> >
+{
+	std::hash<_Ty1> hash1;
+	std::hash<_Ty2> hash2;
+public:
+	size_t operator()(const std::pair<_Ty1, _Ty2>& p) const throw() {
+		return hash1(p.first) + hash2(p.second);
+	}
+};
+
 
 /// @endcond
 
