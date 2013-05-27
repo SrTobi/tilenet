@@ -110,7 +110,7 @@ typedef uint32_t		TNPARTICIPANT;
 #define TNMAKE_RED(_color)				(((_color) & 0xFF) << 16)
 #define TNMAKE_GREEN(_color)			(((_color) & 0xFF) << 8)
 #define TNMAKE_BLUE(_color)				((_color) & 0xFF)
-#define TNMAKE_COLOR(_a, _r, _g, _b)	(TNMAKE_ALPHA(_a) | TNMAKE_ALPHA(_r) | TNMAKE_ALPHA(_g) | TNMAKE_ALPHA(_b))
+#define TNMAKE_COLOR(_a, _r, _g, _b)	(TNMAKE_ALPHA(_a) | TNMAKE_RED(_r) | TNMAKE_GREEN(_g) | TNMAKE_BLUE(_b))
 
 /**** objects ****/
 struct TilenetObject;
