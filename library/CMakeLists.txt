@@ -4,9 +4,10 @@ macro(add_current_directory_to_library_source)
 	# Glob files of this scope
 	file(GLOB library_current_source "*.cpp")
 	file(GLOB library_current_includes "*.hpp")
+	file(GLOB library_current_inline "*.inl")
 
 	# add source to library_source
-	set(library_source "${library_source};${library_current_source};${library_current_includes}" PARENT_SCOPE)
+	set(library_source "${library_source};${library_current_source};${library_current_includes};${library_current_inline}" PARENT_SCOPE)
 endmacro(add_current_directory_to_library_source)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
@@ -41,7 +42,7 @@ foreach(f ${library_source})
 
 	if(ending STREQUAL ".hpp")
 		set(striped "include/${striped}")
-	elseif(ending STREQUAL ".cpp")
+	elseif(ending STREQUAL ".cpp" OR ending STREQUAL ".inl")
 		set(striped "source/${striped}")
 	else()
 		message(FATAL_ERROR "'${ending}' is an unknown extension!")
