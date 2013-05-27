@@ -40,6 +40,8 @@ public:
 private:
 	shared_ptr<Layer> layer(TNID id) const;
 
+	void calculateView(sf::RenderTarget& target, const shared_ptr<Layer>& layer);
+
 private:
 	shared_ptr<TileManager> mTileManager;
 	weak_ptr<sf::RenderTarget> mTarget;

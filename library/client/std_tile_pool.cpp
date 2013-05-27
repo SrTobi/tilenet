@@ -102,18 +102,9 @@ void StdTilePool::loadTextureFromSource( const sf::Uint8* src, unsigned int leng
 
 void StdTilePool::addStdTile( unsigned int col, unsigned int row, const string& name )
 {
-	mTilesAssociation.insert(
-		std::make_pair(
-						name,
-						std::make_shared<sf::Sprite>(	mTileImage, 
-														sf::IntRect(col * TILE_WIDTH,
-																	row * TILE_HEIGHT,
-																	/*(col+1) **/ TILE_WIDTH,
-																	/*(row+1) **/ TILE_HEIGHT
-														)
-			)
-		)
-	);
+	auto sprite = std::make_shared<sf::Sprite>(mTileImage, sf::IntRect(col * TILE_WIDTH, row * TILE_HEIGHT, /*(col+1) **/ TILE_WIDTH, /*(row+1) **/ TILE_HEIGHT));
+	sprite->setScale(1.0f / 8.0f, 1.0f / 12.0f);
+	mTilesAssociation.insert(std::make_pair(name, sprite));
 }
 
 

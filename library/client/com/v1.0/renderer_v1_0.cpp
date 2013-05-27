@@ -32,7 +32,7 @@ public:
 
 	virtual void render(sf::RenderTarget& target) = 0;
 	virtual void putTile(const Point& pos, const net::PTile& ptile) = 0;
-
+	virtual void getBounds(Rect& ratioSize, Rect& tileSize) const = 0;
 private:
 };
 
@@ -107,6 +107,10 @@ public:
 		}
 	}
 
+	virtual OVERRIDE void getBounds(Rect& ratioSize, Rect& tileSize) const
+	{
+		tileSize = mTileField.size();
+	}
 
 	virtual OVERRIDE void putTile(const Point& pos, const net::PTile& ptile)
 	{
@@ -161,8 +165,14 @@ void Renderer::render(sf::RenderTarget& target)
 	// Render layers
 	auto topLayer = layer(mTopLayerId);
 
+
 	if(topLayer)
+	{
+		sf::View view = target.getView();
+		calculateView(target, topLayer);
 		topLayer->render(target);
+		target.setView(view);
+	}
 }
 
 
@@ -198,6 +208,28 @@ void Renderer::putTile( TNID layerid, Point pos, const net::PTile& tile )
 	}
 
 	it->second->putTile(pos, tile);
+}
+
+void Renderer::calculateView(sf::RenderTarget& target, const shared_ptr<Layer>& layer)
+{
+	Rect fieldSize;
+	Rect ratioSize;
+
+	sf::Vector2u win_size = target.getSize();
+
+	layer->getBounds(ratioSize, fieldSize);
+	
+	Point center = fieldSize / 2;
+
+	sf::View view(sf::FloatRect(0, 0, fieldSize.x, fieldSize.y));
+
+	Vector rsize((float(fieldSize.x) * 8.0f) / float(win_size.x), (float(fieldSize.y) * 12.0f) / float(win_size.y));
+
+	view.setViewport(sf::FloatRect(	0.5f - rsize.w / (2.0f),
+									0.5f - rsize.h / (2.0f),
+									rsize.w, rsize.h));
+
+	target.setView(view);
 }
 
 }}}

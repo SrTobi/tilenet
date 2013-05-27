@@ -26,6 +26,11 @@ void init_testlayer()
 
 	tilenet_put_tile(testLayer, 0, 0, &tile);
 
+	tile.data.stdset.color = TNMAKE_COLOR(0xff, 0, 0xff, 0);
+	tilenet_put_tile(testLayer, 1, 0, &tile);
+
+	tile.data.stdset.color = TNMAKE_COLOR(0xff, 0xff, 0, 0);
+	tilenet_put_tile(testLayer, 9, 9, &tile);
 }
 
 void do_event(TNEVENT& e)
