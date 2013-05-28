@@ -4,6 +4,7 @@
 
 
 #include <boost/serialization/access.hpp>
+#include <boost/serialization/base_object.hpp>
 #include "settings.hpp"
 
 
@@ -87,13 +88,7 @@ public:
 
 private:
 	template<typename Archive>
-	void serialize(Archive& ar, unsigned int version)
-	{
-		ar.template register_type<TileDataContainer<StdTileData>>();
-		ar.template register_type<TileDataContainer<CharTileData>>();
-		ar & mData;
-	}
-
+	void serialize(Archive& ar, unsigned int version);
 
 private:
 	std::unique_ptr<DataContainer> mData;
@@ -132,13 +127,13 @@ struct CharTileData
 	}
 };
 
-
-
-
-
-
-
+template<typename Archive>
+void PTile::serialize(Archive& ar, unsigned int version)
+{
+	ar.template register_type<TileDataContainer<StdTileData>>();
+	ar.template register_type<TileDataContainer<CharTileData>>();
+	ar & mData;
 }
 
-
+}
 #endif
