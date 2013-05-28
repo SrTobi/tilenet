@@ -167,7 +167,7 @@ void TileManager::debug_load_test_tileset( const string& filename )
 
 	loadLog.debug() << L"Load debug tileset from \"" << filename << "\"";
 
-	std::wifstream file(filename);
+	std::wifstream file(lexical_convert<std::string>(filename));
 
 	if(!file.is_open())
 	{
