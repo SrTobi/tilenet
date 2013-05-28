@@ -32,7 +32,7 @@ class ComHandlerFactorySpecialization
 public:
 	virtual OVERRIDE shared_ptr<ComHandler> create(const shared_ptr<ClientApp>& app, const shared_ptr<net::ConnectionPort>& port)
 	{
-		return shared_ptr<ComHandler>(new Handler(app, port));
+		return std::make_shared<Handler>(app, port);
 	}
 };
 

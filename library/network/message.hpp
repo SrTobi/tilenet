@@ -46,7 +46,7 @@ shared_ptr<Message> make_message(const proto::MsgFormat<Id, V>& msg)
 
 	std::vector<byte> buffer(buf.begin(), buf.end());
 
-	return shared_ptr<Message>(new Message(Id, std::move(buffer)));
+	return std::make_shared<Message>(Id, std::move(buffer));
 }
 
 

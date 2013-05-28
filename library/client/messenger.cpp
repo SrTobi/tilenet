@@ -51,7 +51,7 @@ void Messenger::render(sf::RenderTarget& g)
 
 void Messenger::add(const string& text, sf::Color color)
 {
-	shared_ptr<Entry> entry(new Entry(text, mFont));
+	shared_ptr<Entry> entry = std::make_shared<Entry>(text, mFont);
 	entry->myText.setColor(color);
 	entry->myText.setCharacterSize(mTextSize);
 	mEntries.push_back(entry);

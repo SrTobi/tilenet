@@ -25,7 +25,7 @@ OVERRIDE void Acceptor::flush()
 
 
 Server::Server(const TNSVRCONFIG* init)
-	: mEvents(new EventQueue())
+	: mEvents(std::make_shared<EventQueue>())
 	, mServerName(init->name)
 	, mServerInfo(init->info)
 	, mPackageName(init->pkg)

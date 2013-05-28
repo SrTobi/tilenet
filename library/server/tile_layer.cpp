@@ -61,7 +61,7 @@ OVERRIDE shared_ptr<TilenetObject> TileLayer::clone()
 
 OVERRIDE void TileLayer::flush()
 {
-	shared_ptr<job::SendFullLayerJob> job(new job::SendFullLayerJob(self<TileLayer>()));
+	shared_ptr<job::SendFullLayerJob> job = std::make_shared<job::SendFullLayerJob>(self<TileLayer>());
 	Service::Inst().enqueJob(job);
 }
 

@@ -212,7 +212,7 @@ void Participant::init()
 	mPort->setDisconnectHandler(std::bind(&Participant::handleDisconnect, shared_from_this()));
 	mPort->setHandler(std::bind(&Participant::handleMessage, shared_from_this(), _1));
 
-	mHandler.reset(new HandshakeStatusHandler(this));
+	mHandler = std::make_shared<HandshakeStatusHandler>(this);
 }
 
 void Participant::kick( const string& reason )
@@ -223,7 +223,7 @@ void Participant::kick( const string& reason )
 void Participant::attachLayer( const shared_ptr<Layer>& layer )
 {
 	mAttachedLayer = layer;
-	shared_ptr<job::AttachLayerJob> job(new job::AttachLayerJob(shared_from_this(), layer));
+	shared_ptr<job::AttachLayerJob> job = std::make_shared<job::AttachLayerJob>(shared_from_this(), layer);
 	Service::Inst().enqueJob(job);
 }
 

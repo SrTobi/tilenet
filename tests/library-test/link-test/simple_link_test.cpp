@@ -14,7 +14,7 @@ public:
 
 	static shared_ptr<SimpleLinkHolder> Create()
 	{
-		shared_ptr<SimpleLinkHolder> p(new SimpleLinkHolder());
+		shared_ptr<SimpleLinkHolder> p = std::make_shared<SimpleLinkHolder>();
 		p->link.bind(p);
 
 		return p;

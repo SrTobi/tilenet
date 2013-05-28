@@ -22,7 +22,7 @@ ClientApp::ClientApp()
 	: log(L"client")
 	, mFrameRate(30.0)
 	, mWindowProcessTimer(mService)
-	, mMessenger(new Messenger(10, std::chrono::milliseconds(2000), 13))
+	, mMessenger(std::make_shared<Messenger>(10, std::chrono::milliseconds(2000), 13))
 {
 	if(Singleton)
 	{
@@ -61,7 +61,7 @@ boost::asio::io_service& ClientApp::service()
 void ClientApp::run()
 {
 	// Setup window and its initialization
-	mWindow.reset(new ClientWindow(shared_from_this(), mMessenger));
+	mWindow = std::make_shared<ClientWindow>(shared_from_this(), mMessenger);
 	mService.post(std::bind(&ClientWindow::init, mWindow));
 
 	// Setup window processing
@@ -93,7 +93,7 @@ void ClientApp::postConnection( const shared_ptr<net::ConnectionPort>& port )
 void ClientApp::handleNewConnection( const shared_ptr<net::ConnectionPort>& port )
 {
 	mPort = port;
-	mComHandler.reset(new com::ProtocolVersionSelect(shared_from_this(), port));
+	mComHandler = std::make_shared<com::ProtocolVersionSelect>(shared_from_this(), port);
 	mPort->setHandler(std::bind(&ClientApp::handleMessage, shared_from_this(), std::placeholders::_1));
 }
 

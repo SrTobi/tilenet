@@ -43,7 +43,7 @@ public:
 		using namespace std::placeholders;
 
 		//add(std::bind(func, context, _1));
-		shared_ptr<DispatchHandler<Id, V>> handler(new DispatchHandler<Id, V>(std::bind(func, context, _1)));
+		shared_ptr<DispatchHandler<Id, V>> handler = std::make_shared<DispatchHandler<Id, V>>(std::bind(func, context, _1));
 		mHandlers.emplace(Id, std::bind(&DispatchHandler<Id, V>::handle, handler, _1));
 	}
 

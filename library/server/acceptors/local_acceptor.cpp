@@ -19,7 +19,7 @@ LocalAcceptor::~LocalAcceptor()
 
 OVERRIDE void LocalAcceptor::start()
 {
-	shared_ptr<client::ClientApp> cl(new client::ClientApp());
+	shared_ptr<client::ClientApp> cl = std::make_shared<client::ClientApp>();
 	shared_ptr<net::ConnectionPort> theirPort;
 
 	std::tie(mPort, theirPort) = net::LocalConnectionPort::Create(Service::Inst(), cl->service());
