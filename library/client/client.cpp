@@ -73,7 +73,7 @@ void ClientApp::run()
 
 	} catch(...) {
 		log.error()
-			<< L"Exception in worker thread!"
+			<< L"Exception in client thread!"
 			<< L"\n------------------------\n"
 			<< lexical_convert<string>(boost::current_exception_diagnostic_information())
 			<< L"\n------------------------";
@@ -99,7 +99,6 @@ void ClientApp::handleNewConnection( const shared_ptr<net::ConnectionPort>& port
 
 void ClientApp::handleMessage( const shared_ptr<net::Message>& msg )
 {
-	mMessenger->add(L"Message!!!");
 	tnAssert(mComHandler);
 	auto newHandler = mComHandler->handleMessage(msg);
 	if(newHandler)
