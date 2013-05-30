@@ -17,11 +17,10 @@ namespace v1_0 {
 
 
 
-MainComHandler::MainComHandler( const shared_ptr<ClientApp>& app, const shared_ptr<net::ConnectionPort>& port )
-	: mApp(app)
+MainComHandler::MainComHandler( ClientApp& app, const shared_ptr<net::ConnectionPort>& port ) : mApp(app)
 	, mPort(port)
-	, mWindow(app->window())
-{
+	, mWindow(app.window())
+	{
 	mDispatcher.add(&MainComHandler::handleLayerControl_attachLayer, this);
 	mDispatcher.add(&MainComHandler::handleLayerControl_sendFullLayer, this);
 	mDispatcher.add(&MainComHandler::handleAnswer_TileNameRequest, this);
@@ -31,7 +30,7 @@ MainComHandler::MainComHandler( const shared_ptr<ClientApp>& app, const shared_p
 void MainComHandler::init()
 {
 	mTileManager = std::make_shared<TileManager>(std::static_pointer_cast<MainComHandler>(shared_from_this()));
-	mRenderer = std::make_shared<Renderer>(mApp->window(), mTileManager);
+	mRenderer = std::make_shared<Renderer>(mApp.window(), mTileManager);
 
 	mWindow->setLayerRenderer(mRenderer);
 
@@ -78,7 +77,7 @@ void MainComHandler::handleLayerControl_sendFullLayer( const proto::v1_0::to_cli
 	}
 }
 
-shared_ptr<MainComHandler> MainComHandler::Create( const shared_ptr<ClientApp>& app, const shared_ptr<net::ConnectionPort>& port )
+shared_ptr<MainComHandler> MainComHandler::Create( ClientApp& app, const shared_ptr<net::ConnectionPort>& port )
 {
 	shared_ptr<MainComHandler> ptr(new MainComHandler(app, port));
 	ptr->init();

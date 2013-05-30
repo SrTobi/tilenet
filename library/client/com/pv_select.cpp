@@ -7,7 +7,7 @@
 namespace client {
 namespace com {
 
-ProtocolVersionSelect::ProtocolVersionSelect(const shared_ptr<ClientApp>& app, const shared_ptr<net::ConnectionPort>& port)
+ProtocolVersionSelect::ProtocolVersionSelect(ClientApp& app, const shared_ptr<net::ConnectionPort>& port)
 	: mApp(app)
 	, mPort(port)
 {

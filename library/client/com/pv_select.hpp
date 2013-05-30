@@ -22,7 +22,7 @@ namespace com {
 class ComHandlerFactory
 {
 public:
-	virtual shared_ptr<ComHandler> create(const shared_ptr<ClientApp>& app, const shared_ptr<net::ConnectionPort>&) = 0;
+	virtual shared_ptr<ComHandler> create(ClientApp& app, const shared_ptr<net::ConnectionPort>&) = 0;
 };
 
 template<typename Handler>
@@ -30,7 +30,7 @@ class ComHandlerFactorySpecialization
 	: public ComHandlerFactory
 {
 public:
-	virtual OVERRIDE shared_ptr<ComHandler> create(const shared_ptr<ClientApp>& app, const shared_ptr<net::ConnectionPort>& port)
+	virtual OVERRIDE shared_ptr<ComHandler> create(ClientApp& app, const shared_ptr<net::ConnectionPort>& port)
 	{
 		return std::make_shared<Handler>(app, port);
 	}
@@ -40,7 +40,7 @@ class ProtocolVersionSelect
 	: public ComHandler
 {
 public:
-	ProtocolVersionSelect(const shared_ptr<ClientApp>& app, const shared_ptr<net::ConnectionPort>& port);
+	ProtocolVersionSelect(ClientApp& app, const shared_ptr<net::ConnectionPort>& port);
 	~ProtocolVersionSelect();
 
 	virtual OVERRIDE shared_ptr<ComHandler> handleMessage(const shared_ptr<net::Message>&);
@@ -54,7 +54,7 @@ private:
 	void handleHandshake(const proto::ComInitializing_ProtocolVersion& p);
 
 private:
-	shared_ptr<ClientApp> mApp;
+	ClientApp& mApp;
 	shared_ptr<net::ConnectionPort> mPort;
 	shared_ptr<ComHandler> mSelectedVersion;
 	

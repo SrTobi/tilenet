@@ -23,6 +23,7 @@ class ClientWindow;
 
 class ClientApp
 	: public std::enable_shared_from_this<ClientApp>
+	, boost::noncopyable
 {
 	typedef boost::asio::basic_waitable_timer<std::chrono::steady_clock> steady_timer;
 public:

@@ -10,7 +10,7 @@ namespace client {
 
 
 
-ClientWindow::ClientWindow(const shared_ptr<ClientApp>& app, const shared_ptr<Messenger>& messenger)
+ClientWindow::ClientWindow(ClientApp& app, const shared_ptr<Messenger>& messenger)
 	: mApp(app)
 	, mMessenger(messenger)
 {
@@ -36,9 +36,7 @@ void ClientWindow::process()
 	// Check for the window
 	if(!mRenderWindow.isOpen())
 	{
-		auto app = mApp.lock();
-		tnAssert(app);
-		app->stop();
+		mApp.stop();
 	}
 
 	// Process event loop

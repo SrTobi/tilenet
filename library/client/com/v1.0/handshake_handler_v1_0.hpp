@@ -27,7 +27,7 @@ class HandshakeHandler
 	: public ComHandler
 {
 public:
-	HandshakeHandler(const shared_ptr<ClientApp>& app, const shared_ptr<net::ConnectionPort>& port);
+	HandshakeHandler(ClientApp& app, const shared_ptr<net::ConnectionPort>& port);
 	~HandshakeHandler();
 
 	virtual OVERRIDE shared_ptr<ComHandler> handleMessage(const shared_ptr<net::Message>&);
@@ -38,7 +38,7 @@ private:
 private:
 	shared_ptr<ComHandler> mNextHandler;
 	net::Dispatcher mDispatcher;
-	const shared_ptr<ClientApp> mApp;
+	ClientApp& mApp;
 	const shared_ptr<net::ConnectionPort> mPort;
 };
 

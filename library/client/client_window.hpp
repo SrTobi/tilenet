@@ -16,7 +16,7 @@ class Messenger;
 class ClientWindow
 {
 public:
-	ClientWindow(const shared_ptr<ClientApp>& app, const shared_ptr<Messenger>& messenger);
+	ClientWindow(ClientApp& app, const shared_ptr<Messenger>& messenger);
 	~ClientWindow();
 
 	void init();
@@ -29,7 +29,7 @@ private:
 	shared_ptr<RenderInterface> mRenderer;
 	shared_ptr<Messenger> mMessenger;
 
-	weak_ptr<ClientApp> mApp;
+	ClientApp& mApp;
 };
 
 

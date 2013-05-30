@@ -11,11 +11,10 @@ namespace com {
 namespace v1_0 {
 
 
-HandshakeHandler::HandshakeHandler(const shared_ptr<ClientApp>& app, const shared_ptr<net::ConnectionPort>& port)
+HandshakeHandler::HandshakeHandler(ClientApp& app, const shared_ptr<net::ConnectionPort>& port)
 	: mApp(app)
 	, mPort(port)
 {
-	tnAssert(app);
 	tnAssert(port);
 
 	mDispatcher.add(&HandshakeHandler::handleServerInformation, this);
