@@ -13,11 +13,22 @@ LocalConnectionPort::LocalConnectionPort( boost::asio::io_service& service )
 
 LocalConnectionPort::~LocalConnectionPort()
 {
+	LocalConnectionPort::onMakeDisconnect();
+}
+
+OVERRIDE void LocalConnectionPort::onMakeDisconnect()
+{
 	shared_ptr<LocalConnectionPort> other = mConnectedPort.lock();
 
+	mConnectedPort.reset();
+
 	if(other)
-		other->mService.post(std::bind(&LocalConnectionPort::handleDisconnect, other));
+	{
+		other->disconnect();
+		mService.post(std::bind(&LocalConnectionPort::handleDisconnect, shared_from_this()));
+	}
 }
+
 
 OVERRIDE void LocalConnectionPort::send( const std::shared_ptr<Message>& msg )
 {
@@ -37,5 +48,13 @@ std::tuple<shared_ptr<LocalConnectionPort>, shared_ptr<LocalConnectionPort>> Loc
 
 	return std::make_tuple(p1, p2);
 }
+
+
+bool LocalConnectionPort::isConnected() const
+{
+	return bool(mConnectedPort.lock());
+}
+
+
 
 }

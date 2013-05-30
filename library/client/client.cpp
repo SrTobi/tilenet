@@ -14,7 +14,7 @@ namespace client {
 
 
 
-std::unique_ptr<ClientApp> ClientApp::Singleton;
+ClientApp* ClientApp::Singleton;
 
 
 
@@ -29,12 +29,12 @@ ClientApp::ClientApp()
 		// Client already exists
 		NOT_IMPLEMENTED();
 	}
-	Singleton.reset(this);
+	Singleton =this;
 }
 
 ClientApp::~ClientApp()
 {
-	Singleton.reset();
+	Singleton = nullptr;
 }
 
 void ClientApp::start()
@@ -68,9 +68,8 @@ void ClientApp::run()
 	mService.post(std::bind(&ClientApp::processWindow, shared_from_this()));
 
 	try {
-		tnAssert(mBusyWork);
 		mService.run();
-
+		disconnect();
 	} catch(...) {
 		log.error()
 			<< L"Exception in client thread!"
@@ -81,9 +80,18 @@ void ClientApp::run()
 #ifdef TILENET_RETHROW_THREAD_EXCEPTIONS
 		throw;
 #endif
-
 	}
 }
+
+
+void ClientApp::disconnect()
+{
+	if(mPort)
+		mPort->disconnect();
+	mPort.reset();
+}
+
+
 
 void ClientApp::postConnection( const shared_ptr<net::ConnectionPort>& port )
 {
@@ -94,16 +102,9 @@ void ClientApp::handleNewConnection( const shared_ptr<net::ConnectionPort>& port
 {
 	mPort = port;
 	mComHandler = std::make_shared<com::ProtocolVersionSelect>(*this, port);
-	mPort->setHandler(std::bind(&ClientApp::handleMessage, shared_from_this(), std::placeholders::_1));
+	mPort->setHandler(shared_from_this());
 }
 
-void ClientApp::handleMessage( const shared_ptr<net::Message>& msg )
-{
-	tnAssert(mComHandler);
-	auto newHandler = mComHandler->handleMessage(msg);
-	if(newHandler)
-		mComHandler = newHandler;
-}
 
 ClientWindow& ClientApp::window() const
 {
@@ -125,6 +126,9 @@ void ClientApp::processWindow()
 	// call this function again, but wait until one frame time has expired
 	auto timeInFrameLeft(timePerFrame - (end - start));
 
+	if(!mBusyWork)
+		return;
+
 	auto callBinding(std::bind(&ClientApp::processWindow, shared_from_this()));
 
 	if(timeInFrameLeft.count() <= 0)
@@ -135,6 +139,21 @@ void ClientApp::processWindow()
 		mWindowProcessTimer.async_wait(std::move(callBinding));
 	}
 }
+
+
+void ClientApp::onReceive( const shared_ptr<net::Message>& msg )
+{
+	tnAssert(mComHandler);
+	auto newHandler = mComHandler->handleMessage(msg);
+	if(newHandler)
+		mComHandler = newHandler;
+}
+
+OVERRIDE void ClientApp::onDisconnect()
+{
+
+}
+
 
 
 

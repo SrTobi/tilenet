@@ -66,13 +66,6 @@ bool Server::fetchNextEvent( TNEVENT* dest, size_t* timeout )
 	}
 }
 
-void Server::addAcceptor(const std::shared_ptr<Acceptor>& acceptor)
-{
-	mAcceptors.push_back(acceptor);
-	acceptor->start();
-}
-
-
 std::shared_ptr<Participant> Server::addParticipant( const shared_ptr<net::ConnectionPort>& conport )
 {
 	shared_ptr<Participant> participant = Participant::Create(mEvents, conport, self<Server>());

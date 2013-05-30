@@ -5,10 +5,12 @@
 #define EVENT_BUF_LENGTH 100
 #define COL_WHITE 0xFFFFFFFF
 
+TNSERVER srv;
 TNID testTileId = 0;
 TNID testSetId;
 TNTILESET testSet;
 TNLAYER testLayer;
+TNACCEPTOR local_acceptor;
 
 
 void init_testlayer()
@@ -44,6 +46,8 @@ void do_event(TNEVENT& e)
 		break;
 	case TNEV_DISCONNECT:
 		std::cout << "Player disconnected!\n";
+		tilenet_add_local_acceptor(0, srv);
+
 		break;
 	default:
 		break;
@@ -54,7 +58,6 @@ void do_event(TNEVENT& e)
 
 int main()
 {
-	TNSERVER srv;
 	TNSVRCONFIG config;
 	config.name = L"test";
 	config.info = L"simple tilenet test";
@@ -64,10 +67,10 @@ int main()
 
 	init_testlayer();
 
-	tilenet_set_service_thread_count(1);
+	tilenet_set_service_thread_count(6);
 
 	tilenet_create_server(&srv, &config);
-	tilenet_add_local_acceptor(srv);
+	tilenet_add_local_acceptor(0, srv);
 
 
 	while(true)

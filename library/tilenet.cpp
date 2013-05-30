@@ -417,20 +417,28 @@ TNAPI TNERROR tilenet_add_listen_acceptor(TNSERVER server, unsigned short port, 
 
 	try {
 		auto* acceptor = new srv::ListenAcceptor(port, maxc);
-		_server->addAcceptor(acceptor->self<srv::Acceptor>());
+		acceptor->start();
 
 		return TNOK;
 	} AUTO_CATCH(true);
 }
 
-TNAPI TNERROR tilenet_add_local_acceptor(TNSERVER server)
+TNAPI TNERROR tilenet_add_local_acceptor(TNACCEPTOR* acceptor, TNSERVER server)
 {
 	CHECK_NULL(server);
 	CHECK_OBJ(_server, server, srv::Server);
 
 	try {
-		auto* acceptor = new srv::LocalAcceptor(_server->self<srv::Server>());
-		_server->addAcceptor(acceptor->self<srv::Acceptor>());
+		auto* _acceptor = new srv::LocalAcceptor(_server->self<srv::Server>());
+		_acceptor->start();
+
+		if(acceptor)
+		{
+			*acceptor = _acceptor;
+		}else{
+			_acceptor->uncouple();
+			tilenet_destroy(_acceptor);
+		}
 
 		return TNOK;
 	} AUTO_CATCH(true);

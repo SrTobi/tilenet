@@ -90,7 +90,7 @@ IdObject<T>::~IdObject()
 	const id_type rawId = TNEXTRACTID(id());
 
 	tnAssert(Objects.size() > rawId);
-	tnAssert(Objects[rawId].lock().get() == this);
+	tnAssert(Objects[rawId].lock().get() == nullptr);
 
 	Objects[rawId].reset();
 	FreeList.push(rawId);

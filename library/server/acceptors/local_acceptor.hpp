@@ -6,6 +6,10 @@
 #include "server/server.hpp"
 #include "network/connection_port.hpp"
 
+namespace client {
+	class ClientApp;
+}
+
 namespace srv {
 
 class Service;
@@ -18,14 +22,19 @@ public:
 	LocalAcceptor(const shared_ptr<Server>& server);
 	~LocalAcceptor();
 
+	void uncouple();
+
 	virtual OVERRIDE void start();
 	virtual OVERRIDE void stop();
 	virtual OVERRIDE void destroy();
 	virtual OVERRIDE shared_ptr<TilenetObject> clone();
 
 private:
+	static LocalAcceptor* Singleton;
+
 	shared_ptr<net::ConnectionPort> mPort;
 	shared_ptr<Server> mServer;
+	weak_ptr<client::ClientApp> mClient;
 };
 
 

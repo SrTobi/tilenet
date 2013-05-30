@@ -6,6 +6,7 @@
 #include "settings.hpp"
 
 #include "network/protocol.hpp"
+#include "network/connection_port.hpp"
 
 namespace net {
 	class ConnectionPort;
@@ -22,6 +23,7 @@ class Layer;
 class Participant
 	: public std::enable_shared_from_this<Participant>
 	, public IdObject<Participant>
+	, public net::ConnectionPort::Handler
 {
 private:
 	class StatusHandler;
@@ -42,8 +44,8 @@ private:
 
 	void init();
 
-	void handleMessage(const shared_ptr<net::Message>& msg);
-	void handleDisconnect();
+	void onReceive(const shared_ptr<net::Message>& msg);
+	void onDisconnect();
 
 private:
 	const shared_ptr<Server> mServer;

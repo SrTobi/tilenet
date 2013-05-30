@@ -23,6 +23,7 @@ class ClientWindow;
 
 class ClientApp
 	: public std::enable_shared_from_this<ClientApp>
+	, public net::ConnectionPort::Handler
 	, boost::noncopyable
 {
 	typedef boost::asio::basic_waitable_timer<std::chrono::steady_clock> steady_timer;
@@ -39,9 +40,12 @@ public:
 	boost::asio::io_service& service();
 private:
 	void run();
+	void disconnect();
 	void handleNewConnection(const shared_ptr<net::ConnectionPort>& port);
-	void handleMessage(const shared_ptr<net::Message>& msg);
 	void processWindow();
+
+	OVERRIDE void onReceive(const shared_ptr<net::Message>& msg);
+	OVERRIDE void onDisconnect();
 private:
 	boost::asio::io_service mService;
 	std::shared_ptr<com::ComHandler> mComHandler;
@@ -54,7 +58,7 @@ private:
 	Log	log;
 
 
-	static std::unique_ptr<ClientApp> Singleton;
+	static ClientApp* Singleton;
 };
 
 

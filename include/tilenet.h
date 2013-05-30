@@ -121,6 +121,7 @@ typedef TNOBJ TNSERVER;
 typedef TNOBJ TNLAYER;
 typedef TNOBJ TNTILESET;
 typedef TNOBJ TNCMDSET;
+typedef TNOBJ TNACCEPTOR;
 
 
 /**** structs ****/
@@ -212,7 +213,7 @@ TNAPI TNERROR tilenet_set_service_thread_count(size_t count);
 /**** server management ****/
 TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init);
 TNAPI TNERROR tilenet_add_listen_acceptor(TNSERVER server, unsigned short port, unsigned int maxc);
-TNAPI TNERROR tilenet_add_local_acceptor(TNSERVER server);
+TNAPI TNERROR tilenet_add_local_acceptor(TNACCEPTOR* acceptor, TNSERVER server);
 TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen, size_t* fetched, size_t* timeout);
 
 /**** participant managment ****/

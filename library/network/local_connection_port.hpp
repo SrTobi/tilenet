@@ -21,13 +21,15 @@ public:
 
 	virtual OVERRIDE void send(const std::shared_ptr<Message>& msg);
 
-
 	static std::tuple<shared_ptr<LocalConnectionPort>, shared_ptr<LocalConnectionPort>> Create(boost::asio::io_service& s1, boost::asio::io_service& s2);
 private:
 	LocalConnectionPort(boost::asio::io_service& service);
 
+	virtual OVERRIDE void onMakeDisconnect();
+	virtual OVERRIDE bool isConnected() const;
+
+
 private:
-	handler_type mHandler;
 	boost::asio::io_service& mService;
 	weak_ptr<LocalConnectionPort> mConnectedPort;
 };

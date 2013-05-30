@@ -48,6 +48,7 @@ void ThreadPool::setThreadCount(size_t count)
 	}else{
 		mWork.reset();
 	}
+	log.info() << L"thread count is now " << mThreads.size();
 }
 
 
@@ -78,7 +79,6 @@ void ThreadPool::runThread()
 					mWork.reset(new io_service::work(mService));
 				}
 			}
-			log.info() << L"thread count is now " << mThreads.size();
 		}
 	}catch(...)
 	{

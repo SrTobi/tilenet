@@ -6,6 +6,7 @@
 #include "event_queue.hpp"
 #include "tileset.hpp"
 #include "std_tileset.hpp"
+#include "layer_link_manager.hpp"
 
 #include "network/protocol.hpp"
 #include "network/message.hpp"
@@ -61,7 +62,20 @@ private:
 
 	void onDisconnect()
 	{
-		NOT_IMPLEMENTED();
+		{
+			auto& llm = LayerLinkManager::Inst();
+
+			llm.unlinkParticipant(participant()->shared_from_this());
+		}
+
+		// Send event
+		{
+			TNEVENT event;
+			event.type = TNEV_DISCONNECT;
+			event.participant = participant()->id();
+
+			equeue()->push(event);
+		}
 	}
 
 	void handleRequestTilesetName(const proto::curv::to_srv::Request_TilesetName& req)
@@ -155,7 +169,9 @@ private:
 
 	void onDisconnect()
 	{
-		NOT_IMPLEMENTED();
+		// Hmm... maybe he has changed his mind..
+		//NOT_IMPLEMENTED();
+		/* Do nothing */
 	}
 
 	void handleHandshakeConfirmation(const proto::curv::to_srv::Handshake_P3_accessrequest& confirmation)
@@ -202,15 +218,15 @@ Participant::Participant( const shared_ptr<EventQueue>& eventQueue, const shared
 
 Participant::~Participant()
 {
-	NOT_IMPLEMENTED();
+
 }
 
 void Participant::init()
 {
 	using namespace std::placeholders;
 
-	mPort->setDisconnectHandler(std::bind(&Participant::handleDisconnect, shared_from_this()));
-	mPort->setHandler(std::bind(&Participant::handleMessage, shared_from_this(), _1));
+	mPort->setHandler(shared_from_this());
+	mPort->bind(shared_from_this());
 
 	mHandler = std::make_shared<HandshakeStatusHandler>(this);
 }
@@ -227,7 +243,7 @@ void Participant::attachLayer( const shared_ptr<Layer>& layer )
 	Service::Inst().enqueJob(job);
 }
 
-void Participant::handleMessage( const shared_ptr<net::Message>& msg )
+void Participant::onReceive( const shared_ptr<net::Message>& msg )
 {
 	shared_ptr<StatusHandler> handler = mHandler->onMessage(msg);
 
@@ -235,7 +251,7 @@ void Participant::handleMessage( const shared_ptr<net::Message>& msg )
 		mHandler = handler;
 }
 
-void Participant::handleDisconnect()
+void Participant::onDisconnect()
 {
 	mHandler->onDisconnect();
 }

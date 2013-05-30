@@ -6,34 +6,43 @@
 #include "settings.hpp"
 
 
-
 namespace net {
 
 class Message;
 
 
 class ConnectionPort
+	: public std::enable_shared_from_this<ConnectionPort>
 {
 public:
-	typedef std::function<void()> disconnect_handler_type;
-	typedef std::function<void(const std::shared_ptr<Message>&)> handler_type;
-	ConnectionPort();
-	~ConnectionPort();
+	struct Handler
+	{
+		virtual ~Handler() {}
 
-	virtual void send(const std::shared_ptr<Message>& msg) = 0;
+		virtual void onReceive(const std::shared_ptr<Message>& msg) = 0;
+		virtual void onDisconnect() = 0;
+	};
+
+	ConnectionPort();
+	virtual ~ConnectionPort();
+
 	
-	void setHandler(const handler_type& func);
-	void setDisconnectHandler(const disconnect_handler_type& func);
-	bool hasHandler() const;
-	bool hasDisconnectHandler() const;
+	virtual void send(const std::shared_ptr<Message>& msg) = 0;
+	virtual bool isConnected() const = 0;
+
+	void disconnect();
+	void setHandler(const shared_ptr<Handler>& handler);
+	void bind(const shared_ptr<Handler>& binding);
+	shared_ptr<Handler> handler() const;
 protected:
+	virtual void onMakeDisconnect() = 0;
 	virtual void onHandlerSet();
 	void handleReceive(const std::shared_ptr<Message>& msg) const;
-	void handleDisconnect() const;
+	void handleDisconnect();
 
 private:
-	handler_type mHandler;
-	disconnect_handler_type mDisconnectHandler;
+	weak_ptr<Handler> mHandler;
+	shared_ptr<Handler> mBinding;
 };
 
 

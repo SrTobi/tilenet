@@ -15,22 +15,20 @@ ConnectionPort::~ConnectionPort()
 {
 }
 
-
-void ConnectionPort::setDisconnectHandler( const disconnect_handler_type& func )
+void ConnectionPort::setHandler(const shared_ptr<Handler>& handler)
 {
-	mDisconnectHandler = func;
-}
-
-void ConnectionPort::setHandler( const handler_type& func )
-{
-	mHandler = func;
+	mHandler = handler;
 	onHandlerSet();
 }
 
 void ConnectionPort::handleReceive( const std::shared_ptr<Message>& msg) const
 {
-	if(hasHandler())
-		mHandler(msg);
+	auto h = handler();
+
+	if(h)
+	{
+		h->onReceive(msg);
+	}
 }
 
 void ConnectionPort::onHandlerSet()
@@ -38,21 +36,37 @@ void ConnectionPort::onHandlerSet()
 	/* Do nothing */
 }
 
-bool ConnectionPort::hasHandler() const
+shared_ptr<ConnectionPort::Handler> ConnectionPort::handler() const
 {
-	return bool(mHandler);
+	return mHandler.lock();
 }
 
-bool ConnectionPort::hasDisconnectHandler() const
+
+void ConnectionPort::handleDisconnect()
 {
-	return bool(mDisconnectHandler);
+	auto h = handler();
+
+	if(h)
+	{
+		h->onDisconnect();
+	}
 }
 
-void ConnectionPort::handleDisconnect() const
+void ConnectionPort::disconnect()
 {
-	if(hasDisconnectHandler())
-		handleDisconnect();
+	if(!isConnected())
+		return;
+
+	onMakeDisconnect();
+	mBinding.reset();
 }
+
+void ConnectionPort::bind( const shared_ptr<Handler>& binding )
+{
+	mBinding = binding;
+}
+
+
 
 
 }
