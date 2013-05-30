@@ -70,7 +70,7 @@ private:
 };
 
 template<typename T>
-typename IdObject<T>::list_type IdObject<T>::Objects;
+typename IdObject<T>::list_type IdObject<T>::Objects(1);
 
 template<typename T>
 typename IdObject<T>::queue_type IdObject<T>::FreeList;
