@@ -15,7 +15,6 @@
 #include "server/layer.hpp"
 #include "server/tile_layer.hpp"
 
-#include "server/commandset.hpp"
 #include "server/std_tileset.hpp"
 
 #include "server/participant.hpp"
