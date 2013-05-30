@@ -146,7 +146,7 @@ private:
 
 
 
-Renderer::Renderer( const shared_ptr<ClientWindow>& window, const shared_ptr<TileManager>& manager)
+Renderer::Renderer(ClientWindow& window, const shared_ptr<TileManager>& manager)
 	: mWindow(window)
 	, mTileManager(manager)
 {

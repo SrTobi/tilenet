@@ -58,7 +58,7 @@ private:
 	net::Dispatcher mDispatcher;
 	ClientApp& mApp;
 	shared_ptr<net::ConnectionPort> mPort;
-	shared_ptr<ClientWindow> mWindow;
+	ClientWindow& mWindow;
 	shared_ptr<Renderer> mRenderer;
 	shared_ptr<TileManager> mTileManager;
 

@@ -34,7 +34,7 @@ public:
 	void postConnection(const shared_ptr<net::ConnectionPort>& port);
 	void stop(bool now = false);
 
-	const std::shared_ptr<ClientWindow>& window() const;
+	ClientWindow& window() const;
 
 	boost::asio::io_service& service();
 private:
@@ -46,7 +46,7 @@ private:
 	boost::asio::io_service mService;
 	std::shared_ptr<com::ComHandler> mComHandler;
 	std::shared_ptr<net::ConnectionPort> mPort;
-	std::shared_ptr<ClientWindow> mWindow;
+	std::unique_ptr<ClientWindow> mWindow;
 	std::shared_ptr<Messenger> mMessenger;
 	std::unique_ptr<boost::asio::io_service::work> mBusyWork;
 	steady_timer mWindowProcessTimer;

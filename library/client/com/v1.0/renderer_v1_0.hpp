@@ -28,7 +28,7 @@ class Renderer
 	class FrameLayer;
 	class RenderLayer;
 public:
-	Renderer(const shared_ptr<ClientWindow>& window, const shared_ptr<TileManager>& manager);
+	Renderer(ClientWindow& window, const shared_ptr<TileManager>& manager);
 	~Renderer();
 
 	virtual OVERRIDE void render(sf::RenderTarget& target);
@@ -44,8 +44,7 @@ private:
 
 private:
 	shared_ptr<TileManager> mTileManager;
-	weak_ptr<sf::RenderTarget> mTarget;
-	weak_ptr<ClientWindow> mWindow;
+	ClientWindow& mWindow;
 
 	std::unordered_map<TNID, shared_ptr<Layer>> mIdToLayerMapping;
 	TNID mTopLayerId;

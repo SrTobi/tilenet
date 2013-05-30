@@ -61,8 +61,8 @@ boost::asio::io_service& ClientApp::service()
 void ClientApp::run()
 {
 	// Setup window and its initialization
-	mWindow = std::make_shared<ClientWindow>(*this, mMessenger);
-	mService.post(std::bind(&ClientWindow::init, mWindow));
+	mWindow.reset(new ClientWindow(*this, mMessenger));
+	mService.post(std::bind(&ClientWindow::init, mWindow.get()));
 
 	// Setup window processing
 	mService.post(std::bind(&ClientApp::processWindow, shared_from_this()));
@@ -87,7 +87,7 @@ void ClientApp::run()
 
 void ClientApp::postConnection( const shared_ptr<net::ConnectionPort>& port )
 {
-	mService.post(std::bind(&ClientApp::handleNewConnection, shared_from_this(), port));
+	mService.post(std::bind(&ClientApp::handleNewConnection, this, port));
 }
 
 void ClientApp::handleNewConnection( const shared_ptr<net::ConnectionPort>& port )
@@ -105,9 +105,10 @@ void ClientApp::handleMessage( const shared_ptr<net::Message>& msg )
 		mComHandler = newHandler;
 }
 
-const std::shared_ptr<ClientWindow>& ClientApp::window() const
+ClientWindow& ClientApp::window() const
 {
-	return mWindow;
+	tnAssert(mWindow);
+	return *mWindow;
 }
 
 void ClientApp::processWindow()

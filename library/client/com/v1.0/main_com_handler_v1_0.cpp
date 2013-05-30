@@ -20,7 +20,7 @@ namespace v1_0 {
 MainComHandler::MainComHandler( ClientApp& app, const shared_ptr<net::ConnectionPort>& port ) : mApp(app)
 	, mPort(port)
 	, mWindow(app.window())
-	{
+{
 	mDispatcher.add(&MainComHandler::handleLayerControl_attachLayer, this);
 	mDispatcher.add(&MainComHandler::handleLayerControl_sendFullLayer, this);
 	mDispatcher.add(&MainComHandler::handleAnswer_TileNameRequest, this);
@@ -32,7 +32,7 @@ void MainComHandler::init()
 	mTileManager = std::make_shared<TileManager>(std::static_pointer_cast<MainComHandler>(shared_from_this()));
 	mRenderer = std::make_shared<Renderer>(mApp.window(), mTileManager);
 
-	mWindow->setLayerRenderer(mRenderer);
+	mWindow.setLayerRenderer(mRenderer);
 
 	mTileManager->debug_load_test_tileset(L"debug-tileset.txt");
 }
