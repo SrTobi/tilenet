@@ -43,10 +43,10 @@ void do_event(TNEVENT& e)
 		std::cout << "Player connected!\n";
 
 		tilenet_attach_layer(e.participant, testLayer);
+		tilenet_kick(e.participant, L"no reason");
 		break;
 	case TNEV_DISCONNECT:
 		std::cout << "Player disconnected!\n";
-		tilenet_add_local_acceptor(0, srv);
 
 		break;
 	default:
@@ -67,7 +67,7 @@ int main()
 
 	init_testlayer();
 
-	tilenet_set_service_thread_count(6);
+	tilenet_set_service_thread_count(1);
 
 	tilenet_create_server(&srv, &config);
 	tilenet_add_local_acceptor(0, srv);

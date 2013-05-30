@@ -17,6 +17,7 @@ class ComHandler
 	: public std::enable_shared_from_this<ComHandler>
 {
 public:
+	virtual ~ComHandler() {}
 	virtual shared_ptr<ComHandler> handleMessage(const shared_ptr<net::Message>&) = 0;
 };
 

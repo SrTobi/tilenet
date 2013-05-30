@@ -151,7 +151,8 @@ void ClientApp::onReceive( const shared_ptr<net::Message>& msg )
 
 OVERRIDE void ClientApp::onDisconnect()
 {
-
+	mMessenger->add(L"Disconnected!!!", sf::Color::Red);
+	mComHandler = nullptr;
 }
 
 

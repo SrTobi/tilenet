@@ -233,7 +233,9 @@ void Participant::init()
 
 void Participant::kick( const string& reason )
 {
-	NOT_IMPLEMENTED();
+	IMPLEMENTATION_TODO("send reason");
+
+	mPort->disconnect();
 }
 
 void Participant::attachLayer( const shared_ptr<Layer>& layer )
