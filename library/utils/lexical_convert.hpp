@@ -2,6 +2,10 @@
 #ifndef _LEXICAL_CONVERT_HPP
 #define _LEXICAL_CONVERT_HPP
 
+#ifdef WIN32
+# include <codecvt>
+#endif
+
 /// @cond DEV
 #include <SFML/System/String.hpp>
 #include <boost/lexical_cast.hpp>
