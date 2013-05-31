@@ -15,7 +15,7 @@ TNACCEPTOR local_acceptor;
 
 void init_testlayer()
 {
-	tilenet_register_stdtile(L"test-a", &testTileId);
+	tilenet_stdtile(L"test-a", &testTileId);
 
 	tilenet_create_tilelayer(&testLayer, 10, 10, TNSTDRATIO, TNSTDRATIO, 0);
 

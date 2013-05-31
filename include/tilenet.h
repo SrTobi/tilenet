@@ -36,6 +36,7 @@ extern "C" {
 #define TNNULLARG			((TNERROR)100)	//!< Indicates, that a given argument was null but must not be null
 #define TNBADID				((TNERROR)101)	//!< Indicates, that a given id does not exist
 #define TNBADTYPE			((TNERROR)103)	//!< The object had the wrong type
+#define TNEMPTY				((TNERROR)104)	//!< An argument was empty (e.g. a string)
 
 #define TNNOERROR			((TNERROR)200)	//!< There was no last error 
 #define TNINFONOTSET		((TNERROR)201)	//!< Wanted info was not set for the error
@@ -245,7 +246,7 @@ TNAPI TNERROR tilenet_create_tilelayer(TNLAYER* layer, unsigned int width, unsig
 TNAPI TNERROR tilenet_put_tile(TNLAYER layer, unsigned int x, unsigned int y, TNTILE* tile);
 
 /**** tileset ****/
-TNAPI TNERROR tilenet_register_stdtile(const wchar_t* name, TNID* id);
+TNAPI TNERROR tilenet_stdtile(const wchar_t* name, TNID* id);
 
 
 #ifdef __cplusplus

@@ -225,6 +225,7 @@ void copy_string(const string& src, wchar_t* dest, size_t buflen)
 
 #define CHECK_RETURN(_cond, _ret)	if(!(_cond)){return (_ret);}
 #define CHECK_NULL(_expr)			CHECK_RETURN(_expr, TNNULLARG)
+#define CHECK_EMPTY(_str)			CHECK_RETURN(*(_str), TNEMPTY)
 #define CHECK_IF_ERROR()			CHECK_RETURN(LastThreadError.get(), TNNOERROR)
 #define CHECK_CAST(_dest, _src, _type)	auto* _dest = dynamic_cast<_type*>(_src); CHECK_RETURN(_dest, TNBADTYPE);
 #define CHECK_OBJ(_dest, _src, _type)	CHECK_CAST(_tmp_##_dest, _src, _type); auto _dest = _tmp_##_dest->self<_type>();
@@ -335,6 +336,7 @@ TNAPI TNERROR tilenet_get_info_list(TNERRINFO* dest, size_t buflen, size_t* copi
  *
  * \note This function can not fail.
  * \note This function will not modify the internal (error)state!
+ * \note Trivial argument errors are not stored
  *
  **/
 TNAPI TNERROR tilenet_get_last_error()
@@ -563,13 +565,13 @@ TNAPI TNERROR tilenet_put_tile( TNLAYER layer, unsigned int x, unsigned int y, T
 }
 
 
-TNAPI TNERROR tilenet_register_stdtile(const wchar_t* name, TNID* id )
+TNAPI TNERROR tilenet_stdtile(const wchar_t* name, TNID* id )
 {
 	CHECK_NULL(name);
 	CHECK_NULL(id);
 
 	try {
-		*id = srv::StdTileset::Inst().registerTile(name);
+		*id = srv::StdTileset::Inst().getTileId(name);
 		return TNOK;
 	} AUTO_CATCH(true);
 }

@@ -9,7 +9,7 @@ namespace srv {
 
 
 StdTileset::StdTileset()
-	: mNextId(1)
+	: mTileIdToNameMapping(1)
 {
 }
 
@@ -19,33 +19,36 @@ StdTileset::~StdTileset()
 
 
 
-TNID StdTileset::registerTile( const string& name )
+TNID StdTileset::getTileId( const string& name )
 {
 	std::lock_guard<std::mutex> lock(mMutex);
 
 	// Find next free id
-	while(mTiles.find(mNextId) != mTiles.end())
+	auto it = mTileNameToIdMapping.find(name);
+	if(it != mTileNameToIdMapping.end())
 	{
-		++mNextId;
+		return it->second;
 	}
 
-	mTiles[mNextId] = name;
+	TNID newId = mTileIdToNameMapping.size();
 
-	return mNextId++;
+	mTileIdToNameMapping.push_back(name);
+	mTileNameToIdMapping[name] = newId;
+
+	return newId;
 }
 
 
 const string& StdTileset::getTileName( TNID id ) const
 {
 	std::lock_guard<std::mutex> lock(mMutex);
-	auto it = mTiles.find(id);
-
-	if(it == mTiles.end())
+	
+	if(id >= mTileIdToNameMapping.size() || mTileIdToNameMapping.at(id).empty())
 	{
 		NOT_IMPLEMENTED();
 	}
 
-	return it->second;
+	return mTileIdToNameMapping.at(id);
 }
 
 StdTileset& StdTileset::Inst()

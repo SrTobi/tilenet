@@ -18,16 +18,15 @@ public:
 	StdTileset();
 	~StdTileset();
 
-	TNID registerTile(const string& name);
-
+	TNID getTileId(const string& name);
 	const string& getTileName(TNID id) const;
 
 	static StdTileset& Inst();
 
 private:
 	mutable std::mutex mMutex;
-	std::unordered_map<TNID, string> mTiles;
-	TNID mNextId;
+	std::unordered_map<string, TNID>  mTileNameToIdMapping;
+	std::vector<string> mTileIdToNameMapping;
 };
 
 
