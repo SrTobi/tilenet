@@ -23,8 +23,7 @@ MainComHandler::MainComHandler( ClientApp& app, const shared_ptr<net::Connection
 {
 	mDispatcher.add(&MainComHandler::handleLayerControl_attachLayer, this);
 	mDispatcher.add(&MainComHandler::handleLayerControl_sendFullLayer, this);
-	mDispatcher.add(&MainComHandler::handleAnswer_TileNameRequest, this);
-	mDispatcher.add(&MainComHandler::handleAnswer_TilesetNameRequest, this);
+	mDispatcher.add(&MainComHandler::handleAnswer_StdTileNameRequest, this);
 }
 
 void MainComHandler::init()
@@ -84,42 +83,22 @@ shared_ptr<MainComHandler> MainComHandler::Create( ClientApp& app, const shared_
 	return ptr;
 }
 
-void MainComHandler::requestTilesetName( TNID id )
+void MainComHandler::requestStdTileName(TNID tile_id)
 {
-	if(mRequestedTilesets.count(id) != 0)
+	if(mRequestedStdTiles.count(tile_id) != 0)
 		return;
-	mRequestedTilesets.insert(id);
+	mRequestedStdTiles.insert(tile_id);
 
-	proto::v1_0::to_srv::Request_TilesetName req;
+	proto::v1_0::to_srv::Request_StdTileName req;
 
-	req.tilesetId = id;
-
-	mPort->send(net::make_message(req));
-}
-
-void MainComHandler::requestStdIdTileName(TNID tile_id, TNID tileset_id)
-{
-	auto id_pair = std::make_pair(tile_id, tileset_id);
-	if(mRequestedTiles.count(id_pair) != 0)
-		return;
-	mRequestedTiles.insert(id_pair);
-
-	proto::v1_0::to_srv::Request_TileName req;
-
-	req.tilesetId = tileset_id;
 	req.tileId = tile_id;
 
 	mPort->send(net::make_message(req));
 }
 
-void MainComHandler::handleAnswer_TileNameRequest( const proto::v1_0::to_client::Answer_TileNameRequest& answ )
+void MainComHandler::handleAnswer_StdTileNameRequest( const proto::v1_0::to_client::Answer_StdTileNameRequest& answ )
 {
-	mTileManager->identifyStdIdTile(answ.tilesetId, answ.tileName, answ.tileId);
-}
-
-void MainComHandler::handleAnswer_TilesetNameRequest( const proto::v1_0::to_client::Answer_TilesetNameRequest& answ )
-{
-	mTileManager->identifyTileset(answ.tilesetName, answ.tilesetId);
+	mTileManager->identifyStdTile(answ.tileName, answ.tileId);
 }
 
 

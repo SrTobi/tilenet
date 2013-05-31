@@ -7,28 +7,13 @@ namespace net {
 
 
 PTile::PTile()
+	: mData(TNTILE::nullset_type())
 {
 }
 
-PTile::PTile( TNID tileset_id, TNID tile_id, TNFLAG modifier, TNCOLOR color )
+PTile::PTile(const TNTILE& tile)
 {
-	CREATE_CONTAINER(StdTileData);
-
-	data.tileset_id = tileset_id;
-	data.tile_id = tile_id;
-	data.modifier = modifier;
-	data.color = color;
-}
-
-PTile::PTile( TNID tileset_id, wchar_t c, TNFLAG modifier, TNCOLOR color )
-{
-
-	CREATE_CONTAINER(CharTileData);
-
-	data.tileset_id = tileset_id;
-	data.character = c;
-	data.modifier = modifier;
-	data.color = color;
+	assign(tile);
 }
 
 PTile::PTile( const PTile& other )
@@ -48,9 +33,7 @@ PTile::~PTile()
 
 PTile::TileType PTile::type() const
 {
-	if(!mData)
-		return NullTileType;
-	return mData->type();
+	return TileType(mData.which());
 }
 
 PTile& PTile::operator=( const PTile& other )
@@ -65,14 +48,39 @@ PTile& PTile::operator=( PTile&& other )
 	return *this;
 }
 
+PTile& PTile::operator=( const TNTILE& tile )
+{
+	assign(tile);
+	return *this;
+}
+
 void PTile::assign( const PTile& other )
 {
-	mData = other.mData ? other.mData->clone() : nullptr ;
+	mData = other.mData;
 }
 
 void PTile::assign( PTile&& other )
 {
 	mData = std::move(other.mData);
+}
+
+void PTile::assign(const TNTILE& tile)
+{
+	switch(tile.type)
+	{
+	case TN_NULL_TILE:
+		mData = TNTILE::nullset_type();
+		break;
+	case TN_STD_TILE:
+		mData = tile.data.stdset;
+		break;
+	case TN_CHAR_TILE:
+		mData = tile.data.charset;
+		break;
+	default:
+		IMPLEMENTATION_TODO("DO something, that this is reported to the user!");
+		tnAssert(!"This is not a valid tile type!");
+	}
 }
 
 

@@ -18,8 +18,7 @@ class TileManager
 public:
 	struct RequestService
 	{
-		virtual void requestTilesetName(TNID id) = 0;
-		virtual void requestStdIdTileName(TNID tile_id, TNID tileset_id) = 0;
+		virtual void requestStdTileName(TNID tile_id) = 0;
 	};
 
 
@@ -31,14 +30,13 @@ public:
 
 	void debug_load_test_tileset(const string& filename);
 
-	shared_ptr<sf::Sprite> getSpriteFromStdIdTileset(TNID tileset_id, TNID tile_id) const;
+	shared_ptr<sf::Sprite> getSpriteForStdTile(TNID tile_id) const;
 	
-	void identifyTileset(const string& tileset_name, TNID tileset_id);
-	void identifyStdIdTile(TNID tileset_id, const string& tile_name, TNID tile_id);
+	void identifyStdTile(const string& tile_name, TNID tile_id);
 
 private:
-	std::unordered_map<TNID, shared_ptr<Tileset>> mIdToTilesetMapping;
-	std::unordered_map<string, shared_ptr<Tileset>> mNameToTilesetMapping;
+	std::unordered_map<TNID, shared_ptr<sf::Sprite>> mIdToStdTileMapping;
+	std::unordered_map<string, shared_ptr<sf::Sprite>> mNameToStdTileMapping;
 
 	shared_ptr<RequestService> mService;
 };

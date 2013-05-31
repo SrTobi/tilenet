@@ -155,24 +155,37 @@ typedef struct TilenetEvent
 
 } TNEVENT;
 
+typedef enum TileTypes
+{
+	TN_NULL_TILE = 0,
+	TN_STD_TILE,
+	TN_CHAR_TILE
+} TNTILIETYPE;
+
 typedef struct TilenetTile
 {
-	TNID tileset;
+	TNTILIETYPE type;
+
+	typedef struct {
+
+	} nullset_type;
+
+	typedef struct {
+		TNID	id;
+		TNFLAG	modifier;
+		TNCOLOR color;
+	} stddata_type;
+
+	typedef struct {
+		wchar_t ch;
+		TNFLAG	modifier;
+		TNCOLOR color;
+	} chardata_type;
 
 	union
 	{
-		struct {
-			TNID	id;
-			TNFLAG	modifier;
-			TNCOLOR color;
-		} stdset;
-
-		struct {
-			wchar_t ch;
-			TNFLAG	modifier;
-			TNCOLOR color;
-		} charset;
-
+		stddata_type stdset;
+		chardata_type charset;
 	} data;
 
 } TNTILE;
@@ -232,8 +245,7 @@ TNAPI TNERROR tilenet_create_tilelayer(TNLAYER* layer, unsigned int width, unsig
 TNAPI TNERROR tilenet_put_tile(TNLAYER layer, unsigned int x, unsigned int y, TNTILE* tile);
 
 /**** tileset ****/
-TNAPI TNERROR tilenet_create_tileset(TNTILESET* set, TNID* id, const wchar_t* name, TNFLAG flags);
-TNAPI TNERROR tilenet_register_tile(TNTILESET set, const wchar_t* name, TNID* id);
+TNAPI TNERROR tilenet_register_stdtile(const wchar_t* name, TNID* id);
 
 
 #ifdef __cplusplus

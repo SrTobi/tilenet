@@ -15,13 +15,12 @@ TNACCEPTOR local_acceptor;
 
 void init_testlayer()
 {
-	tilenet_create_tileset(&testSet, &testSetId, L"#debug-std-tileset", 0);
-	tilenet_register_tile(testSet, L"test-a", &testTileId);
+	tilenet_register_stdtile(L"test-a", &testTileId);
 
 	tilenet_create_tilelayer(&testLayer, 10, 10, TNSTDRATIO, TNSTDRATIO, 0);
 
 	TNTILE tile;
-	tile.tileset = testSetId;
+	tile.type = TN_STD_TILE;
 	tile.data.stdset.id = testTileId;
 	tile.data.stdset.color = COL_WHITE;
 	tile.data.stdset.modifier = 0;
@@ -43,7 +42,6 @@ void do_event(TNEVENT& e)
 		std::cout << "Player connected!\n";
 
 		tilenet_attach_layer(e.participant, testLayer);
-		tilenet_kick(e.participant, L"no reason");
 		break;
 	case TNEV_DISCONNECT:
 		std::cout << "Player disconnected!\n";

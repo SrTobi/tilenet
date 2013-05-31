@@ -3,8 +3,10 @@
 #define _PROTOCOL_TILE
 
 
+#include <boost/variant/variant.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/base_object.hpp>
+#include <boost/serialization/variant.hpp>
 #include "settings.hpp"
 
 
@@ -19,121 +21,82 @@ class PTile
 public:
 	enum TileType
 	{
-		NullTileType,
-		StdTileType,
-		CharTileType
+		NullTileType = 0,
+		StdTileType = 1,
+		CharTileType = 2
 	};
 
 private:
-	struct DataContainer
-	{
-		virtual ~DataContainer() {}
-		template<typename Archive>
-		void serialize(Archive& ar, unsigned int)
-		{
-		}
-
-		virtual TileType type() const = 0;
-		virtual std::unique_ptr<DataContainer> clone() const = 0;
-	};
-
-	template<typename T>
-	struct TileDataContainer
-		: public DataContainer
-	{
-		virtual TileType type() const
-		{
-			return T::Type;
-		}
-
-		virtual std::unique_ptr<DataContainer> clone() const
-		{
-			return std::unique_ptr<DataContainer>(new TileDataContainer(*this));
-		}
-
-
-		template<typename Archive>
-		void serialize(Archive& ar, unsigned int)
-		{
-			ar & boost::serialization::base_object<DataContainer>(*this); 
-			ar & data;
-		}
-
-		T data;
-	};
+	typedef boost::variant<	TNTILE::nullset_type,
+							TNTILE::stddata_type,
+							TNTILE::chardata_type> value_type;
 
 public:
 	PTile();
 	PTile(const PTile& other);
 	PTile(PTile&& other);
-	PTile(TNID tileset_id, TNID tile_id, TNFLAG modifier, TNCOLOR color);
-	PTile(TNID tileset_id, wchar_t c, TNFLAG modifier, TNCOLOR color);
+	PTile(const TNTILE& tile);
 	~PTile();
 
 	PTile& operator =(const PTile& other);
 	PTile& operator =(PTile&& other);
+	PTile& operator =(const TNTILE& tile);
 
 	void assign(const PTile& other);
 	void assign(PTile&& other);
+	void assign(const TNTILE& tile);
 
 	TileType type() const;
 
 	template<typename T>
 	const T& data() const
 	{
-		const TileDataContainer<T>* data = dynamic_cast<const TileDataContainer<T>*>(mData.get());
-		tnAssert(data);
-		return data->data;
+		return boost::get<T>(mData);
 	}
 
 private:
 	template<typename Archive>
-	void serialize(Archive& ar, unsigned int version);
+	void serialize(Archive& ar, unsigned int version)
+	{
+		ar & mData;
+	}
 
 private:
-	std::unique_ptr<DataContainer> mData;
+	value_type mData;
 };
 
-struct StdTileData
-{
-	static const PTile::TileType Type = PTile::StdTileType;
-
-	TNID tileset_id;
-	TNID tile_id;
-	TNFLAG modifier;
-	TNCOLOR color;
-
-	template<typename Archive>
-	void serialize(Archive& ar, unsigned int)
-	{
-		ar & tileset_id & tile_id & modifier & color;
-	}
-};
-
-
-struct CharTileData
-{
-	static const PTile::TileType Type = PTile::CharTileType;
-
-	TNID tileset_id;
-	wchar_t character;
-	TNFLAG modifier;
-	TNCOLOR color;
-
-	template<typename Archive>
-	void serialize(Archive& ar, unsigned int)
-	{
-		ar & tileset_id & character & modifier & color;
-	}
-};
-
-template<typename Archive>
-void PTile::serialize(Archive& ar, unsigned int version)
-{
-	ar.template register_type<TileDataContainer<StdTileData>>();
-	ar.template register_type<TileDataContainer<CharTileData>>();
-	ar & mData;
 }
 
+
+namespace boost {
+namespace serialization {
+
+template<class Archive>
+void serialize(Archive & ar, TNTILE::nullset_type& data, const unsigned int version)
+{
 }
+
+template<class Archive>
+void serialize(Archive & ar, TNTILE::stddata_type& data, const unsigned int version)
+{
+	ar	& data.id
+		& data.color
+		& data.modifier;
+}
+
+template<class Archive>
+void serialize(Archive & ar, TNTILE::chardata_type& data, const unsigned int version)
+{
+	ar	& data.ch
+		& data.color
+		& data.modifier;
+}
+
+
+
+} // namespace serialization
+} // namespace boost
+
+
+
 #endif

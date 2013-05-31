@@ -562,36 +562,14 @@ TNAPI TNERROR tilenet_put_tile( TNLAYER layer, unsigned int x, unsigned int y, T
 	} AUTO_CATCH(true);
 }
 
-TNAPI TNERROR tilenet_create_tileset( TNTILESET* set, TNID* id, const wchar_t* name, TNFLAG flags )
+
+TNAPI TNERROR tilenet_register_stdtile(const wchar_t* name, TNID* id )
 {
-	CHECK_NULL(set);
 	CHECK_NULL(name);
 	CHECK_NULL(id);
 
 	try {
-		auto* stdset = new srv::StdTileset(name, flags);
-		srv::Tileset::Register(stdset->self<srv::Tileset>());
-		
-		*set = stdset;
-		*id = stdset->id();
-
-		return TNOK;
-	} AUTO_CATCH(true);
-}
-
-TNAPI TNERROR tilenet_register_tile( TNTILESET set, const wchar_t* name, TNID* id )
-{
-	CHECK_CAST(_set, set, srv::StdTileset);
-	CHECK_NULL(name);
-	CHECK_NULL(id);
-
-	try {
-		if(*id)
-		{
-			_set->registerTile(name, *id);
-		}else{
-			*id = _set->registerTile(name);
-		}
+		*id = srv::StdTileset::Inst().registerTile(name);
 		return TNOK;
 	} AUTO_CATCH(true);
 }

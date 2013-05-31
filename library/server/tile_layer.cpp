@@ -1,7 +1,6 @@
 #include "includes.hpp"
 
 #include "tile_layer.hpp"
-#include "tileset.hpp"
 #include "layer.hpp"
 
 #include "network/message.hpp"
@@ -82,13 +81,8 @@ shared_ptr<net::Message> TileLayer::getStateMessage()
 
 	for(auto& tile : mTileField.storage())
 	{
-		std::shared_ptr<Tileset> tileset;
-		if(tile.tileset && (tileset = Tileset::Resolve(tile.tileset)))
-		{
-			content.push_back(tileset->constructTile(&tile));
-		}else{
-			content.push_back(net::PTile());
-		}
+		
+		content.push_back(net::PTile(tile));
 	}
 
 	tnAssert(content.size() == size().area());

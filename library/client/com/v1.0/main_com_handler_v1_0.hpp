@@ -43,16 +43,14 @@ public:
 	static shared_ptr<MainComHandler> Create(ClientApp& app, const shared_ptr<net::ConnectionPort>& port);
 
 private:
-	virtual OVERRIDE void requestTilesetName( TNID id );
-	virtual OVERRIDE void requestStdIdTileName(TNID tile_id, TNID tileset_id );
+	virtual OVERRIDE void requestStdTileName(TNID tile_id);
 
 
 private:
 	void handleLayerControl_attachLayer(const proto::v1_0::to_client::LayerControl_AttachLayer& msg);
 	void handleLayerControl_sendFullLayer(const proto::v1_0::to_client::LayerControl_SendFullLayer& msg);
 
-	void handleAnswer_TileNameRequest(const proto::v1_0::to_client::Answer_TileNameRequest& answ);
-	void handleAnswer_TilesetNameRequest(const proto::v1_0::to_client::Answer_TilesetNameRequest& answ);
+	void handleAnswer_StdTileNameRequest(const proto::v1_0::to_client::Answer_StdTileNameRequest& answ);
 private:
 	shared_ptr<ComHandler> mNextHandler;
 	net::Dispatcher mDispatcher;
@@ -62,8 +60,7 @@ private:
 	shared_ptr<Renderer> mRenderer;
 	shared_ptr<TileManager> mTileManager;
 
-	std::unordered_set<TNID> mRequestedTilesets;
-	std::unordered_set<std::pair<TNID, TNID>> mRequestedTiles;
+	std::unordered_set<TNID> mRequestedStdTiles;
 };
 
 

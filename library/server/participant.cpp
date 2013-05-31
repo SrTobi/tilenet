@@ -4,7 +4,6 @@
 #include "server.hpp"
 #include "service.hpp"
 #include "event_queue.hpp"
-#include "tileset.hpp"
 #include "std_tileset.hpp"
 #include "layer_link_manager.hpp"
 
@@ -48,8 +47,7 @@ public:
 	MainStatusHandler(Participant* p)
 		: StatusHandler(p)
 	{
-		mDispatcher.add(&MainStatusHandler::handleRequestTilesetName, this);
-		mDispatcher.add(&MainStatusHandler::handleRequestTileName, this);
+		mDispatcher.add(&MainStatusHandler::handleRequestStdTileName, this);
 	}
 
 
@@ -78,41 +76,17 @@ private:
 		}
 	}
 
-	void handleRequestTilesetName(const proto::curv::to_srv::Request_TilesetName& req)
+
+	void handleRequestStdTileName(const proto::curv::to_srv::Request_StdTileName& req)
 	{
-		auto tileset = Tileset::Resolve(req.tilesetId);
-
-		if(tileset)
-		{
-			proto::curv::to_client::Answer_TilesetNameRequest answ;
-
-			answ.tilesetId = req.tilesetId;
-			answ.tilesetName = tileset->name();
-
-			port()->send(net::make_message(answ));
-		}else{
-			NOT_IMPLEMENTED();
-		}
-	}
-
-	void handleRequestTileName(const proto::curv::to_srv::Request_TileName& req)
-	{
-
-		auto tileset = std::dynamic_pointer_cast<StdTileset>(Tileset::Resolve(req.tilesetId));
-
-		if(!tileset)
-		{
-			NOT_IMPLEMENTED();
-		}
 
 		// Todo: try {} catch
-		const string& tilename = tileset->getTileName(req.tileId);
+		const string& tilename = StdTileset::Inst().getTileName(req.tileId);
 
 
 		{
-			proto::curv::to_client::Answer_TileNameRequest answ;
+			proto::curv::to_client::Answer_StdTileNameRequest answ;
 
-			answ.tilesetId = req.tilesetId;
 			answ.tileId = req.tileId;
 			answ.tileName = tilename;
 

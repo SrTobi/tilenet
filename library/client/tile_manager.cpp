@@ -10,92 +10,6 @@ namespace client {
 
 
 
-class TileManager::Tileset
-{
-public:
-	Tileset()
-		: mTilesetId(0)
-	{
-	}
-
-	virtual ~Tileset() {}
-
-
-	void setId(TNID id)
-	{
-		tnAssert(mTilesetId == 0);
-		mTilesetId = id;
-	}
-
-	TNID id() const
-	{
-		return mTilesetId;
-	}
-
-private:
-	TNID mTilesetId;
-};
-
-class TileManager::StdIdTileset
-	: public Tileset
-{
-public:
-	StdIdTileset(const shared_ptr<RequestService>& service)
-		: mService(service)
-	{
-	}
-	
-	~StdIdTileset()
-	{
-	}
-
-
-	shared_ptr<sf::Sprite> getSpriteById(TNID tile_id) const
-	{
-		auto it = mIdToSpriteMapping.find(tile_id);
-
-		if(it == mIdToSpriteMapping.end())
-		{
-			tnAssert(id());
-			mService->requestStdIdTileName(tile_id, id());
-			return nullptr;
-		}
-
-		return it->second;
-	}
-
-	void addTile(const string& name, const shared_ptr<sf::Sprite>& sprite)
-	{
-		tnAssert(sprite);
-		mNameToSpriteMapping[name] = sprite;
-	}
-
-	void identifyTile(const string& name, TNID id)
-	{
-		auto it = mNameToSpriteMapping.find(name);
-
-		if(it == mNameToSpriteMapping.end())
-		{
-			NOT_IMPLEMENTED();
-		}
-
-		mIdToSpriteMapping[id] = it->second;
-	}
-
-
-private:
-	std::unordered_map<TNID, shared_ptr<sf::Sprite>> mIdToSpriteMapping;
-	std::unordered_map<string, shared_ptr<sf::Sprite>> mNameToSpriteMapping;
-	shared_ptr<RequestService> mService;
-};
-
-
-
-
-
-
-
-
 TileManager::TileManager( const shared_ptr<RequestService>& service )
 	: mService(service)
 {
@@ -106,59 +20,33 @@ TileManager::~TileManager()
 {
 }
 
-shared_ptr<sf::Sprite> TileManager::getSpriteFromStdIdTileset( TNID tileset_id, TNID tile_id ) const
+shared_ptr<sf::Sprite> TileManager::getSpriteForStdTile(TNID tile_id ) const
 {
-	auto tileset_it = mIdToTilesetMapping.find(tileset_id);
+	auto tileset_it = mIdToStdTileMapping.find(tile_id);
 
-	if(tileset_it == mIdToTilesetMapping.end())
+	if(tileset_it == mIdToStdTileMapping.end())
 	{
-		mService->requestTilesetName(tileset_id);
+		mService->requestStdTileName(tile_id);
 
 		return nullptr;
 	}
 	
-	auto tileset = std::dynamic_pointer_cast<const StdIdTileset>(tileset_it->second);
-	
-	if(!tileset)
-	{
-		NOT_IMPLEMENTED();
-	}
-
-	return tileset->getSpriteById(tile_id);
+	return tileset_it->second;
 }
 
-void TileManager::identifyTileset( const string& tileset_name, TNID tileset_id )
-{
-	auto it = mNameToTilesetMapping.find(tileset_name);
 
-	if(it == mNameToTilesetMapping.end())
-	{
-		NOT_IMPLEMENTED();
-	}
-
-	it->second->setId(tileset_id);
-	mIdToTilesetMapping[tileset_id] = it->second;
-}
-
-void TileManager::identifyStdIdTile( TNID tileset_id, const string& tile_name, TNID tile_id )
+void TileManager::identifyStdTile(const string& tile_name, TNID tile_id )
 {
 
-	auto it = mIdToTilesetMapping.find(tileset_id);
+	auto it = mNameToStdTileMapping.find(tile_name);
 
-	if(it == mIdToTilesetMapping.end())
+	if(it == mNameToStdTileMapping.end())
 	{
+		// Tile not loaded!
 		NOT_IMPLEMENTED();
 	}
 
-	auto tileset = std::dynamic_pointer_cast<StdIdTileset>(it->second);
-
-	if(!tileset)
-	{
-		NOT_IMPLEMENTED();
-	}
-
-	tileset->identifyTile(tile_name, tile_id);
-
+	mIdToStdTileMapping[tile_id] = it->second;
 }
 
 void TileManager::debug_load_test_tileset( const string& filename )
@@ -174,10 +62,6 @@ void TileManager::debug_load_test_tileset( const string& filename )
 		loadLog.error() << "Failed to load tile source!";
 		return;
 	}
-
-	auto tileset = std::make_shared<StdIdTileset>(mService);
-	mNameToTilesetMapping[L"#debug-std-tileset"] = tileset;
-
 
 	const auto& pool = StdTilePool::Inst();
 
@@ -204,13 +88,13 @@ void TileManager::debug_load_test_tileset( const string& filename )
 
 			auto sprite = pool.getStdTile(std_tile_name);
 
-			tileset->addTile(name, sprite);
+			mNameToStdTileMapping[name] = sprite;
 		}
 
 		++lineNum;
 	}
 
-	loadLog.debug() << mNameToTilesetMapping.size() << " tiles loaded";
+	loadLog.debug() << mNameToStdTileMapping.size() << " tiles loaded";
 }
 
 

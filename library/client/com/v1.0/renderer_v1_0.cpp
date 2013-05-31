@@ -52,9 +52,8 @@ private:
 		: public Tile
 	{
 	public:
-		StdIdTile(TNID tile_id, TNID tileset_id, sf::Color color, const shared_ptr<TileManager>& manager)
+		StdIdTile(TNID tile_id, sf::Color color, const shared_ptr<TileManager>& manager)
 			: mTileId(tile_id)
-			, mTilesetId(tileset_id)
 			, mTileManager(manager)
 			, mColor(color)
 		{
@@ -66,7 +65,7 @@ private:
 
 			if(!sprite)
 			{
-				mSprite = sprite = mTileManager->getSpriteFromStdIdTileset(mTilesetId, mTileId);
+				mSprite = sprite = mTileManager->getSpriteForStdTile(mTileId);
 			}
 
 			if(sprite)
@@ -79,7 +78,7 @@ private:
 
 
 	private:
-		TNID mTileId, mTilesetId;
+		TNID mTileId;
 		sf::Color mColor;
 		std::weak_ptr<sf::Sprite> mSprite;
 		shared_ptr<TileManager> mTileManager;
@@ -122,8 +121,8 @@ public:
 			break;
 		case net::PTile::StdTileType:
 			{
-				auto& data = ptile.data<net::StdTileData>();
-				tile.reset(new StdIdTile(data.tile_id, data.tileset_id, to_sf_color(data.color), mTileManager));
+				auto& data = ptile.data<TNTILE::stddata_type>();
+				tile.reset(new StdIdTile(data.id, to_sf_color(data.color), mTileManager));
 			}
 			break;
 		default:
