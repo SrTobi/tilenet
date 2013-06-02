@@ -63,6 +63,7 @@ typedef uint32 version_type;
 #include "utils/lexical_convert.hpp"
 #include "utils/vector.hpp"
 #include "utils/log.hpp"
+#include "utils/additional_hashs.hpp"
 
 
 typedef basic_vector2<unsigned int> Point;
@@ -70,19 +71,6 @@ typedef basic_vector2<unsigned int> Rect;
 typedef basic_vector2<TNRATIO>		Ratio;
 typedef basic_vector2<float>		Vector;
 
-
-namespace std {
-template<typename _Ty1, typename _Ty2>
-struct hash<std::pair<_Ty1, _Ty2> >
-{
-	std::hash<_Ty1> hash1;
-	std::hash<_Ty2> hash2;
-public:
-	size_t operator()(const std::pair<_Ty1, _Ty2>& p) const throw() {
-		return hash1(p.first) + hash2(p.second);
-	}
-};
-}
 
 /// @endcond
 
