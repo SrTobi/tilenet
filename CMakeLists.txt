@@ -51,11 +51,15 @@ find_package(SFML COMPONENTS system window graphics audio REQUIRED)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
+set(rapidxml_includes			"${PROJECT_SOURCE_DIR}/extras/rapidxml-1.13")
 set(tilenet_library_pch_file	"${PROJECT_SOURCE_DIR}/library/includes.hpp")
 set(tilenet_include_file		"${PROJECT_SOURCE_DIR}/include/tilenet.h")
 
 
-include_directories(include ${Boost_INCLUDE_DIRS} ${SFML_INCLUDE_DIR})
+include_directories("include")
+include_directories(${Boost_INCLUDE_DIRS})
+include_directories(${SFML_INCLUDE_DIR})
+include_directories(${rapidxml_includes})
 link_directories(${Boost_LIBRARY_DIRS})
 link_directories(${BOOST_LIBRARYDIR})
 
