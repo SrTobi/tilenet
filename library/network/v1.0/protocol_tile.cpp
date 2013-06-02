@@ -12,19 +12,11 @@ PTile::PTile()
 }
 
 PTile::PTile(const TNTILE& tile)
+	: mData(TNTILE::nullset_type())
 {
 	assign(tile);
 }
 
-PTile::PTile( const PTile& other )
-{
-	assign(other);
-}
-
-PTile::PTile( PTile&& other )
-{
-	assign(std::move(other));
-}
 
 PTile::~PTile()
 {

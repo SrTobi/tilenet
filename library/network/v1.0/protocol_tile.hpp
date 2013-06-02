@@ -33,8 +33,6 @@ private:
 
 public:
 	PTile();
-	PTile(const PTile& other);
-	PTile(PTile&& other);
 	PTile(const TNTILE& tile);
 	~PTile();
 
