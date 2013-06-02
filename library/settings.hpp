@@ -9,6 +9,8 @@
 #include <memory>
 #include <functional>
 
+#include <boost/filesystem/path.hpp>
+namespace fs = boost::filesystem;
 
 #include "tilenet.h"
 
