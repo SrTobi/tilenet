@@ -2,7 +2,7 @@
 #ifndef _ADDITIONAL_HASHS
 #define _ADDITIONAL_HASHS
 
-
+#include <boost/functional/hash/hash.hpp>
 #include "settings.hpp"
 
 namespace std {
