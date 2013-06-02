@@ -19,6 +19,10 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <hash_set>
+#include <hash_map>
+#include <future>
+
 
 // ********** boost ********** //
 #include <boost/thread/tss.hpp>
@@ -26,7 +30,6 @@
 #include <boost/exception/all.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/unordered_map.hpp>
 #include <boost/asio.hpp>
 
 

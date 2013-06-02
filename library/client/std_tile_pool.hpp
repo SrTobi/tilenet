@@ -3,7 +3,8 @@
 #define _STDTILEPOOL_H
 
 #include <unordered_map>
-
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 #include "settings.hpp"
 
