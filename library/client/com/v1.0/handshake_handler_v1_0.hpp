@@ -22,6 +22,7 @@ class ClientApp;
 namespace com {
 namespace v1_0 {
 
+class ServerInfo;
 
 class HandshakeHandler
 	: public ComHandler
@@ -40,6 +41,7 @@ private:
 	net::Dispatcher mDispatcher;
 	ClientApp& mApp;
 	const shared_ptr<net::ConnectionPort> mPort;
+	shared_ptr<ServerInfo> mServerInfo;
 };
 
 

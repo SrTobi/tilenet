@@ -18,10 +18,10 @@ public:
 	PackageManager();
 	~PackageManager();
 
-	std::future<shared_ptr<Package>> loadPackageByName(const string& name);
-	std::future<shared_ptr<Package>> loadPackageByInterface(const string& interface_name);
-	std::future<shared_ptr<Package>> loadPackageByPath(const fs::path& path);
-	std::future<shared_ptr<Package>> loadPackageByPackageInfo(const PackageInfo& info);
+	shared_ptr<Package> loadPackageByName(const string& name);
+	shared_ptr<Package> loadPackageByInterface(const string& interface_name);
+	shared_ptr<Package> loadPackageByPath(const fs::path& path);
+	shared_ptr<Package> loadPackageByPackageInfo(const PackageInfo& info);
 
 	const std::vector<PackageInfo>& getPackageInfos();
 	void addPackagePath(const fs::path& path);

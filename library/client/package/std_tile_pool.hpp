@@ -12,6 +12,7 @@
 
 namespace client {
 
+class StdTile;
 
 class StdTilePool
 {
@@ -19,7 +20,7 @@ public:
 	StdTilePool();
 	~StdTilePool();
 
-	shared_ptr<sf::Sprite> getStdTile(const string& name) const;
+	shared_ptr<StdTile> getStdTile(const string& name) const;
 	bool isStdTileName(const string& name);
 
 	const sf::Texture& getTexture() const;
@@ -30,7 +31,7 @@ private:
 	void addStdTile(unsigned int col, unsigned int row, const string& name);
 	void init();
 
-	std::unordered_map<string, shared_ptr<sf::Sprite> > mTilesAssociation;
+	std::unordered_map<string, shared_ptr<StdTile> > mTilesAssociation;
 	sf::Texture mTileImage;
 
 

@@ -4,7 +4,6 @@
 #include "rapidxml.hpp"
 #include <boost/filesystem/operations.hpp>
 
-
 namespace client {
 
 
@@ -54,8 +53,10 @@ public:
 
 	void iterateDirectory(const fs::path& path)
 	{
-		for(auto& p : path)
+		for(fs::directory_iterator it(path); it != fs::directory_iterator(); ++it)
 		{
+			const fs::path& p = it->path();
+
 			if(fs::is_directory(p))
 			{
 				iterateDirectory(p);
@@ -96,24 +97,44 @@ PackageManager::~PackageManager()
 
 }
 
-std::future<shared_ptr<Package>> PackageManager::loadPackageByName( const string& name )
+shared_ptr<Package> PackageManager::loadPackageByName( const string& name )
+{
+	auto& packageInfos = getPackageInfos();
+
+	for(auto& pi : packageInfos)
+	{
+		if(pi.name() == name)
+		{
+			return loadPackageByPackageInfo(pi);
+		}
+	}
+
+	return nullptr;
+}
+
+shared_ptr<Package> PackageManager::loadPackageByInterface( const string& interface_name )
+{
+	auto& packageInfos = getPackageInfos();
+
+	for(auto& pi : packageInfos)
+	{
+		if(pi.hasInterface(interface_name))
+		{
+			return loadPackageByPackageInfo(pi);
+		}
+	}
+
+	return nullptr;
+}
+
+shared_ptr<Package> PackageManager::loadPackageByPath( const fs::path& path )
 {
 	NOT_IMPLEMENTED();
 }
 
-std::future<shared_ptr<Package>> PackageManager::loadPackageByInterface( const string& interface_name )
+shared_ptr<Package> PackageManager::loadPackageByPackageInfo( const PackageInfo& info )
 {
-	NOT_IMPLEMENTED();
-}
-
-std::future<shared_ptr<Package>> PackageManager::loadPackageByPath( const fs::path& path )
-{
-	NOT_IMPLEMENTED();
-}
-
-std::future<shared_ptr<Package>> PackageManager::loadPackageByPackageInfo( const PackageInfo& info )
-{
-	NOT_IMPLEMENTED();
+	return loadPackageByPath(info.path());
 }
 
 const std::vector<PackageInfo>& PackageManager::getPackageInfos()
@@ -143,6 +164,11 @@ void PackageManager::serachPackages()
 	mPackageInfosWaiter = task.get_future();
 
 	std::thread(std::move(task)).detach();
+}
+
+bool PackageManager::isSearching()
+{
+	return mPackageInfosWaiter.valid() && mPackageInfosWaiter.wait_for(std::chrono::milliseconds(0)) != std::future_status::ready;
 }
 
 

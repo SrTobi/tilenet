@@ -4,6 +4,7 @@
 
 #include "main_com_handler_v1_0.hpp"
 #include "renderer_v1_0.hpp"
+#include "tile_mapper_v1_0.hpp"
 
 #include "client/client.hpp"
 #include "client/client_window.hpp"
@@ -17,9 +18,11 @@ namespace v1_0 {
 
 
 
-MainComHandler::MainComHandler( ClientApp& app, const shared_ptr<net::ConnectionPort>& port ) : mApp(app)
+MainComHandler::MainComHandler( ClientApp& app, const shared_ptr<net::ConnectionPort>& port, const shared_ptr<ServerInfo>& svr_info)
+	: mApp(app)
 	, mPort(port)
 	, mWindow(app.window())
+	, mServerInfo(svr_info)
 {
 	mDispatcher.add(&MainComHandler::handleLayerControl_attachLayer, this);
 	mDispatcher.add(&MainComHandler::handleLayerControl_sendFullLayer, this);
@@ -28,12 +31,10 @@ MainComHandler::MainComHandler( ClientApp& app, const shared_ptr<net::Connection
 
 void MainComHandler::init()
 {
-	mTileManager = std::make_shared<TileManager>(std::static_pointer_cast<MainComHandler>(shared_from_this()));
-	mRenderer = std::make_shared<Renderer>(mApp.window(), mTileManager);
+	mTileMapper = std::make_shared<TileMapper>(mPort);
+	mRenderer = std::make_shared<Renderer>(mApp.window(), mTileMapper, mApp.pmanager(), mServerInfo);
 
 	mWindow.setLayerRenderer(mRenderer);
-
-	mTileManager->debug_load_test_tileset(L"debug-tileset.txt");
 }
 
 
@@ -76,9 +77,9 @@ void MainComHandler::handleLayerControl_sendFullLayer( const proto::v1_0::to_cli
 	}
 }
 
-shared_ptr<MainComHandler> MainComHandler::Create( ClientApp& app, const shared_ptr<net::ConnectionPort>& port )
+shared_ptr<MainComHandler> MainComHandler::Create( ClientApp& app, const shared_ptr<net::ConnectionPort>& port, const shared_ptr<ServerInfo>& svr_info)
 {
-	shared_ptr<MainComHandler> ptr(new MainComHandler(app, port));
+	shared_ptr<MainComHandler> ptr(new MainComHandler(app, port, svr_info));
 	ptr->init();
 	return ptr;
 }
@@ -98,7 +99,7 @@ void MainComHandler::requestStdTileName(TNID tile_id)
 
 void MainComHandler::handleAnswer_StdTileNameRequest( const proto::v1_0::to_client::Answer_StdTileNameRequest& answ )
 {
-	mTileManager->identifyStdTile(answ.tileName, answ.tileId);
+	mTileMapper->identifyStdTile(answ.tileName, answ.tileId);
 }
 
 

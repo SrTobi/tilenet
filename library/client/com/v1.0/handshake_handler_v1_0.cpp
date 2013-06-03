@@ -4,7 +4,7 @@
 
 #include "handshake_handler_v1_0.hpp"
 #include "main_com_handler_v1_0.hpp"
-
+#include "server_info_v1_0.hpp"
 
 namespace client {
 namespace com {
@@ -34,6 +34,8 @@ OVERRIDE shared_ptr<ComHandler> HandshakeHandler::handleMessage( const shared_pt
 
 void HandshakeHandler::handleServerInformation( const proto::v1_0::to_client::Handshake_P2_ServerInformation& handshake )
 {
+	mServerInfo = std::make_shared<ServerInfo>(handshake.server_name, handshake.server_info, handshake.package_name, handshake.package_interface);
+
 	Log(L"client-com").info()	<< L"Server information:"
 								<< L"\nName:      " << handshake.server_name
 								<< L"\nInfo:      " << handshake.server_info
@@ -50,8 +52,9 @@ void HandshakeHandler::handleServerInformation( const proto::v1_0::to_client::Ha
 
 void HandshakeHandler::handleAccessGranted( const proto::v1_0::to_client::Handshake_P4_AcceptesGranted& handshake )
 {
-	// Yea, we 
-	mNextHandler = MainComHandler::Create(mApp, mPort);
+	tnAssert(mServerInfo);
+	// Yea, we got access
+	mNextHandler = MainComHandler::Create(mApp, mPort, mServerInfo);
 }
 
 

@@ -9,7 +9,6 @@
 #include "network/dispatcher.hpp"
 #include "client/com/com_handler.hpp"
 
-#include "client/tile_manager.hpp"
 #include "network/v1.0/protocol_v1_0.hpp"
 
 
@@ -27,20 +26,21 @@ class ClientWindow;
 namespace com {
 namespace v1_0 {
 
+class ServerInfo;
+class TileMapper;
 class Renderer;
 
 class MainComHandler
 	: public ComHandler
-	, public TileManager::RequestService
 {
-	MainComHandler(ClientApp& app, const shared_ptr<net::ConnectionPort>& port);
+	MainComHandler(ClientApp& app, const shared_ptr<net::ConnectionPort>& port, const shared_ptr<ServerInfo>& svr_info);
 	void init();
 public:
 	~MainComHandler();
 
 	virtual OVERRIDE shared_ptr<ComHandler> handleMessage(const shared_ptr<net::Message>& msg);
 
-	static shared_ptr<MainComHandler> Create(ClientApp& app, const shared_ptr<net::ConnectionPort>& port);
+	static shared_ptr<MainComHandler> Create(ClientApp& app, const shared_ptr<net::ConnectionPort>& port, const shared_ptr<ServerInfo>& svr_info);
 
 private:
 	virtual OVERRIDE void requestStdTileName(TNID tile_id);
@@ -56,9 +56,10 @@ private:
 	net::Dispatcher mDispatcher;
 	ClientApp& mApp;
 	shared_ptr<net::ConnectionPort> mPort;
+	shared_ptr<ServerInfo> mServerInfo;
 	ClientWindow& mWindow;
 	shared_ptr<Renderer> mRenderer;
-	shared_ptr<TileManager> mTileManager;
+	shared_ptr<TileMapper> mTileMapper;
 
 	std::unordered_set<TNID> mRequestedStdTiles;
 };

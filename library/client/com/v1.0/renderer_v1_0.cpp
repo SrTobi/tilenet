@@ -3,8 +3,12 @@
 
 #include "utils/field.hpp"
 
-#include "client/tile_manager.hpp"
+#include "tile_mapper_v1_0.hpp"
+#include "server_info_v1_0.hpp"
 
+#include "client/package/package.hpp"
+#include "client/package/package_manager.hpp"
+#include "client/package/components/std_tile.hpp"
 
 
 sf::Color to_sf_color(TNCOLOR c)
@@ -52,27 +56,25 @@ private:
 		: public Tile
 	{
 	public:
-		StdIdTile(TNID tile_id, sf::Color color, const shared_ptr<TileManager>& manager)
+		StdIdTile(TNID tile_id, sf::Color color, const shared_ptr<TileMapper>& mapper)
 			: mTileId(tile_id)
-			, mTileManager(manager)
+			, mTileMapper(mapper)
 			, mColor(color)
 		{
 		}
 
 		virtual OVERRIDE void render(sf::RenderTarget& target, const Point& pos)
 		{
-			std::shared_ptr<sf::Sprite> sprite = mSprite.lock();
+			std::shared_ptr<StdTile> tile = mTile.lock();
 
-			if(!sprite)
+			if(!tile)
 			{
-				mSprite = sprite = mTileManager->getSpriteForStdTile(mTileId);
+				mTile = tile = mTileMapper->getStdTile(mTileId);
 			}
 
-			if(sprite)
+			if(tile)
 			{
-				sprite->setPosition(float(pos.x), float(pos.y));
-				sprite->setColor(mColor);
-				target.draw(*sprite);
+				tile->render(target, pos, mColor);
 			}
 		}
 
@@ -80,11 +82,11 @@ private:
 	private:
 		TNID mTileId;
 		sf::Color mColor;
-		std::weak_ptr<sf::Sprite> mSprite;
-		shared_ptr<TileManager> mTileManager;
+		std::weak_ptr<StdTile> mTile;
+		shared_ptr<TileMapper> mTileMapper;
 	};
 public:
-	RenderLayer(const Rect& size, const Ratio& ratio, const shared_ptr<TileManager>& manager)
+	RenderLayer(const Rect& size, const Ratio& ratio, const shared_ptr<TileMapper>& manager)
 		: mRatio(ratio)
 		, mTileManager(manager)
 		, mTileField(size)
@@ -134,7 +136,7 @@ public:
 private:
 	Field<std::unique_ptr<Tile>> mTileField;
 	Ratio mRatio;
-	shared_ptr<TileManager> mTileManager;
+	shared_ptr<TileMapper> mTileManager;
 };
 
 
@@ -145,9 +147,11 @@ private:
 
 
 
-Renderer::Renderer(ClientWindow& window, const shared_ptr<TileManager>& manager)
+Renderer::Renderer(ClientWindow& window, const shared_ptr<TileMapper>& mapper, const shared_ptr<PackageManager>& pmanager, const shared_ptr<ServerInfo>& info)
 	: mWindow(window)
-	, mTileManager(manager)
+	, mPackManager(pmanager)
+	, mTileMapper(mapper)
+	, mServerInfo(info)
 {
 }
 
@@ -161,16 +165,37 @@ void Renderer::render(sf::RenderTarget& target)
 	// Set background
 	target.clear(mBGCOlor);
 
-	// Render layers
-	auto topLayer = layer(mTopLayerId);
-
-
-	if(topLayer)
+	if(mPackage)
 	{
-		sf::View view = target.getView();
-		calculateView(target, topLayer);
-		topLayer->render(target);
-		target.setView(view);
+		// Render layers
+		auto topLayer = layer(mTopLayerId);
+
+
+		if(topLayer)
+		{
+			sf::View view = target.getView();
+			calculateView(target, topLayer);
+			topLayer->render(target);
+			target.setView(view);
+		}
+	}else{
+		if(mPackManager->isSearching())
+		{
+			// Searching!!!
+		}else{
+			// No package loaded!!!
+			mPackage = mPackManager->loadPackageByName(mServerInfo->packageName());
+
+			if(!mPackage)
+			{
+				mPackage = mPackManager->loadPackageByInterface(mServerInfo->packageInterface());
+			}
+
+			if(!mPackage)
+			{
+				NOT_IMPLEMENTED();
+			}
+		}
 	}
 }
 
@@ -194,7 +219,7 @@ shared_ptr<Renderer::Layer> Renderer::layer( TNID id ) const
 
 void Renderer::defineLayer( TNID id, Rect size, Ratio r )
 {
-	mIdToLayerMapping[id] = std::make_shared<RenderLayer>(size, r, mTileManager);
+	mIdToLayerMapping[id] = std::make_shared<RenderLayer>(size, r, mTileMapper);
 }
 
 void Renderer::putTile( TNID layerid, Point pos, const net::PTile& tile )

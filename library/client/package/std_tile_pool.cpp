@@ -1,5 +1,6 @@
 #include "includes.hpp"
 #include "std_tile_pool.hpp"
+#include "components/std_tile.hpp"
 
 
 namespace client {
@@ -8,7 +9,7 @@ namespace client {
 const unsigned int TILE_WIDTH = 8;
 const unsigned int TILE_HEIGHT = 12;
 
-#include "inline/std_tile_set.inl"
+#include "std_tile_set.inl"
 
 
 StdTilePool::StdTilePool()
@@ -21,7 +22,7 @@ StdTilePool::~StdTilePool()
 
 }
 
-shared_ptr<sf::Sprite> StdTilePool::getStdTile( const string& name ) const
+shared_ptr<StdTile> StdTilePool::getStdTile( const string& name ) const
 {
 	auto it = mTilesAssociation.find(name);
 
@@ -102,9 +103,9 @@ void StdTilePool::loadTextureFromSource( const sf::Uint8* src, unsigned int leng
 
 void StdTilePool::addStdTile( unsigned int col, unsigned int row, const string& name )
 {
-	auto sprite = std::make_shared<sf::Sprite>(mTileImage, sf::IntRect(col * TILE_WIDTH, row * TILE_HEIGHT, /*(col+1) **/ TILE_WIDTH, /*(row+1) **/ TILE_HEIGHT));
-	sprite->setScale(1.0f / 8.0f, 1.0f / 12.0f);
-	mTilesAssociation.insert(std::make_pair(name, sprite));
+	auto sprite = sf::Sprite(mTileImage, sf::IntRect(col * TILE_WIDTH, row * TILE_HEIGHT, /*(col+1) **/ TILE_WIDTH, /*(row+1) **/ TILE_HEIGHT));
+	sprite.setScale(1.0f / 8.0f, 1.0f / 12.0f);
+	mTilesAssociation.insert(std::make_pair(name, std::make_shared<StdTile>(sprite)));
 }
 
 

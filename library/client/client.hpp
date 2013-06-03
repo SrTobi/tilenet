@@ -20,6 +20,7 @@ namespace com {
 
 class Messenger;
 class ClientWindow;
+class PackageManager;
 
 class ClientApp
 	: public std::enable_shared_from_this<ClientApp>
@@ -36,7 +37,8 @@ public:
 	void stop(bool now = false);
 
 	ClientWindow& window() const;
-
+	const shared_ptr<net::ConnectionPort>& port() const;
+	const shared_ptr<PackageManager>& pmanager() const;
 	boost::asio::io_service& service();
 private:
 	void run();
@@ -52,6 +54,7 @@ private:
 	std::shared_ptr<net::ConnectionPort> mPort;
 	std::unique_ptr<ClientWindow> mWindow;
 	std::shared_ptr<Messenger> mMessenger;
+	std::shared_ptr<PackageManager> mPackManager;
 	std::unique_ptr<boost::asio::io_service::work> mBusyWork;
 	steady_timer mWindowProcessTimer;
 	float mFrameRate;

@@ -9,6 +9,8 @@
 
 namespace client {
 
+class StdTile;
+
 
 class PackageInfo
 {
@@ -47,6 +49,9 @@ class Package
 public:
 	Package();
 	~Package();
+
+	shared_ptr<StdTile> getStdTileByName(const string& name);
+
 
 	const PackageInfo& info();
 };

@@ -52,4 +52,30 @@ bool PackageInfo::hasInterface( const string& interf) const
 
 
 
+
+
+
+
+Package::Package()
+{
+	NOT_IMPLEMENTED()
+}
+
+Package::~Package()
+{
+	NOT_IMPLEMENTED()
+}
+
+shared_ptr<StdTile> Package::getStdTileByName( const string& name )
+{
+	NOT_IMPLEMENTED()
+}
+
+const PackageInfo& Package::info()
+{
+	NOT_IMPLEMENTED()
+}
+
+
+
 }

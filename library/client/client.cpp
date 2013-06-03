@@ -10,6 +10,8 @@
 #include "client/com/com_handler.hpp"
 #include "client/com/pv_select.hpp"
 
+#include "package/package_manager.hpp"
+
 namespace client {
 
 
@@ -23,13 +25,17 @@ ClientApp::ClientApp()
 	, mFrameRate(30.0)
 	, mWindowProcessTimer(mService)
 	, mMessenger(std::make_shared<Messenger>(10, std::chrono::milliseconds(2000), 13))
+	, mPackManager(std::make_shared<PackageManager>())
 {
 	if(Singleton)
 	{
 		// Client already exists
 		NOT_IMPLEMENTED();
 	}
-	Singleton =this;
+	Singleton = this;
+
+	// Add std paths to the package manager (TODO: load it)
+	mPackManager->addPackagePath(".");
 }
 
 ClientApp::~ClientApp()
@@ -52,7 +58,7 @@ void ClientApp::stop( bool now /*= false*/ )
 	if(now)
 		mService.stop();
 }
-
+	
 boost::asio::io_service& ClientApp::service()
 {
 	return mService;
@@ -63,6 +69,9 @@ void ClientApp::run()
 	// Setup window and its initialization
 	mWindow.reset(new ClientWindow(*this, mMessenger));
 	mService.post(std::bind(&ClientWindow::init, mWindow.get()));
+
+	// Search for packages
+	mPackManager->serachPackages();
 
 	// Setup window processing
 	mService.post(std::bind(&ClientApp::processWindow, shared_from_this()));
@@ -105,6 +114,15 @@ void ClientApp::handleNewConnection( const shared_ptr<net::ConnectionPort>& port
 	mPort->setHandler(shared_from_this());
 }
 
+const shared_ptr<net::ConnectionPort>& ClientApp::port() const
+{
+	return mPort;
+}
+
+const shared_ptr<PackageManager>& ClientApp::pmanager() const
+{
+	return mPackManager;
+}
 
 ClientWindow& ClientApp::window() const
 {
@@ -154,6 +172,7 @@ OVERRIDE void ClientApp::onDisconnect()
 	mMessenger->add(L"Disconnected!!!", sf::Color::Red);
 	mComHandler = nullptr;
 }
+
 
 
 

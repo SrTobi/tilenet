@@ -14,11 +14,14 @@
 namespace client{
 
 class ClientWindow;
-class TileManager;
+class PackageManager;
+class Package;
 
 namespace com {
 namespace v1_0 {
 
+class ServerInfo;
+class TileMapper;
 
 
 class Renderer
@@ -28,7 +31,7 @@ class Renderer
 	class FrameLayer;
 	class RenderLayer;
 public:
-	Renderer(ClientWindow& window, const shared_ptr<TileManager>& manager);
+	Renderer(ClientWindow& window, const shared_ptr<TileMapper>& mapper, const shared_ptr<PackageManager>& pmanager, const shared_ptr<ServerInfo>& info);
 	~Renderer();
 
 	virtual OVERRIDE void render(sf::RenderTarget& target);
@@ -43,7 +46,10 @@ private:
 	void calculateView(sf::RenderTarget& target, const shared_ptr<Layer>& layer);
 
 private:
-	shared_ptr<TileManager> mTileManager;
+	shared_ptr<PackageManager> mPackManager;
+	shared_ptr<TileMapper> mTileMapper;
+	shared_ptr<ServerInfo> mServerInfo;
+	shared_ptr<Package> mPackage;
 	ClientWindow& mWindow;
 
 	std::unordered_map<TNID, shared_ptr<Layer>> mIdToLayerMapping;
