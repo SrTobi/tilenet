@@ -1,9 +1,12 @@
 #include "includes.hpp"
+
+#include <boost/filesystem/operations.hpp>
+#include <fstream>
+#include <thread>
+
 #include "package_manager.hpp"
 
 #include "rapidxml.hpp"
-#include <boost/filesystem/operations.hpp>
-#include <fstream>
 
 namespace client {
 
@@ -52,15 +55,18 @@ public:
 	}
 
 
-	void iterateDirectory(const fs::path& path)
+	void iterateDirectory(const fs::path& path, unsigned int deep)
 	{
+		if(deep <= 0)
+			return;
+
 		for(fs::directory_iterator it(path); it != fs::directory_iterator(); ++it)
 		{
 			const fs::path& p = it->path();
 
 			if(fs::is_directory(p))
 			{
-				iterateDirectory(p);
+				iterateDirectory(p, deep - 1);
 			}else if(fs::is_regular_file(p) && p.extension() == ".tnpack")
 			{
 				checkFile(p);
@@ -69,11 +75,11 @@ public:
 	}
 
 
-	std::vector<PackageInfo> search()
+	std::vector<PackageInfo> search(unsigned int deep)
 	{
 		for(auto& path : mPaths)
 		{
-			iterateDirectory(path);
+			iterateDirectory(path, deep);
 		}
 
 
@@ -160,8 +166,8 @@ void PackageManager::serachPackages()
 
 	std::shared_ptr<PackageFinder> pf = std::make_shared<PackageFinder>(mPackagePaths.begin(), mPackagePaths.end());
 
-	auto func = std::bind(&PackageFinder::search, pf);
-	std::packaged_task<std::vector<PackageInfo>()> task(func);
+	auto func = std::bind(&PackageFinder::search, pf, 2);
+	boost::packaged_task<std::vector<PackageInfo>> task(func);
 	mPackageInfosWaiter = task.get_future();
 
 	std::thread(std::move(task)).detach();
@@ -169,7 +175,7 @@ void PackageManager::serachPackages()
 
 bool PackageManager::isSearching()
 {
-	return mPackageInfosWaiter.valid() && mPackageInfosWaiter.wait_for(std::chrono::milliseconds(0)) != std::future_status::ready;
+	return mPackageInfosWaiter.valid() && mPackageInfosWaiter.get_state() != boost::future_state::ready;
 }
 
 

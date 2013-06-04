@@ -2,7 +2,7 @@
 #ifndef _PACKAGE_MANAGER_HPP
 #define _PACKAGE_MANAGER_HPP
 
-#include <future>
+#include <boost/thread/future.hpp>
 #include "settings.hpp"
 #include "package.hpp"
 
@@ -31,7 +31,7 @@ public:
 private:
 	std::unordered_set<fs::path> mPackagePaths;
 	std::vector<PackageInfo> mPackageInfos;
-	std::future<std::vector<PackageInfo>> mPackageInfosWaiter;
+	boost::unique_future<std::vector<PackageInfo>> mPackageInfosWaiter;
 };
 
 
