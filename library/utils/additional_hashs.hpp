@@ -18,6 +18,16 @@ public:
 	}
 };
 
+
+template<>
+struct hash<fs::path>
+{
+public:
+	size_t operator()(const fs::path& path) const throw() {
+		return fs::hash_value(path);
+	}
+};
+
 }
 
 
