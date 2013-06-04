@@ -193,7 +193,7 @@ void Renderer::render(sf::RenderTarget& target)
 
 			if(!mPackage)
 			{
-				NOT_IMPLEMENTED();
+				IMPLEMENTATION_TODO("Inform the user or download a package");
 			}
 		}
 	}
