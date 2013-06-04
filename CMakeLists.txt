@@ -5,6 +5,9 @@ project(tilenet)
 
 #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
+
+
+################### setup options ###################
 set(Option_DEFAULT_MAKE_DOXYGEN_TARGET ON)
 
 if(MSVC)
@@ -17,25 +20,32 @@ option(Tilenet_USE_PRE_COMPILED_HEADER		"Use precompiled header for compilation"
 option(Tilenet_BUILD_SHARED_LIB				"Build tilenet as shared library" OFF)
 option(Tilenet_MAKE_DOXYGEN_TARGET			"Create a doxygen build target" ${Option_DEFAULT_MAKE_DOXYGEN_TARGET})
 option(Tilenet_RETHROW_THREAD_EXCEPTIONS	"Rethrow exceptions in worker threads, instead of catch them silently" ON)
+option(Tilenet_COPY_MEDIA					"Copies the media files for samples and tests into the target directories" ON)
 
+
+################### setup pre compiled header macro ###################
 if(Tilenet_USE_PRE_COMPILED_HEADER)
 	add_subdirectory("extras/pch")
 	add_definitions(-DTILENET_USE_PRECOMPILED_HEADER)
 else(Tilenet_USE_PRE_COMPILED_HEADER)
 
 	# simply set an empty macro
-	MACRO(ADD_PRECOMPILED_HEADER _targetName _input)
-	ENDMACRO()
+	macro(ADD_PRECOMPILED_HEADER _targetName _input)
+	endmacro()
 
 endif(Tilenet_USE_PRE_COMPILED_HEADER)
 
+################### add c++11 support ###################
+if(NOT MSVC)
+	add_definitions("-std=c++0x")
+endif(NOT MSVC)
+
+
+################### set definitions ###################
 if(Tilenet_RETHROW_THREAD_EXCEPTIONS)
 	add_definitions(-DTILENET_RETHROW_THREAD_EXCEPTIONS)
 endif(Tilenet_RETHROW_THREAD_EXCEPTIONS)
 
-if(NOT MSVC)
-	ADD_DEFINITIONS("-std=c++0x")
-endif(NOT MSVC)
 
 if(NOT Boost_USE_STATIC_LIBS)
 	add_definitions(-DBOOST_TEST_DYN_LINK) 
@@ -43,40 +53,71 @@ endif(NOT Boost_USE_STATIC_LIBS)
 add_definitions(-DTILENET_AS_LIB)
 add_definitions( -DBOOST_ALL_NO_LIB )
 
-# find packages
+
+################### find packages ###################
 find_package(Boost COMPONENTS system thread serialization unit_test_framework filesystem REQUIRED)
 find_package(SFML COMPONENTS system window graphics audio REQUIRED)
 
 
+################### setup target directories ###################
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
+
+
+################### add c++11 support ###################
 set(rapidxml_includes			"${PROJECT_SOURCE_DIR}/extras/rapidxml-1.13")
 set(tilenet_library_pch_file	"${PROJECT_SOURCE_DIR}/library/includes.hpp")
 set(tilenet_include_file		"${PROJECT_SOURCE_DIR}/include/tilenet.h")
 
 
+################### setup include directories ###################
 include_directories("include")
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${SFML_INCLUDE_DIR})
 include_directories(${rapidxml_includes})
+
+
+################### setup link directories ###################
 link_directories(${Boost_LIBRARY_DIRS})
 link_directories(${BOOST_LIBRARYDIR})
 
+################### set dependencies for tilenet-lib ###################
 set(tilenet_dependency_libs ${Boost_LIBRARIES} ${SFML_LIBRARIES})
 
 
+################### setup media copy support ###################
+
+function(NEED_MEDIA _target _resource)
+	
+	if(Tilenet_COPY_MEDIA)
+		set(res "${PROJECT_SOURCE_DIR}/media/${_resource}")
+		
+		if(NOT EXISTS ${res})
+			message(SEND_ERROR "[${_resource}] does not exist in media!")
+		endif()
+		
+		if(IS_DIRECTORY ${res})
+			set(copy_command  copy_directory)
+		else()
+			set(copy_command copy_if_different)
+		endif()
+
+		add_custom_command(	TARGET ${_target} POST_BUILD
+							COMMAND ${CMAKE_COMMAND} -E ${copy_command}
+							${res}
+							$<TARGET_FILE_DIR:${_target}>/${_resource})
+	endif(Tilenet_COPY_MEDIA)
+endfunction()
+
+################### add directories with source###################
 add_subdirectory(library)
 add_subdirectory(samples)
 add_subdirectory(tests)
 
 
-#add_executable(sync4cpp		 		${include_files} ${sources_files})
-#add_executable(sync4cpp-tests 		${include_files} ${tests_files})
 
-#target_link_libraries(sync4cpp-tests 		${Boost_LIBRARIES})
-
-
+################### setup documentation target ###################
 # add a target to generate API documentation with Doxygen
 if(Tilenet_MAKE_DOXYGEN_TARGET)
 	find_package(Doxygen)
