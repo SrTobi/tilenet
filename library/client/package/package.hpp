@@ -3,7 +3,7 @@
 #define _PACKAGE_HPP
 
 
-#include <hash_set>
+#include <unordered_set>
 #include "settings.hpp"
 
 
@@ -36,7 +36,7 @@ private:
 	string mPackageVersion;
 	string mAuthor;
 	fs::path mPath;
-	std::hash_set<string> mInterfaces;
+	std::unordered_set<string> mInterfaces;
 };
 
 

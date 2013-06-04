@@ -3,6 +3,7 @@
 
 #include "rapidxml.hpp"
 #include <boost/filesystem/operations.hpp>
+#include <fstream>
 
 namespace client {
 

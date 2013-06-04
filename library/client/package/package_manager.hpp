@@ -29,7 +29,7 @@ public:
 	bool isSearching();
 
 private:
-	std::hash_set<fs::path> mPackagePaths;
+	std::unordered_set<fs::path> mPackagePaths;
 	std::vector<PackageInfo> mPackageInfos;
 	std::future<std::vector<PackageInfo>> mPackageInfosWaiter;
 };
