@@ -17,6 +17,16 @@ PTile::PTile(const TNTILE& tile)
 	assign(tile);
 }
 
+PTile::PTile(const PTile& other)
+	: mData(other.mData)
+{
+}
+
+PTile::PTile(PTile&& other)
+	: mData(std::move(other.mData))
+{
+}
+
 
 PTile::~PTile()
 {

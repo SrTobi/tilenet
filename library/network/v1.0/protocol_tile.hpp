@@ -34,6 +34,8 @@ private:
 public:
 	PTile();
 	PTile(const TNTILE& tile);
+	PTile(const PTile& other);
+	PTile(PTile&& other);
 	~PTile();
 
 	PTile& operator =(const PTile& other);
