@@ -19,7 +19,7 @@ public:
 				const string& version,
 				const string& pack_version,
 				const string& author,
-				const string& path,
+				const fs::path& path,
 				const std::vector<string>& interfaces);
 
 	const string& name() const;
