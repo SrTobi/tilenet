@@ -106,7 +106,7 @@ function(NEED_MEDIA _target _resource)
 		add_custom_command(	TARGET ${_target} POST_BUILD
 							COMMAND ${CMAKE_COMMAND} -E ${copy_command}
 							${res}
-							$<TARGET_FILE_DIR:${_target}>/${_resource})
+							$<TARGET_FILE_DIR:${_target}>)
 	endif(Tilenet_COPY_MEDIA)
 endfunction()
 
