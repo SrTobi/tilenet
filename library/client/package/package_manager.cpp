@@ -7,6 +7,7 @@
 #include "package_manager.hpp"
 
 #include "rapidxml.hpp"
+#include "utils/xml_helpers.hpp"
 
 namespace client {
 
@@ -14,8 +15,11 @@ namespace client {
 class PackageManager::PackageFinder
 {
 public:
+	Log log;
+
 	template<typename Iter>
 	PackageFinder(Iter begin, Iter end)
+		: log(L"pack-search")
 	{
 		std::copy(begin, end, std::back_inserter(mPaths));
 	}
@@ -23,6 +27,8 @@ public:
 
 	void extract_package_info_from_debug_file_format(const fs::path& path)
 	{
+		log.info() << L"Found package " << path.wstring();
+
 		std::vector<wchar_t> buffer;
 		{
 			std::wifstream file(path.string());
@@ -31,21 +37,31 @@ public:
 				return;
 			file >> std::noskipws;
 			std::copy(std::istream_iterator<wchar_t, wchar_t>(file), std::istream_iterator<wchar_t, wchar_t>(), std::back_inserter(buffer));
+			buffer.push_back(0);
 		}
 
 		rapidxml::xml_document<wchar_t> doc;
-		doc.parse<	rapidxml::parse_trim_whitespace |
-					rapidxml::parse_comment_nodes |
-					rapidxml::parse_validate_closing_tags |
-					rapidxml::parse_normalize_whitespace |
-					rapidxml::parse_no_data_nodes>(buffer.data());
-
-		auto* info_node = doc.first_node(L"info");
-
-		if(!info_node)
+		try {
+			doc.parse<	rapidxml::parse_trim_whitespace |
+						rapidxml::parse_comment_nodes |
+						rapidxml::parse_validate_closing_tags |
+						rapidxml::parse_normalize_whitespace>(buffer.data());
+		} catch(rapidxml::parse_error& e)
+		{
+			log.error() << L"Failed to load package [" << path << L"]:" << e.what();
 			return;
+		}
 
-		
+		auto* info_node = xml::get_node<wchar_t>(&doc, L"package/information");
+
+		tnAssert(info_node);
+
+		mResult.push_back(	PackageInfo(xml::get_attr<string, wchar_t>(info_node, L"", L"name"),
+										L"1.0.0.0",
+										L"1.0.0.0",
+										xml::get_attr<string, wchar_t>(info_node, L"author", L"name", L"unknown"),
+										fs::canonical(path).parent_path(),
+										std::vector<string>()));
 	}
 
 
@@ -67,7 +83,7 @@ public:
 			if(fs::is_directory(p))
 			{
 				iterateDirectory(p, deep - 1);
-			}else if(fs::is_regular_file(p) && p.extension() == ".tnpack")
+			}else if(fs::is_regular_file(p) && p.filename() == "package.xml")
 			{
 				checkFile(p);
 			}
