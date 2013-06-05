@@ -59,8 +59,8 @@ int main()
 	TNSVRCONFIG config;
 	config.name = L"test";
 	config.info = L"simple tilenet test";
-	config.pkg = L"test-pkg";
-	config.pkgi = L"test-interface";
+	config.pkg = L"test-pack";
+	config.pkgi = L"tn.org.samples.test";
 	config.options = 0;
 
 	init_testlayer();

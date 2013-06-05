@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+	<package>
+		<information name="test-pack">
+			Some information about the package !
+		
+			<author name="tobias" />
+			<interface value="tn.org.samples.test" />
+		</information>
+	</package>
