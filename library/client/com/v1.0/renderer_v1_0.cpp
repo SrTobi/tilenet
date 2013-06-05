@@ -195,6 +195,9 @@ void Renderer::render(sf::RenderTarget& target)
 			{
 				IMPLEMENTATION_TODO("Inform the user or download a package");
 			}
+
+			if(mPackage)
+				mTileMapper->setPackage(mPackage);
 		}
 	}
 }

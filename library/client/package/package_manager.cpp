@@ -157,7 +157,7 @@ shared_ptr<Package> PackageManager::loadPackageByPath( const fs::path& path )
 
 shared_ptr<Package> PackageManager::loadPackageByPackageInfo( const PackageInfo& info )
 {
-	return loadPackageByPath(info.path());
+	return std::make_shared<Package>(info);
 }
 
 const std::vector<PackageInfo>& PackageManager::getPackageInfos()

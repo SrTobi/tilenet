@@ -4,6 +4,7 @@
 
 
 #include <unordered_set>
+#include <unordered_map>
 #include "settings.hpp"
 
 
@@ -47,13 +48,17 @@ private:
 class Package
 {
 public:
-	Package();
+	Package(const PackageInfo& pi);
 	~Package();
 
 	shared_ptr<StdTile> getStdTileByName(const string& name);
 
 
 	const PackageInfo& info();
+
+private:
+	std::unordered_map<string, shared_ptr<StdTile>> mNameToStdTileMapping;
+	PackageInfo mInfo;
 };
 
 

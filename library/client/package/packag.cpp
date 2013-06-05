@@ -1,6 +1,9 @@
 #include "includes.hpp"
 #include "package.hpp"
 
+#include "std_tile_pool.hpp"
+#include "components/std_tile.hpp"
+
 namespace client {
 
 
@@ -56,24 +59,74 @@ bool PackageInfo::hasInterface( const string& interf) const
 
 
 
-Package::Package()
+Package::Package(const PackageInfo& pi)
+	: mInfo(pi)
 {
-	NOT_IMPLEMENTED()
+	auto filename = pi.path() / "debug-tileset.txt";
+
+	Log loadLog(L"tile-load");
+
+	loadLog.debug() << L"Load debug tileset from \"" << filename << "\"";
+
+	std::wifstream file(filename.string());
+
+	if(!file.is_open())
+	{
+		loadLog.error() << "Failed to load tile source!";
+		return;
+	}
+
+	const auto& pool = StdTilePool::Inst();
+
+
+	string line;
+	int lineNum = 1;
+
+	while(std::getline(file, line))
+	{
+		std::wistringstream iss(line);
+
+		// skip comments
+		if(line.size() && line.find(L"//") == string::npos)
+		{
+			string name;
+			string std_tile_name;
+			iss >> name >> std_tile_name;
+
+			if(iss.fail() || !iss.eof())
+			{
+				loadLog.error() << L"Failed to parse line " << lineNum;
+				return;
+			}
+
+			auto sprite = pool.getStdTile(std_tile_name);
+
+			mNameToStdTileMapping[name] = sprite;
+		}
+
+		++lineNum;
+	}
+
+	loadLog.debug() << mNameToStdTileMapping.size() << " tiles loaded";
 }
 
 Package::~Package()
 {
-	NOT_IMPLEMENTED()
 }
 
 shared_ptr<StdTile> Package::getStdTileByName( const string& name )
 {
-	NOT_IMPLEMENTED()
+	auto it = mNameToStdTileMapping.find(name);
+
+	if(it == mNameToStdTileMapping.end())
+		return nullptr;
+
+	return it->second;
 }
 
 const PackageInfo& Package::info()
 {
-	NOT_IMPLEMENTED()
+	return mInfo;
 }
 
 
