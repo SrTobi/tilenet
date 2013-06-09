@@ -93,6 +93,7 @@ public:
 
 	std::vector<PackageInfo> search(unsigned int deep)
 	{
+		log.info() << L"Start searching for packages...";
 		for(auto& path : mPaths)
 		{
 			iterateDirectory(path, deep);
@@ -183,7 +184,7 @@ void PackageManager::serachPackages()
 	std::shared_ptr<PackageFinder> pf = std::make_shared<PackageFinder>(mPackagePaths.begin(), mPackagePaths.end());
 
 	auto func = std::bind(&PackageFinder::search, pf, 2);
-	boost::packaged_task<std::vector<PackageInfo>> task(func);
+	boost::packaged_task<std::vector<PackageInfo>> task(std::move(func));
 	mPackageInfosWaiter = task.get_future();
 
 	std::thread(std::move(task)).detach();
