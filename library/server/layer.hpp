@@ -21,7 +21,6 @@ public:
 
 	virtual OVERRIDE void destroy() = 0;
 	virtual OVERRIDE shared_ptr<TilenetObject> clone() = 0;
-	virtual OVERRIDE void flush() = 0;
 };
 
 

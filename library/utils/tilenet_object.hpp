@@ -28,7 +28,6 @@ public:
 
 	virtual void destroy() = 0;
 	virtual shared_ptr<TilenetObject> clone() = 0;
-	virtual void flush() = 0;
 
 	template<typename Result>
 	std::shared_ptr<Result> self()

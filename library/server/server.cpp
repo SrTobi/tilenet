@@ -17,11 +17,6 @@ Acceptor::~Acceptor()
 {
 }
 
-OVERRIDE void Acceptor::flush()
-{
-	BOOST_THROW_EXCEPTION(excp::NotSupportedException() << excp::InfoWhat(L"Acceptor can not be flushed!"));
-}
-
 
 
 Server::Server(const TNSVRCONFIG* init)
@@ -47,11 +42,6 @@ void Server::destroy()
 shared_ptr<TilenetObject> Server::clone()
 {
 	BOOST_THROW_EXCEPTION(excp::NotSupportedException() << excp::InfoWhat(L"Server can not be cloned!"));
-}
-
-void Server::flush()
-{
-	BOOST_THROW_EXCEPTION(excp::NotSupportedException() << excp::InfoWhat(L"Server can not be flushed!"));
 }
 
 

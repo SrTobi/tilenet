@@ -31,7 +31,6 @@ public:
 
 	OVERRIDE void destroy();
 	OVERRIDE shared_ptr<TilenetObject> clone();
-	OVERRIDE void flush();
 	OVERRIDE shared_ptr<net::Message> getStateMessage();
 
 

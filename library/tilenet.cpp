@@ -371,18 +371,6 @@ TNAPI TNERROR tilenet_clone(TNOBJ src, TNOBJ* dest)
 }
 
 
-TNAPI TNERROR tilenet_flush(TNOBJ obj)
-{
-	CHECK_NULL(obj);
-
-	try {
-		obj->flush();
-		return TNOK;
-
-	} AUTO_CATCH(true);
-}
-
-
 
 TNAPI TNERROR tilenet_set_service_thread_count(size_t count)
 {

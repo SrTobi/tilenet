@@ -29,7 +29,6 @@ public:
 
 	virtual OVERRIDE void destroy() = 0;
 	virtual OVERRIDE shared_ptr<TilenetObject> clone() = 0;
-	OVERRIDE void flush();
 
 	virtual void start() = 0;
 	virtual void stop() = 0;
@@ -44,7 +43,6 @@ public:
 
 	virtual OVERRIDE void destroy();
 	virtual OVERRIDE shared_ptr<TilenetObject> clone();
-	virtual OVERRIDE void flush();
 
 	std::shared_ptr<Participant> addParticipant(const shared_ptr<net::ConnectionPort>& conport);
 	bool fetchNextEvent(TNEVENT* dest, size_t* timeout);
