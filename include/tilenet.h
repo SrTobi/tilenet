@@ -218,7 +218,6 @@ TNAPI TNERROR tilenet_get_last_error();
 /**** object management *****/
 TNAPI TNERROR tilenet_destroy(TNOBJ obj);
 TNAPI TNERROR tilenet_clone(TNOBJ src, TNOBJ* dest);
-TNAPI TNERROR tilenet_flush(TNOBJ obj);
 
 /**** service managment ****/
 TNAPI TNERROR tilenet_fetch_service(size_t timeout);
