@@ -8,6 +8,7 @@
 
 #include "rapidxml.hpp"
 #include "utils/xml_helpers.hpp"
+#include <rxml/value.hpp>
 
 namespace client {
 
@@ -52,16 +53,21 @@ public:
 			return;
 		}
 
-		auto* info_node = xml::get_node<wchar_t>(&doc, L"package/information");
+		try {
+			auto* info_node = rxml::getnode(&doc, L"package/information");
 
-		tnAssert(info_node);
+			tnAssert(info_node);
 
-		mResult.push_back(	PackageInfo(xml::get_attr<string, wchar_t>(info_node, L"", L"name"),
-										L"1.0.0.0",
-										L"1.0.0.0",
-										xml::get_attr<string, wchar_t>(info_node, L"author", L"name", L"unknown"),
-										fs::canonical(path).parent_path(),
-										std::vector<string>()));
+			mResult.push_back(	PackageInfo(rxml::value(info_node, L":name"),
+											L"1.0.0.0",
+											L"1.0.0.0",
+											rxml::valuefb(info_node, L"author:name", L"unknown"),
+											fs::canonical(path).parent_path(),
+											std::vector<string>()));
+		}catch(excp::XmlException& e)
+		{
+			log.error() << "Failed to parse package info: " << e.why();
+		}
 	}
 
 

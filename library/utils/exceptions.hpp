@@ -59,9 +59,36 @@ struct NotImplException: public ExceptionBase
 	{
 		return "Section is not implemented!";
 	}
-
-
 };
+
+
+
+struct FormatException: public ExceptionBase
+{
+	virtual OVERRIDE const char* what() const throw()
+	{
+		return "Wrong format used!";
+	}
+};
+
+struct XmlException: public FormatException
+{
+	virtual OVERRIDE const char* what() const throw()
+	{
+		return "Xml has a wrong format!";
+	}
+};
+
+struct XmlNotFoundException: public XmlException
+{
+	virtual OVERRIDE const char* what() const throw()
+	{
+		return "Xml entity is not found!";
+	}
+};
+
+
+
 
 /**
  * @brief Exception having a certain error code which could be used directly with the c api
@@ -139,7 +166,7 @@ struct ErrorOut
 	}
 
 
-	//! Fallback string, used when no info value is available
+	//! fall back string, used when no info value is available
 	string fallbackInfo;
 
 	//! info of the exception

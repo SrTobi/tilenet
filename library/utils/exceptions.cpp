@@ -1,7 +1,7 @@
 #include "includes.hpp"
 
 #include "settings.hpp"
-
+#include "exceptions.hpp"
 
 /// @cond DEV
 

@@ -3,73 +3,64 @@
 #define _XML_HELPERS_HPP
 
 
-#include <rapidxml.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
-#include "settings.hpp"
+#define rxml_assert(_expr)	tnAssert(_expr)
 
-namespace rxml = rapidxml;
+#include "settings.hpp"
+#include "utils/exceptions.hpp"
+
+#include <rapidxml.hpp>
+#include <rxml/error.hpp>
+#include <rxml/locate.hpp>
 
 
 namespace xml {
 
+	typedef boost::error_info<struct _FailedNodeInfo, string> FailedNodeInfo;
+	typedef boost::error_info<struct _FailedPathInfo, string> FailedPathInfo;
 
-
-template<typename Ch, typename Str>
-rxml::xml_node<Ch>* get_node(rxml::xml_node<Ch>* node, Str path)
-{
-	std::basic_string<Ch> name;
-	std::basic_istringstream<Ch> iss(path);
-
-	while(std::getline(iss, name, Ch('/')))
+	struct notfound_error_generator
 	{
-		node = node->first_node(name.c_str(), name.size());
+		void operator ()(const rapidxml::xml_base<wchar_t>* node, const string& path) const
+		{
+			auto loc = rxml::locate(node);
+			BOOST_THROW_EXCEPTION(excp::XmlNotFoundException()
+									<< FailedNodeInfo(loc)
+									<< FailedPathInfo(path)
+									<< excp::InfoWhat(L"Failed to find '" + path + L"' in xml node '" + loc + L"'")
+									);
+		}
+	};
 
-		if(!node)
-			return nullptr;
-	}
-
-	return node;
-}
-
-
-template<typename Ty, typename Ch>
-Ty get_attr(rxml::xml_node<Ch>* node, const std::basic_string<Ch>& path, const std::basic_string<Ch>& attr)
-{
-	node = get_node(node, path);
-
-	if(!node)
-		NOT_IMPLEMENTED();
-
-	auto* a = node->first_attribute(attr.c_str(), attr.size());
-
-	if(!a)
-		NOT_IMPLEMENTED();
-
-	return boost::lexical_cast<Ty>(a->value(), a->value_size());
-}
-
-
-template<typename Ty, typename Ch>
-Ty get_attr(rxml::xml_node<Ch>* node, const std::basic_string<Ch>& path, const std::basic_string<Ch>& attr, const Ty& def)
-{
-	node = get_node(node, path);
-
-	if(!node)
-		return def;
-
-	auto* a = node->first_attribute(attr.c_str(), attr.size());
-
-	if(!a)
-		return def;
-
-	return boost::lexical_cast<Ty>(a->value(), a->value_size());
-}
-
-
-
+	struct nomatch_error_generator
+	{
+		template<typename _Ch, typename _Entity>
+		void operator ()(const std::basic_string<_Ch>& result, const _Entity*, const std::basic_string<_Ch>& path) const
+		{
+			//throw nomatch_error("sequence does not match the regex");
+		}
+	};
 
 }
+
+
+
+namespace rxml {
+namespace defaults {
+
+
+	template<>
+	struct registry<not_found, false>
+	{
+		typedef xml::notfound_error_generator generator;
+	};
+
+	/*template<>
+	struct registry<no_match, false>
+	{
+		typedef xml::nomatch_error_generator generator;
+	};*/
+
+}}
 
 
 

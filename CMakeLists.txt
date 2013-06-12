@@ -66,6 +66,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 
 ################### add c++11 support ###################
+set(rxml_includes				"${PROJECT_SOURCE_DIR}/extras/rxml/include")
 set(rapidxml_includes			"${PROJECT_SOURCE_DIR}/extras/rapidxml-1.13")
 set(tilenet_library_pch_file	"${PROJECT_SOURCE_DIR}/library/includes.hpp")
 set(tilenet_include_file		"${PROJECT_SOURCE_DIR}/include/tilenet.h")
@@ -76,6 +77,7 @@ include_directories("include")
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${SFML_INCLUDE_DIR})
 include_directories(${rapidxml_includes})
+include_directories(${rxml_includes})
 
 
 ################### setup link directories ###################

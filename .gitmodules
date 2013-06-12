@@ -1,0 +1,3 @@
+[submodule "extras/rxml"]
+	path = extras/rxml
+	url = https://github.com/SrTobi/rxml.git
