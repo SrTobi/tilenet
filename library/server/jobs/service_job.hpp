@@ -14,7 +14,7 @@ class ServiceJob
 {
 public:
 	ServiceJob();
-	~ServiceJob();
+	virtual ~ServiceJob();
 
 	virtual OVERRIDE void process() = 0;
 };

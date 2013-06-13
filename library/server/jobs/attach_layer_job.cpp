@@ -43,7 +43,11 @@ void AttachLayerJob::process()
 
 	// send the layer to the client
 	{
-		mParticipant->port()->send(mLayer->getStateMessage());
+		TNID lastCommit = mLayer->currentCommitNr();
+		auto commits = mLayer->getCommitsUpTo(lastCommit);
+
+		for(auto commit : commits)
+			mParticipant->port()->send(commit);
 	}
 }
 

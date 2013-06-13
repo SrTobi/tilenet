@@ -88,6 +88,7 @@ extern "C" {
 /**** definitions ****/
 typedef unsigned int	TNERROR;
 typedef unsigned int	TNERRINFO;
+typedef unsigned char	TNBOOL;
 typedef uint32_t		TNFLAG;
 typedef unsigned int	TNEVTYPE;
 typedef uint32_t		TNCOLOR;
@@ -242,7 +243,7 @@ TNAPI TNERROR tilenet_update_view(TNVIEW view);
 
 /**** layer: tile-layer ****/
 TNAPI TNERROR tilenet_create_tilelayer(TNLAYER* layer, unsigned int width, unsigned int height, TNRATIO xr, TNRATIO yr, TNFLAG flags);
-TNAPI TNERROR tilenet_put_tile(TNLAYER layer, unsigned int x, unsigned int y, TNTILE* tile);
+TNAPI TNERROR tilenet_update_tilelayer(TNLAYER layer, TNTILE* tiles, TNBOOL* toupdate);
 
 /**** tileset ****/
 TNAPI TNERROR tilenet_stdtile(const wchar_t* name, TNID* id);

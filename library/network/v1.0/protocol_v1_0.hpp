@@ -42,8 +42,9 @@ namespace to_client {
 
 		LayerControl_AttachLayer		= 0x90,
 		LayerControl_SendFrame			= 0x91,
-		LayerControl_SendFullLayer		= 0x92,
-		LayerConrtol_RemoveLayer		= 0x93,
+		LayerConrtol_RemoveLayer		= 0x92,
+		LayerControl_SendFullLayer		= 0x93,
+		LayerControl_SendLayerUpdate	= 0x94,
 
 		Answer_StdTileNameRequest			= 0xA0
 	};
@@ -123,15 +124,43 @@ PROTOCOL_MESSAGE(LayerControl_AttachLayer, to_client)
 PROTOCOL_MESSAGE(LayerControl_SendFullLayer, to_client)
 {
 	TNID layerId;
+	TNID commitNr;
 	uint16 xratio, yratio, width, height;
 	std::vector<net::PTile> layerContent;
 
 	PROTOCOL_SERIALIZER(ar)
 	{
-		ar & layerId & xratio & yratio & width & height & layerContent;
+		ar & layerId & commitNr & xratio & yratio & width & height & layerContent;
 	}
 };
 
+PROTOCOL_MESSAGE(LayerControl_SendLayerUpdate, to_client)
+{
+	struct UpdateTile
+	{
+		UpdateTile(uint32 offset, const net::PTile& tile)
+			: offset(offset), data(tile)
+		{
+		}
+
+		uint32 offset;
+		net::PTile data;
+
+		PROTOCOL_SERIALIZER(ar)
+		{
+			ar & offset & data;
+		}
+	};
+
+	TNID layerId;
+	TNID commitNr;
+	std::vector<UpdateTile> layerContent;
+
+	PROTOCOL_SERIALIZER(ar)
+	{
+		ar & layerId & commitNr & xratio & yratio & width & height & layerContent;
+	}
+};
 }
 
 #undef PROTOCOL_THIS_VERSION

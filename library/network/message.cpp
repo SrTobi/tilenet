@@ -31,4 +31,10 @@ msgid_type Message::id() const
 	return mId;
 }
 
+std::size_t Message::size() const
+{
+	return mBuffer.size();
+}
+
+
 }

@@ -28,6 +28,12 @@ void Service::enqueJob( const shared_ptr<job::ServiceJob>& job )
 	post(std::bind(&job::ServiceJob::process, job));
 }
 
+void Service::enqueJob( const shared_ptr<job::ServiceJob>& job, boost::asio::strand& strand )
+{
+	post(strand.wrap(std::bind(&job::ServiceJob::process, job)));
+}
+
+
 void Service::setThreadCount(size_t count)
 {
 	mThreadPool->setThreadCount(count);

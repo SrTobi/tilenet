@@ -3,6 +3,7 @@
 
 #ifdef _MSC_VER
 #include <sdkddkver.h>
+#pragma warning(disable: 4800)
 #endif
 
 #ifdef TILENET_USE_PRECOMPILED_HEADER

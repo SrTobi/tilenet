@@ -22,7 +22,7 @@ public:
 	Message(const msgid_type id, const std::vector<byte>&& msg);
 	~Message();
 
-
+	std::size_t size() const;
 	const std::vector<byte>& buffer() const;
 	msgid_type id() const;
 

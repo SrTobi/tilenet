@@ -52,7 +52,7 @@ void LayerLinkManager::unlinkParticipant( const shared_ptr<Participant>& partici
 	}
 }
 
-std::vector<shared_ptr<Participant>>&& LayerLinkManager::getLinkedParticipants(const shared_ptr<Layer>& layer) const
+std::vector<shared_ptr<Participant>> LayerLinkManager::getLinkedParticipants(const shared_ptr<Layer>& layer) const
 {
 	std::vector<shared_ptr<Participant>> participants;
 

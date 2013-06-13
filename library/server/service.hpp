@@ -4,6 +4,7 @@
 
 #include <map>
 #include <boost/asio/io_service.hpp>
+#include <boost/asio/strand.hpp>
 #include "settings.hpp"
 
 
@@ -22,6 +23,7 @@ public:
 	~Service();
 
 	void enqueJob(const shared_ptr<job::ServiceJob>& job);
+	void enqueJob(const shared_ptr<job::ServiceJob>& job, boost::asio::strand& strand);
 
 	void setThreadCount(size_t count);
 

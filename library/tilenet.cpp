@@ -541,12 +541,13 @@ TNAPI TNERROR tilenet_create_tilelayer( TNLAYER* layer, unsigned int width, unsi
 	} AUTO_CATCH(true);
 }
 
-TNAPI TNERROR tilenet_put_tile( TNLAYER layer, unsigned int x, unsigned int y, TNTILE* tile )
+TNAPI TNERROR tilenet_update_tilelayer(TNLAYER layer, TNTILE* tiles, TNBOOL* toupdate)
 {
+	CHECK_NULL(tiles);
 	CHECK_CAST(_layer, layer, srv::TileLayer);
 	
 	try {
-		_layer->putTile(Point(x, y), tile);
+		_layer->update(tiles, toupdate);
 
 		return TNOK;
 	} AUTO_CATCH(true);
