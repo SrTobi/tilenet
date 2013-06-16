@@ -79,6 +79,7 @@ std::mutex IdObject<T>::IdMutex;
 
 template<typename T>
 IdObject<T>::IdObject()
+	: mId(0)
 {
 }
 
@@ -98,12 +99,14 @@ IdObject<T>::~IdObject()
 template<typename T>
 typename IdObject<T>::id_type IdObject<T>::id() const
 {
+	assert(mId);
 	return mId;
 }
 
 template<typename T>
 typename IdObject<T>::id_type IdObject<T>::Register(const shared_ptr<T>& obj)
 {
+	assert(obj->mId == 0);
 	std::lock_guard<std::mutex> lock(IdMutex);
 
 	id_type newId;
