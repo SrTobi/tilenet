@@ -35,7 +35,6 @@ class Renderer::Layer
 public:
 
 	virtual void render(sf::RenderTarget& target) = 0;
-	virtual void putTile(const Point& pos, const net::PTile& ptile) = 0;
 	virtual void getBounds(Rect& ratioSize, Rect& tileSize) const = 0;
 private:
 };
@@ -113,10 +112,41 @@ public:
 		tileSize = mTileField.size();
 	}
 
-	virtual OVERRIDE void putTile(const Point& pos, const net::PTile& ptile)
+	void update(const LayerDelta& delta)
 	{
-		auto& tile = mTileField.at(pos);
+		bool first = true;
+		auto it = mTileField.storage().begin();
+		for(auto& dt : delta.layerContent)
+		{
+			uint32 skip = dt.first;
 
+			if(!first)
+				++skip;
+			else
+				first = false;
+			it += skip;
+
+			*it = make_tile(dt.second);
+		}
+	}
+
+	void update(const LayerCommit& commit)
+	{
+		auto size = mTileField.size();
+		for(unsigned int x = 0; x < size.w; ++x)
+		{
+			for(unsigned int y = 0; y < size.h; ++y)
+			{
+				Point pos(x,y);
+				mTileField.at(pos) = make_tile(commit.layerContent[pos.fieldIndex(size.w)]);
+			}
+		}
+	}
+
+private:
+
+	std::unique_ptr<Tile> make_tile(const net::PTile& ptile)
+	{
 		switch(ptile.type())
 		{
 		case net::PTile::NullTileType:
@@ -124,12 +154,13 @@ public:
 		case net::PTile::StdTileType:
 			{
 				auto& data = ptile.data<TNTILE::stddata_type>();
-				tile.reset(new StdIdTile(data.id, to_sf_color(data.color), mTileManager));
+				return std::unique_ptr<Tile>(new StdIdTile(data.id, to_sf_color(data.color), mTileManager));
 			}
 			break;
 		default:
 			NOT_IMPLEMENTED();
 		}
+		return nullptr;
 	}
 
 
@@ -225,17 +256,19 @@ void Renderer::defineLayer( TNID id, Rect size, Ratio r )
 	mIdToLayerMapping[id] = std::make_shared<RenderLayer>(size, r, mTileMapper);
 }
 
-void Renderer::putTile( TNID layerid, Point pos, const net::PTile& tile )
+void Renderer::updateLayer( const LayerCommit& commit )
 {
-	auto it = mIdToLayerMapping.find(layerid);
-
-	if(it == mIdToLayerMapping.end())
-	{
-		NOT_IMPLEMENTED();
-	}
-
-	it->second->putTile(pos, tile);
+	auto l = std::dynamic_pointer_cast<RenderLayer>(layer(commit.layerId));
+	if(l) l->update(commit);
 }
+
+
+void Renderer::applyDelta( const LayerDelta& delta )
+{
+	auto l = std::dynamic_pointer_cast<RenderLayer>(layer(delta.layerId));
+	if(l) l->update(delta);
+}
+
 
 void Renderer::calculateView(sf::RenderTarget& target, const shared_ptr<Layer>& layer)
 {

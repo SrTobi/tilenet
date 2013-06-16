@@ -33,6 +33,9 @@ class Renderer;
 class MainComHandler
 	: public ComHandler
 {
+	typedef proto::v1_0::to_client::LayerControl_SendLayerUpdate Delta;
+	class TileLayerCommitManager;
+
 	MainComHandler(ClientApp& app, const shared_ptr<net::ConnectionPort>& port, const shared_ptr<ServerInfo>& svr_info);
 	void init();
 public:
@@ -48,6 +51,7 @@ private:
 
 private:
 	void handleLayerControl_attachLayer(const proto::v1_0::to_client::LayerControl_AttachLayer& msg);
+	void handleLayerControl_sendLayerUpdate(const proto::v1_0::to_client::LayerControl_SendLayerUpdate& msg);
 	void handleLayerControl_sendFullLayer(const proto::v1_0::to_client::LayerControl_SendFullLayer& msg);
 
 	void handleAnswer_StdTileNameRequest(const proto::v1_0::to_client::Answer_StdTileNameRequest& answ);
@@ -62,6 +66,7 @@ private:
 	shared_ptr<TileMapper> mTileMapper;
 
 	std::unordered_set<TNID> mRequestedStdTiles;
+	std::unique_ptr<TileLayerCommitManager> mCommitManager;
 };
 
 

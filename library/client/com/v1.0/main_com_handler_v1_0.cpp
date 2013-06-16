@@ -17,15 +17,92 @@ namespace v1_0 {
 
 
 
+class MainComHandler::TileLayerCommitManager
+{
+	typedef std::map<TNID, Delta> History;
+	struct CommitBuffer{ CommitBuffer():nextDelta(1){} TNID nextDelta; History history; };
+public:
+	TileLayerCommitManager()
+	{
+	}
+
+	~TileLayerCommitManager()
+	{
+	}
+
+	std::vector<Delta> addDelta(TNID layer, TNID commitnr, Delta&& dt)
+	{
+		auto& b = mCommitBuffers[layer];
+
+		std::vector<Delta> result;
+		if(commitnr == b.nextDelta)
+		{
+			++b.nextDelta;
+			result.push_back(std::move(dt));
+			addNextCommits(b, result);
+		}else{
+			b.history[commitnr] = std::move(dt);
+		}
+
+		return result;
+	}
+
+	std::vector<Delta> notifyFullLayerCommit(TNID layer, TNID commitnr)
+	{
+		std::vector<Delta> result;
+		auto& b = mCommitBuffers[layer];
+		auto& h = b.history;
+
+		// erase all commits older then the new fill commit
+		for(auto it = h.begin(); it != h.end();)
+		{
+			if(it->first <= commitnr)
+			{
+				it = h.erase(it);
+			}else
+				++it;
+		}
+
+		b.nextDelta = commitnr + 1;
+
+		addNextCommits(b, result);
+		return std::move(result);
+	}
+
+private:
+	void addNextCommits(CommitBuffer& b, std::vector<Delta>& result)
+	{
+		for(auto it = b.history.find(b.nextDelta);
+			it != b.history.end() && it->first == b.nextDelta;
+			++b.nextDelta)
+		{
+			result.push_back(std::move(it->second));
+			it = b.history.erase(it);
+		}
+	}
+
+	CommitBuffer* buffer(TNID layer)
+	{
+		auto it = mCommitBuffers.find(layer);
+
+		return it == mCommitBuffers.end()? nullptr : &it->second;
+	}
+private:
+	std::unordered_map<TNID, CommitBuffer> mCommitBuffers;
+};
+
+
 
 MainComHandler::MainComHandler( ClientApp& app, const shared_ptr<net::ConnectionPort>& port, const shared_ptr<ServerInfo>& svr_info)
 	: mApp(app)
 	, mPort(port)
 	, mWindow(app.window())
 	, mServerInfo(svr_info)
+	, mCommitManager(new TileLayerCommitManager())
 {
 	mDispatcher.add(&MainComHandler::handleLayerControl_attachLayer, this);
 	mDispatcher.add(&MainComHandler::handleLayerControl_sendFullLayer, this);
+	mDispatcher.add(&MainComHandler::handleLayerControl_sendLayerUpdate, this);
 	mDispatcher.add(&MainComHandler::handleAnswer_StdTileNameRequest, this);
 }
 
@@ -54,6 +131,18 @@ void MainComHandler::handleLayerControl_attachLayer( const proto::v1_0::to_clien
 	mRenderer->setTopLayer(msg.layerId);
 }
 
+
+void MainComHandler::handleLayerControl_sendLayerUpdate( const proto::v1_0::to_client::LayerControl_SendLayerUpdate& msg )
+{
+	auto cpy = msg; // <- HACK!!!
+	auto deltas = mCommitManager->addDelta(msg.layerId, msg.commitNr, std::move(cpy));
+
+	for(auto& dt : deltas)
+		mRenderer->applyDelta(dt);
+}
+
+
+
 void MainComHandler::handleLayerControl_sendFullLayer( const proto::v1_0::to_client::LayerControl_SendFullLayer& msg )
 {
 	Rect size(msg.width, msg.height);
@@ -67,14 +156,13 @@ void MainComHandler::handleLayerControl_sendFullLayer( const proto::v1_0::to_cli
 		NOT_IMPLEMENTED();
 	}
 
-	for(unsigned int x = 0; x < size.w; ++x)
-	{
-		for(unsigned int y = 0; y < size.h; ++y)
-		{
-			Point pos(x,y);
-			mRenderer->putTile(msg.layerId, pos, msg.layerContent[pos.fieldIndex(msg.width)]);
-		}
-	}
+	// get deltas waiting to be put
+	auto deltas = mCommitManager->notifyFullLayerCommit(msg.layerId, msg.commitNr);
+
+	mRenderer->updateLayer(msg);
+
+	for(auto& dt : deltas)
+		mRenderer->applyDelta(dt);
 }
 
 shared_ptr<MainComHandler> MainComHandler::Create( ClientApp& app, const shared_ptr<net::ConnectionPort>& port, const shared_ptr<ServerInfo>& svr_info)
@@ -101,6 +189,7 @@ void MainComHandler::handleAnswer_StdTileNameRequest( const proto::v1_0::to_clie
 {
 	mTileMapper->identifyStdTile(answ.tileName, answ.tileId);
 }
+
 
 
 

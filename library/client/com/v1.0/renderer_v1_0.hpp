@@ -8,6 +8,7 @@
 
 #include "settings.hpp"
 #include "client/render_interface.hpp"
+#include "network/v1.0/protocol_v1_0.hpp"
 #include "network/v1.0/protocol_tile.hpp"
 
 
@@ -27,6 +28,8 @@ class TileMapper;
 class Renderer
 	: public RenderInterface
 {
+	typedef proto::v1_0::to_client::LayerControl_SendFullLayer LayerCommit;
+	typedef proto::v1_0::to_client::LayerControl_SendLayerUpdate LayerDelta;
 	class Layer;
 	class FrameLayer;
 	class RenderLayer;
@@ -38,7 +41,8 @@ public:
 
 	void setTopLayer(TNID id);
 	void defineLayer(TNID id, Rect size, Ratio r);
-	void putTile(TNID layerid, Point pos, const net::PTile& tile);
+	void updateLayer(const LayerCommit& commit);
+	void applyDelta(const LayerDelta& delta);
 
 private:
 	shared_ptr<Layer> layer(TNID id) const;
