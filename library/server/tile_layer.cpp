@@ -18,20 +18,13 @@ TileLayer::TileLayer(const Rect& size, const Ratio& ratio, TNFLAG flags)
 	, mUpdateStrand(Service::Inst())
 	, mCommits(1)
 {
-	clear();
+	makeFullSnapshotCommit(true);
 }
 
 TileLayer::~TileLayer()
 {
 }
 
-
-void TileLayer::clear()
-{
-	// Clear the layer
-	auto& storage = mTileField.storage();
-	memset(storage.data(), 0, storage.size() * sizeof(TNTILE));
-}
 
 
 void TileLayer::update( TNTILE* tiles, TNBOOL* toupdate )
@@ -48,34 +41,63 @@ void TileLayer::update( TNTILE* tiles, TNBOOL* toupdate )
 
 Layer::Commit TileLayer::update( const std::vector<net::PTile>& tiles, const std::vector<bool>& toupdate )
 {
-	std::lock_guard<std::mutex> guard(mMutex);
-
-
-	// apply changes
-	if(toupdate.size())
+	// vector for tiles and their offsets later used in the message
+	typedef proto::curv::to_client::LayerControl_SendLayerUpdate::update_tile update_tile;
+	std::vector<update_tile> update_tiles;
+	
 	{
-		auto& storage = mTileField.storage();
-		assert(storage.size() == tiles.size());
-		assert(storage.size() == toupdate.size());
-		
-		auto tile_it = tiles.begin();
-		auto upd_it = toupdate.begin();
-		auto stor_it = storage.begin();
+		std::lock_guard<std::mutex> guard(mMutex);
 
-		for(;stor_it != storage.end(); ++tile_it, ++upd_it, ++stor_it)
+
+		bool has_update_list = toupdate.size() > 0;
+		tnAssert(!has_update_list || tiles.size() == toupdate.size());
+
+		auto& storage = mTileField.storage();
+		int size = storage.size();
+		int last_updated = -1;
+		int num_updates = 0;
+
+		for(int i = 0; i < size; ++i)
 		{
-			if(*upd_it)
-				*stor_it = *tile_it;
-		}
+			if(!has_update_list || (has_update_list && toupdate[i]))
+			{
+				if(tiles[i] != storage[i])
+				{
+					assert(i > last_updated || i == 0);
+					storage[i] = tiles[i];
 
-	}else{
-		auto& storage = mTileField.storage();
-		assert(storage.size() == tiles.size());
-		storage = tiles;
+					int skiped = i - last_updated - 1;
+					tnAssert(i >= 0);
+
+					update_tiles.emplace_back(skiped, tiles[i]);
+					++num_updates;
+					last_updated = i;
+				}
+			}
+		}
 	}
 
-	// build commit
+	proto::curv::to_client::LayerControl_SendLayerUpdate patch;
+
 	TNID commitnr = newCommit();
+	patch.commitNr = commitnr;
+	patch.layerId = id();
+	patch.layerContent = std::move(update_tiles);
+
+
+	Commit com = net::make_message(patch);
+
+	// commit
+	mCommits.commitDelta(commitnr, com);
+
+	return com;
+}
+
+TileLayer::Commit TileLayer::makeFullSnapshotCommit(bool asNewCommit)
+{
+	std::lock_guard<std::mutex> guard(mMutex);
+	
+	TNID commitnr = asNewCommit? newCommit() : currentCommitNr();
 
 	proto::curv::to_client::LayerControl_SendFullLayer fullLayer;
 
@@ -94,12 +116,13 @@ Layer::Commit TileLayer::update( const std::vector<net::PTile>& tiles, const std
 	tnAssert(storage.size() == content.size());
 
 	Commit com = net::make_message(fullLayer);
-	
+
 	// commit
 	mCommits.commit(commitnr, com);
 
 	return com;
 }
+
 
 
 const Ratio& TileLayer::ratio() const

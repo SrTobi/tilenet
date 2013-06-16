@@ -32,7 +32,6 @@ public:
 	TileLayer(const Rect& size, const Ratio& ratio, TNFLAG flags);
 	~TileLayer();
 
-	void clear();
 	void update(TNTILE* tiles, TNBOOL* toupdate);
 
 	const Ratio& ratio() const;
@@ -43,6 +42,8 @@ public:
 
 private:
 	Commit update(const std::vector<net::PTile>& tiles, const std::vector<bool>& toupdate);
+	Commit makeFullSnapshotCommit(bool asNewCommit);
+
 
 	virtual OVERRIDE std::vector<Commit> getCommitsUpTo(TNID nr);
 	virtual OVERRIDE Commit getDelta( TNID nr );
