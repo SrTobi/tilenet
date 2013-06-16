@@ -533,10 +533,13 @@ TNAPI TNERROR tilenet_update_view( TNVIEW view )
 
 TNAPI TNERROR tilenet_create_tilelayer( TNLAYER* layer, unsigned int width, unsigned int height, TNRATIO xr, TNRATIO yr, TNFLAG flags )
 {
-	try {
-		*layer = new srv::TileLayer(Rect(width, height), Ratio(xr, yr), flags);
-		srv::TileLayer::Register((*layer)->self<srv::TileLayer>());
+	CHECK_NULL(layer);
 
+	try {
+		auto* l = new srv::TileLayer(Rect(width, height), Ratio(xr, yr), flags);
+		srv::TileLayer::Register(l->self<srv::TileLayer>());
+		l->makeInitialCommit();
+		*layer = l;
 		return TNOK;
 	} AUTO_CATCH(true);
 }

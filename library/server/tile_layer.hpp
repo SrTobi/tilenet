@@ -32,6 +32,7 @@ public:
 	TileLayer(const Rect& size, const Ratio& ratio, TNFLAG flags);
 	~TileLayer();
 
+	void makeInitialCommit();
 	void update(TNTILE* tiles, TNBOOL* toupdate);
 
 	const Ratio& ratio() const;

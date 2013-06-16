@@ -18,11 +18,17 @@ TileLayer::TileLayer(const Rect& size, const Ratio& ratio, TNFLAG flags)
 	, mUpdateStrand(Service::Inst())
 	, mCommits(1)
 {
-	makeFullSnapshotCommit(true);
+	//makeFullSnapshotCommit(true); // <- falsche id!!!
 }
 
 TileLayer::~TileLayer()
 {
+}
+
+
+void TileLayer::makeInitialCommit()
+{
+	makeFullSnapshotCommit(true);
 }
 
 
