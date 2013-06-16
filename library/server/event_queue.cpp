@@ -33,7 +33,7 @@ void EventQueue::pop(TNEVENT* event)
 	mQueue.pop();
 }
 
-bool EventQueue::pop(TNEVENT* event, std::chrono::milliseconds timeout)
+bool EventQueue::pop(TNEVENT* event, std::chrono::milliseconds& timeout)
 {
 	std::unique_lock<std::mutex> lock(mMutex);
 

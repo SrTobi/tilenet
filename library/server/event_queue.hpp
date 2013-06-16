@@ -22,7 +22,7 @@ public:
 
 	void push(const TNEVENT& event);
 	void pop(TNEVENT* event);
-	bool pop(TNEVENT* event, std::chrono::milliseconds timeout);
+	bool pop(TNEVENT* event, std::chrono::milliseconds& timeout);
 
 
 private:
