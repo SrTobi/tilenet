@@ -5,6 +5,7 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/list.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/serialization/utility.hpp>
 
 #include <vector>
 
@@ -136,29 +137,15 @@ PROTOCOL_MESSAGE(LayerControl_SendFullLayer, to_client)
 
 PROTOCOL_MESSAGE(LayerControl_SendLayerUpdate, to_client)
 {
-	struct UpdateTile
-	{
-		UpdateTile(uint32 offset, const net::PTile& tile)
-			: offset(offset), data(tile)
-		{
-		}
-
-		uint32 offset;
-		net::PTile data;
-
-		PROTOCOL_SERIALIZER(ar)
-		{
-			ar & offset & data;
-		}
-	};
+	typedef std::pair<uint32, net::PTile> update_tile;
 
 	TNID layerId;
 	TNID commitNr;
-	std::vector<UpdateTile> layerContent;
+	std::vector<update_tile> layerContent;
 
 	PROTOCOL_SERIALIZER(ar)
 	{
-		ar & layerId & commitNr & xratio & yratio & width & height & layerContent;
+		ar & layerId & commitNr & layerContent;
 	}
 };
 }
