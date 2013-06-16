@@ -9,7 +9,7 @@
 #include <boost/serialization/variant.hpp>
 #include "settings.hpp"
 
-
+#include "utils/additional_comparison.hpp"
 
 namespace net {
 
@@ -47,6 +47,9 @@ public:
 	void assign(const TNTILE& tile);
 
 	TileType type() const;
+
+	bool operator ==(const PTile& other) const;
+	bool operator !=(const PTile& other) const;
 
 	template<typename T>
 	const T& data() const

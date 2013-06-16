@@ -85,6 +85,18 @@ void PTile::assign(const TNTILE& tile)
 	}
 }
 
+bool PTile::operator==( const PTile& other ) const
+{
+	return (mData == other.mData);
+}
+
+bool PTile::operator!=( const PTile& other ) const
+{
+	return !(mData == other.mData);
+}
+
+
+
 
 
 
