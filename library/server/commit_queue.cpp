@@ -32,7 +32,12 @@ void CommitQueue::commit(TNID key, const commit_type& val)
 		if(mLastNonDelta->first < key)
 		{
 			auto it = mCommits.find(key);
-			assert(it != mCommits.end());
+
+			// if the delta doesn't exist, the full commit wont very likely never be used... so quit here
+			if(it == mCommits.end())
+				return;
+
+			assert(!it->second.second);  // a full commit for this nr should not exist
 
 			auto& v = it->second;
 			v.second = val;
