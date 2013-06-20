@@ -46,17 +46,17 @@ void init_testlayer()
 	tilenet_update_tilelayer(testLayer, layerContent, nullptr);
 }
 
-unsigned int pos = 10;
+unsigned int pos = 0;
 
 void update_layer()
 {
 	TNTILE tile;
 	tile.type = TN_STD_TILE;
 	tile.data.stdset.id = testTileId;
-	tile.data.stdset.color = TNMAKE_COLOR(0xff, 0, 0, 0xff);
+	tile.data.stdset.color = TNMAKE_COLOR(0xff, rand() % 0xff, rand() % 0xff, rand() % 0xff);
 	tile.data.stdset.modifier = 0;
 
-	layerContent[pos++] = tile;
+	layerContent[pos++ % (90) ] = tile;
 	tilenet_update_tilelayer(testLayer, layerContent, nullptr);
 }
 
@@ -102,7 +102,7 @@ int main()
 		TNEVENT events[EVENT_BUF_LENGTH];
 
 		size_t fetched;
-		size_t timeout = 1000;
+		size_t timeout = 100;
 		tilenet_fetch_events(srv, events, EVENT_BUF_LENGTH, &fetched, &timeout);
 
 		if(fetched)
