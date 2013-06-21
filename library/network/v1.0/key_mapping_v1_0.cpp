@@ -30,7 +30,7 @@ bool KeyMapper::toCode(const string& name, TNKEYCODE* code) const
 TNKEYCODE KeyMapper::toCode( sf::Keyboard::Key key ) const
 {
 	assert(key != sf::Keyboard::Unknown);
-	auto it = mSfmlToCodeMapping.find(key);
+	auto it = mSfmlToCodeMapping.find(static_cast<unsigned int>(key));
 
 	tnAssert(it != mSfmlToCodeMapping.end());
 
@@ -180,7 +180,7 @@ void KeyMapper::addCode( const string& names, sf::Keyboard::Key sfmlKey )
 	}
 
 	{
-		auto res = mSfmlToCodeMapping.emplace(sfmlKey, code);
+		auto res = mSfmlToCodeMapping.emplace(static_cast<unsigned int>(sfmlKey), code);
 		assert(res.second);
 	}
 }

@@ -32,7 +32,7 @@ private:
 	const string mEmptyString;
 	std::vector<const string*> mCodeToMapping;
 	std::unordered_map<string, TNKEYCODE> mNameToCodeMapping;
-	std::unordered_map<sf::Keyboard::Key, TNKEYCODE> mSfmlToCodeMapping;
+	std::unordered_map<unsigned int, TNKEYCODE> mSfmlToCodeMapping;
 	unsigned int mNextCode;
 };
 
