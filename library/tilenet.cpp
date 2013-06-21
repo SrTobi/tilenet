@@ -579,6 +579,7 @@ TNAPI TNERROR tilenet_exit()
 TNAPI TNERROR tilenet_keycode( const wchar_t* name, TNKEYCODE* code )
 {
 	CHECK_NULL(name);
+	CHECK_NULL(code);
 	if(!proto::curv::KeyMapper::Inst().toCode(name, code))
 	{
 		NOT_IMPLEMENTED();
@@ -588,7 +589,7 @@ TNAPI TNERROR tilenet_keycode( const wchar_t* name, TNKEYCODE* code )
 
 TNAPI TNERROR tilenet_keyname( TNKEYCODE code, const wchar_t** name )
 {
-	CHECK_NULL(code);
+	CHECK_NULL(name);
 	auto& keyname = proto::curv::KeyMapper::Inst().toName(code);
 
 	if(keyname.empty())

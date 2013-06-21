@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <string>
 #include "tilenet.h"
 
 
@@ -77,7 +78,7 @@ void do_event(TNEVENT& e)
 			TNKEYCODE key = e.data.keyevent.key;
 			const wchar_t* name = L"";
 			tilenet_keyname(key, &name);
-			std::cout << "Keydown[" << name << "]\n";
+			std::wcout << "Keydown[" << std::wstring(name) << "]\n";
 
 
 			TNKEYCODE escape_code = 0;

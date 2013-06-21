@@ -49,7 +49,7 @@ void ClientWindow::process()
 	{
 		if (event.type == sf::Event::Closed)
 			mRenderWindow.close();
-		if(mRenderer && (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased))
+		if(mRenderer && (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) && event.key.code != sf::Keyboard::Unknown)
 		{
 			// HACK!!!
 			proto::v1_0::to_srv::Control_KeyEvent ke;

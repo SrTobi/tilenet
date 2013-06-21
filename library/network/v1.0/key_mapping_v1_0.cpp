@@ -29,6 +29,7 @@ bool KeyMapper::toCode(const string& name, TNKEYCODE* code) const
 
 TNKEYCODE KeyMapper::toCode( sf::Keyboard::Key key ) const
 {
+	assert(key != sf::Keyboard::Unknown);
 	auto it = mSfmlToCodeMapping.find(key);
 
 	tnAssert(it != mSfmlToCodeMapping.end());
@@ -104,7 +105,7 @@ void KeyMapper::init()
 	addCode(L"period|.|point|fullstop|dot", sf::Keyboard::Period);
 	addCode(L"quote|'", sf::Keyboard::Quote);
 	addCode(L"slash|/", sf::Keyboard::Slash);
-	addCode(L"backslash|\\", sf::Keyboard::BackSpace);
+	addCode(L"backslash|\\", sf::Keyboard::BackSlash);
 	addCode(L"tilde|~", sf::Keyboard::Tilde);
 	addCode(L"equal|=", sf::Keyboard::Equal);
 	addCode(L"dash", sf::Keyboard::Dash);
@@ -115,7 +116,7 @@ void KeyMapper::init()
 	addCode(L"pageup", sf::Keyboard::PageUp);
 	addCode(L"pagedown", sf::Keyboard::PageDown);
 	addCode(L"end", sf::Keyboard::End);
-	addCode(L"home", sf::Keyboard::Home);
+	addCode(L"home|pos1", sf::Keyboard::Home);
 	addCode(L"insert", sf::Keyboard::Insert);
 	addCode(L"delete", sf::Keyboard::Delete);
 	addCode(L"add|plus", sf::Keyboard::Add);
