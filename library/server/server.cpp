@@ -51,7 +51,7 @@ bool Server::fetchNextEvent( TNEVENT* dest, size_t* timeout )
 	{
 		std::chrono::milliseconds timeout_in_milliseconds(*timeout);
 		bool success = mEvents->pop(dest, timeout_in_milliseconds);
-		*timeout = timeout_in_milliseconds.count();
+		*timeout = static_cast<std::size_t>(timeout_in_milliseconds.count());
 		return success;
 	}else{
 		mEvents->pop(dest);

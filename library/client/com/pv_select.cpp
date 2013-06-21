@@ -1,5 +1,6 @@
 #include "includes.hpp"
 #include "client/com/pv_select.hpp"
+#include "client/com_interface.hpp"
 
 // Include all versions
 #include "client/com/v1.0/v1_0.hpp"
