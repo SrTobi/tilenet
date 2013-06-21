@@ -29,6 +29,7 @@ public:
 	virtual OVERRIDE void destroy();
 	virtual OVERRIDE shared_ptr<TilenetObject> clone();
 
+	static void WaitForClientExit();
 private:
 	static LocalAcceptor* Singleton;
 

@@ -568,6 +568,13 @@ TNAPI TNERROR tilenet_stdtile(const wchar_t* name, TNID* id )
 	} AUTO_CATCH(true);
 }
 
+TNAPI TNERROR tilenet_exit()
+{
+	srv::LocalAcceptor::WaitForClientExit();
+	return TNOK;
+}
+
+
 
 
 

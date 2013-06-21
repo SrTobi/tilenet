@@ -2,7 +2,7 @@
 #ifndef _CLIENT_HPP
 #define _CLIENT_HPP
 
-
+#include <future>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/steady_timer.hpp>
 
@@ -40,6 +40,8 @@ public:
 	const shared_ptr<net::ConnectionPort>& port() const;
 	const shared_ptr<PackageManager>& pmanager() const;
 	boost::asio::io_service& service();
+
+	static void WaitForExit();
 private:
 	void run();
 	void disconnect();
@@ -56,11 +58,12 @@ private:
 	std::shared_ptr<Messenger> mMessenger;
 	std::shared_ptr<PackageManager> mPackManager;
 	std::unique_ptr<boost::asio::io_service::work> mBusyWork;
+	std::promise<void> mClosePromise;
 	steady_timer mWindowProcessTimer;
 	float mFrameRate;
 	Log	log;
 
-
+	static std::future<void> CloseNotifier;
 	static ClientApp* Singleton;
 };
 

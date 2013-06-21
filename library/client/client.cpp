@@ -15,7 +15,7 @@
 namespace client {
 
 
-
+std::future<void> ClientApp::CloseNotifier;
 ClientApp* ClientApp::Singleton;
 
 
@@ -32,6 +32,9 @@ ClientApp::ClientApp()
 		// Client already exists
 		NOT_IMPLEMENTED();
 	}
+
+	// Set future first, because Singleton is checked in WaitForExit first!
+	CloseNotifier = mClosePromise.get_future();
 	Singleton = this;
 
 	// Add std paths to the package manager (TODO: load it)
@@ -41,6 +44,7 @@ ClientApp::ClientApp()
 ClientApp::~ClientApp()
 {
 	Singleton = nullptr;
+	mClosePromise.set_value();
 }
 
 void ClientApp::start()
@@ -172,6 +176,13 @@ OVERRIDE void ClientApp::onDisconnect()
 	mMessenger->add(L"Disconnected!!!", sf::Color::Red);
 	mComHandler = nullptr;
 }
+
+void ClientApp::WaitForExit()
+{
+	if(Singleton)
+		CloseNotifier.wait();
+}
+
 
 
 

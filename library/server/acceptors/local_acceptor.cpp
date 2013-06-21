@@ -63,6 +63,12 @@ void LocalAcceptor::uncouple()
 	mClient.reset();
 }
 
+void LocalAcceptor::WaitForClientExit()
+{
+	client::ClientApp::WaitForExit();
+}
+
+
 
 
 }
