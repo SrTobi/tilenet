@@ -12,6 +12,7 @@
 #include "settings.hpp"
 #include "../protocol.hpp"
 #include "protocol_tile.hpp"
+#include "key_mapping_v1_0.hpp"
 #include "utils/boost_unique_ptr_serialization.hpp"
 
 #define PROTOCOL_THIS_VERSION					v1_0
@@ -29,7 +30,9 @@ namespace to_srv {
 	enum Ids {
 		Handshake_P3_accessrequest	= 0x10,
 
-		Request_StdTileName			= 0x30
+		Request_StdTileName			= 0x30,
+
+		Control_KeyEvent			= 0x50
 	};
 
 }
@@ -88,6 +91,26 @@ PROTOCOL_MESSAGE(Request_StdTileName, to_srv)
 		ar & tileId;
 	}
 };
+
+
+
+PROTOCOL_MESSAGE(Control_KeyEvent, to_srv)
+{
+	enum EvtType
+	{
+		Evt_KeyDown,
+		Evt_KeyUp
+	};
+
+	EvtType type;
+	TNEVENT::keyevent_type data;
+
+	PROTOCOL_SERIALIZER(ar)
+	{
+		ar & type & data;
+	}
+};
+
 
 PROTOCOL_MESSAGE(Answer_StdTileNameRequest, to_client)
 {
@@ -148,6 +171,8 @@ PROTOCOL_MESSAGE(LayerControl_SendLayerUpdate, to_client)
 		ar & layerId & commitNr & layerContent;
 	}
 };
+
+
 }
 
 #undef PROTOCOL_THIS_VERSION
