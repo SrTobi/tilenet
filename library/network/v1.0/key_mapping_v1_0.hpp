@@ -46,7 +46,7 @@ namespace serialization {
 template<class Archive>
 void serialize(Archive & ar, TNEVENT::keyevent_type& data, const unsigned int version)
 {
-	ar & data.key & data.modifier & data.ch;
+	ar & data.key & data.modifier;
 }
 
 

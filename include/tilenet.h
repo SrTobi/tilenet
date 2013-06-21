@@ -148,8 +148,7 @@ typedef struct TilenetEvent
 
 	typedef struct
 	{
-		TNKEYCODE	key;		//! An associated command
-		wchar_t		ch;			//! The character pressed on the keyboard
+		TNKEYCODE	key;		//! An associated keycode
 		TNFLAG		modifier;	//!	A key modifier
 	} keyevent_type;
 

@@ -203,7 +203,6 @@ void MainComHandler::notifyKeyevent( const sf::Event& event )
 	KeyEvent ke;
 	ke.type = (event.type == sf::Event::KeyPressed? KeyEvent::Evt_KeyDown : KeyEvent::Evt_KeyUp );
 	ke.data.key = proto::v1_0::KeyMapper::Inst().toCode(event.key.code);
-	ke.data.ch = 0;
 	ke.data.modifier = (event.key.alt? TNKM_ALT : 0)
 					| (event.key.control? TNKM_CONTROL : 0)
 					| (event.key.shift? TNKM_SHIFT : 0)
