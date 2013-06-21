@@ -51,34 +51,32 @@ Layer::Commit TileLayer::update( const std::vector<net::PTile>& tiles, const std
 	typedef proto::curv::to_client::LayerControl_SendLayerUpdate::update_tile update_tile;
 	std::vector<update_tile> update_tiles;
 	
+	std::lock_guard<std::mutex> guard(mMutex);
+
+
+	bool has_update_list = toupdate.size() > 0;
+	tnAssert(!has_update_list || tiles.size() == toupdate.size());
+
+	auto& storage = mTileField.storage();
+	int size = storage.size();
+	int last_updated = -1;
+	int num_updates = 0;
+
+	for(int i = 0; i < size; ++i)
 	{
-		std::lock_guard<std::mutex> guard(mMutex);
-
-
-		bool has_update_list = toupdate.size() > 0;
-		tnAssert(!has_update_list || tiles.size() == toupdate.size());
-
-		auto& storage = mTileField.storage();
-		int size = storage.size();
-		int last_updated = -1;
-		int num_updates = 0;
-
-		for(int i = 0; i < size; ++i)
+		if(!has_update_list || (has_update_list && toupdate[i]))
 		{
-			if(!has_update_list || (has_update_list && toupdate[i]))
+			if(tiles[i] != storage[i])
 			{
-				if(tiles[i] != storage[i])
-				{
-					assert(i > last_updated || i == 0);
-					storage[i] = tiles[i];
+				assert(i > last_updated || i == 0);
+				storage[i] = tiles[i];
 
-					int skiped = i - last_updated - 1;
-					tnAssert(i >= 0);
+				int skiped = i - last_updated - 1;
+				tnAssert(i >= 0);
 
-					update_tiles.emplace_back(skiped, tiles[i]);
-					++num_updates;
-					last_updated = i;
-				}
+				update_tiles.emplace_back(skiped, tiles[i]);
+				++num_updates;
+				last_updated = i;
 			}
 		}
 	}
@@ -153,7 +151,19 @@ OVERRIDE shared_ptr<TilenetObject> TileLayer::clone()
 
 OVERRIDE std::vector<TileLayer::Commit> TileLayer::getCommitsUpTo( TNID nr )
 {
-	return std::move(mCommits.getCommitsUpTo(nr));
+	std::vector<Commit> result;
+	{
+		std::lock_guard<std::mutex> guard(mMutex);
+		result = std::move(mCommits.getCommitsUpTo(nr));
+	}
+
+	// if result is empty we have to make a new full commit!
+	if(result.empty())
+	{
+		result.push_back(makeFullSnapshotCommit(false));
+	}
+
+	return std::move(result);
 }
 
 OVERRIDE TileLayer::Commit TileLayer::getDelta( TNID nr )

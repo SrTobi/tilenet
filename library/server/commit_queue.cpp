@@ -82,16 +82,23 @@ std::vector<CommitQueue::commit_type> CommitQueue::getCommitsUpTo( TNID key ) co
 {
 	std::vector<commit_type> result;
 
-	if(mSizeSinceNonDelta < _lastFullCommit()->size() && key >= mLastNonDelta->first)
+	if(key <= mLastNonDelta->first)
 	{
-		auto end = mCommits.find(key);
-
-		for(auto it = mLastNonDelta; it != end; ++it)
+		// A new full commit is available... return it
+		result.emplace_back(_lastFullCommit());
+	}else{
+		// check if it is worth to send a chain of deltas
+		if(mSizeSinceNonDelta < _lastFullCommit()->size())
 		{
-			result.emplace_back(it->second.first);
-		}
+			auto end = mCommits.find(key);
 
-		result.front() = mLastNonDelta->second.second;
+			for(auto it = mLastNonDelta; it != end; ++it)
+			{
+				result.emplace_back(it->second.first);
+			}
+
+			result.front() = mLastNonDelta->second.second;
+		}
 	}
 
 	return result;

@@ -6,7 +6,7 @@ namespace srv {
 
 
 Layer::Layer()
-	: mCommit(1)
+	: mCommit(0)
 {
 
 }
@@ -23,7 +23,7 @@ TNID Layer::currentCommitNr() const
 
 TNID Layer::newCommit()
 {
-	return mCommit++;
+	return ++mCommit;
 }
 
 
