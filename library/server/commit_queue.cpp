@@ -90,7 +90,8 @@ std::vector<CommitQueue::commit_type> CommitQueue::getCommitsUpTo( TNID key ) co
 		// check if it is worth to send a chain of deltas
 		if(mSizeSinceNonDelta < _lastFullCommit()->size())
 		{
-			auto end = mCommits.find(key);
+			// Add one because the end is one after the commit we want!
+			auto end = mCommits.find(key+1);
 
 			for(auto it = mLastNonDelta; it != end; ++it)
 			{
