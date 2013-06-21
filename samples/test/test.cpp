@@ -17,6 +17,7 @@ TNLAYER testLayer;
 TNACCEPTOR local_acceptor;
 TNTILE* layerContent;
 
+
 TNTILE& get_tile(unsigned int x, unsigned int y)
 {
 	return layerContent[y * LAYER_W + x];
@@ -71,8 +72,25 @@ void do_event(TNEVENT& e)
 		break;
 	case TNEV_DISCONNECT:
 		std::cout << "Player disconnected!\n";
+	case TNEV_KEYDOWN:
+		{
+			TNKEYCODE key = e.data.keyevent.key;
+			const wchar_t* name = L"";
+			tilenet_keyname(key, &name);
+			std::cout << "Keydown[" << name << "]\n";
 
-		break;
+
+			TNKEYCODE escape_code = 0;
+			tilenet_keycode(L"esc", &escape_code);
+			if(escape_code == key)
+			{
+				tilenet_kick(e.participant, L"");
+				tilenet_exit();
+				exit(0);
+			}
+
+
+		}break;
 	default:
 		break;
 	}

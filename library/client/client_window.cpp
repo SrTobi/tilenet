@@ -6,6 +6,10 @@
 #include "client.hpp"
 #include "messenger.hpp"
 
+// HACK!!!
+#include "network/protocol.hpp"
+#include "network/message.hpp"
+
 namespace client {
 
 
@@ -45,6 +49,17 @@ void ClientWindow::process()
 	{
 		if (event.type == sf::Event::Closed)
 			mRenderWindow.close();
+		if(mRenderer && (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased))
+		{
+			// HACK!!!
+			proto::v1_0::to_srv::Control_KeyEvent ke;
+			ke.type = (event.type == sf::Event::KeyPressed? proto::v1_0::to_srv::Control_KeyEvent::Evt_KeyDown : proto::v1_0::to_srv::Control_KeyEvent::Evt_KeyUp );
+			ke.data.key = proto::v1_0::KeyMapper::Inst().toCode(event.key.code);
+			ke.data.ch = 0;
+			ke.data.modifier = 0;
+
+			mApp.port()->send(net::make_message(ke));
+		}
 	}
 
 	mRenderWindow.clear();

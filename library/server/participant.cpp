@@ -48,6 +48,7 @@ public:
 		: StatusHandler(p)
 	{
 		mDispatcher.add(&MainStatusHandler::handleRequestStdTileName, this);
+		mDispatcher.add(&MainStatusHandler::handleKeyEvent, this);
 	}
 
 
@@ -92,6 +93,27 @@ private:
 
 			port()->send(net::make_message(answ));
 		}
+	}
+
+	void handleKeyEvent(proto::curv::to_srv::Control_KeyEvent& e)
+	{
+		TNEVENT event;
+		event.participant = participant()->id();
+		event.data.keyevent = e.data;
+
+		switch(e.type)
+		{
+		case proto::curv::to_srv::Control_KeyEvent::Evt_KeyDown:
+			event.type = TNEV_KEYDOWN;
+			break;
+		case proto::curv::to_srv::Control_KeyEvent::Evt_KeyUp:
+			event.type = TNEV_KEYUP;
+			break;
+		default:
+			NOT_IMPLEMENTED();
+		}
+
+		equeue()->push(event);
 	}
 
 private:
