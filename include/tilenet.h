@@ -69,6 +69,7 @@ extern "C" {
 #define TNKM_SHIFT		0x001
 #define TNKM_STRG		0x002
 #define TNKM_ALT		0x004
+#define TNKM_ALTGR		0x008
 
 /**** layer flag ****/
 #define TNLF_CONSOLE	0x0004
@@ -95,6 +96,7 @@ typedef uint32_t		TNCOLOR;
 typedef unsigned int	TNRATIO;
 typedef unsigned int	TNID;
 typedef uint32_t		TNPARTICIPANT;
+typedef unsigned int	TNKEYCODE;
 
 #define TNSTDRATIO						1000
 #define TN_ID_BITLENGTH					28
@@ -144,15 +146,17 @@ typedef struct TilenetEvent
 	TNEVTYPE		type;			//! Type of an event
 	TNPARTICIPANT	participant;	//! Participant the event coming from
 
+	typedef struct
+	{
+		TNKEYCODE	key;		//! An associated command
+		wchar_t		ch;			//! The character pressed on the keyboard
+		TNFLAG		modifier;	//!	A key modifier
+	} keyevent_type;
+
 	union
 	{
 		//! In case of an keyevent this will contain information
-		struct
-		{
-			TNID	cmd;		//! An associated command
-			wchar_t ch;			//! The character pressed on the keyboard
-			TNFLAG	modifier;	//!	A key modifier
-		} keyevent;
+		keyevent_type keyevent;
 	} data;
 
 } TNEVENT;
@@ -160,8 +164,8 @@ typedef struct TilenetEvent
 typedef enum TileTypes
 {
 	TN_NULL_TILE = 0,
-	TN_STD_TILE,
-	TN_CHAR_TILE
+	TN_STD_TILE = 1,
+	TN_CHAR_TILE = 2
 } TNTILIETYPE;
 
 typedef struct TilenetTile
@@ -249,6 +253,9 @@ TNAPI TNERROR tilenet_update_tilelayer(TNLAYER layer, TNTILE* tiles, TNBOOL* tou
 /**** tileset ****/
 TNAPI TNERROR tilenet_stdtile(const wchar_t* name, TNID* id);
 
+/**** key managment ****/
+TNAPI TNERROR tilenet_keycode(const wchar_t* name, TNKEYCODE* code);
+TNAPI TNERROR tilenet_keyname(TNKEYCODE code, const wchar_t** name);
 
 #ifdef __cplusplus
 }

@@ -574,6 +574,18 @@ TNAPI TNERROR tilenet_exit()
 	return TNOK;
 }
 
+TNAPI TNERROR tilenet_keycode( const wchar_t* name, TNKEYCODE* code )
+{
+	 NOT_IMPLEMENTED();
+}
+
+TNAPI TNERROR tilenet_keyname( TNKEYCODE code, const wchar_t** name )
+{
+	NOT_IMPLEMENTED();
+}
+
+
+
 
 
 
