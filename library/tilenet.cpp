@@ -27,6 +27,8 @@
 #include "server/jobs/service_job.hpp"
 #include "server/jobs/attach_layer_job.hpp"
 
+// Key stuff
+#include "network/protocol.hpp"
 
 /// @cond DEV
 
@@ -576,12 +578,27 @@ TNAPI TNERROR tilenet_exit()
 
 TNAPI TNERROR tilenet_keycode( const wchar_t* name, TNKEYCODE* code )
 {
-	 NOT_IMPLEMENTED();
+	CHECK_NULL(name);
+	if(!proto::curv::KeyMapper::Inst().toCode(name, code))
+	{
+		NOT_IMPLEMENTED();
+	}
+	return TNOK;
 }
 
 TNAPI TNERROR tilenet_keyname( TNKEYCODE code, const wchar_t** name )
 {
-	NOT_IMPLEMENTED();
+	CHECK_NULL(code);
+	auto& keyname = proto::curv::KeyMapper::Inst().toName(code);
+
+	if(keyname.empty())
+	{
+		NOT_IMPLEMENTED();
+	}else{
+		*name = keyname.c_str();
+	}
+
+	return TNOK;
 }
 
 
