@@ -50,11 +50,11 @@ private:
 
 
 private:
-	void handleLayerControl_attachLayer(const proto::v1_0::to_client::LayerControl_AttachLayer& msg);
-	void handleLayerControl_sendLayerUpdate(const proto::v1_0::to_client::LayerControl_SendLayerUpdate& msg);
-	void handleLayerControl_sendFullLayer(const proto::v1_0::to_client::LayerControl_SendFullLayer& msg);
+	void handleLayerControl_attachLayer(proto::v1_0::to_client::LayerControl_AttachLayer& msg);
+	void handleLayerControl_sendLayerUpdate(proto::v1_0::to_client::LayerControl_SendLayerUpdate& msg);
+	void handleLayerControl_sendFullLayer(proto::v1_0::to_client::LayerControl_SendFullLayer& msg);
 
-	void handleAnswer_StdTileNameRequest(const proto::v1_0::to_client::Answer_StdTileNameRequest& answ);
+	void handleAnswer_StdTileNameRequest(proto::v1_0::to_client::Answer_StdTileNameRequest& answ);
 private:
 	shared_ptr<ComHandler> mNextHandler;
 	net::Dispatcher mDispatcher;

@@ -32,7 +32,7 @@ OVERRIDE shared_ptr<ComHandler> HandshakeHandler::handleMessage( const shared_pt
 	return mNextHandler;
 }
 
-void HandshakeHandler::handleServerInformation( const proto::v1_0::to_client::Handshake_P2_ServerInformation& handshake )
+void HandshakeHandler::handleServerInformation( proto::v1_0::to_client::Handshake_P2_ServerInformation& handshake )
 {
 	mServerInfo = std::make_shared<ServerInfo>(handshake.server_name, handshake.server_info, handshake.package_name, handshake.package_interface);
 
@@ -50,7 +50,7 @@ void HandshakeHandler::handleServerInformation( const proto::v1_0::to_client::Ha
 
 }
 
-void HandshakeHandler::handleAccessGranted( const proto::v1_0::to_client::Handshake_P4_AcceptesGranted& handshake )
+void HandshakeHandler::handleAccessGranted( proto::v1_0::to_client::Handshake_P4_AcceptesGranted& handshake )
 {
 	tnAssert(mServerInfo);
 	// Yea, we got access

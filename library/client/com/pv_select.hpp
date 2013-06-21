@@ -51,7 +51,7 @@ private:
 		mFactories.emplace(version, std::unique_ptr<ComHandlerFactory>(new ComHandlerFactorySpecialization<Handler>()));
 	}
 
-	void handleHandshake(const proto::ComInitializing_ProtocolVersion& p);
+	void handleHandshake(proto::ComInitializing_ProtocolVersion& p);
 
 private:
 	ClientApp& mApp;

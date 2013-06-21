@@ -77,7 +77,7 @@ private:
 	}
 
 
-	void handleRequestStdTileName(const proto::curv::to_srv::Request_StdTileName& req)
+	void handleRequestStdTileName(proto::curv::to_srv::Request_StdTileName& req)
 	{
 
 		// Todo: try {} catch
@@ -148,7 +148,7 @@ private:
 		/* Do nothing */
 	}
 
-	void handleHandshakeConfirmation(const proto::curv::to_srv::Handshake_P3_accessrequest& confirmation)
+	void handleHandshakeConfirmation(proto::curv::to_srv::Handshake_P3_accessrequest& confirmation)
 	{
 		if(!confirmation.accept_handshake)
 		{

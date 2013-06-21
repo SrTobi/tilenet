@@ -33,8 +33,8 @@ public:
 
 	virtual OVERRIDE shared_ptr<ComHandler> handleMessage(const shared_ptr<net::Message>&);
 private:
-	void handleServerInformation(const proto::v1_0::to_client::Handshake_P2_ServerInformation& handshake);
-	void handleAccessGranted(const proto::v1_0::to_client::Handshake_P4_AcceptesGranted& handshake);
+	void handleServerInformation(proto::v1_0::to_client::Handshake_P2_ServerInformation& handshake);
+	void handleAccessGranted(proto::v1_0::to_client::Handshake_P4_AcceptesGranted& handshake);
 
 private:
 	shared_ptr<ComHandler> mNextHandler;

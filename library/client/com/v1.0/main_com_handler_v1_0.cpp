@@ -126,16 +126,15 @@ OVERRIDE shared_ptr<ComHandler> MainComHandler::handleMessage(const shared_ptr<n
 	return shared_ptr<ComHandler>();
 }
 
-void MainComHandler::handleLayerControl_attachLayer( const proto::v1_0::to_client::LayerControl_AttachLayer& msg )
+void MainComHandler::handleLayerControl_attachLayer( proto::v1_0::to_client::LayerControl_AttachLayer& msg )
 {
 	mRenderer->setTopLayer(msg.layerId);
 }
 
 
-void MainComHandler::handleLayerControl_sendLayerUpdate( const proto::v1_0::to_client::LayerControl_SendLayerUpdate& msg )
+void MainComHandler::handleLayerControl_sendLayerUpdate( proto::v1_0::to_client::LayerControl_SendLayerUpdate& msg )
 {
-	auto cpy = msg; // <- HACK!!!
-	auto deltas = mCommitManager->addDelta(msg.layerId, msg.commitNr, std::move(cpy));
+	auto deltas = mCommitManager->addDelta(msg.layerId, msg.commitNr, std::move(msg));
 
 	for(auto& dt : deltas)
 		mRenderer->applyDelta(dt);
@@ -143,7 +142,7 @@ void MainComHandler::handleLayerControl_sendLayerUpdate( const proto::v1_0::to_c
 
 
 
-void MainComHandler::handleLayerControl_sendFullLayer( const proto::v1_0::to_client::LayerControl_SendFullLayer& msg )
+void MainComHandler::handleLayerControl_sendFullLayer(proto::v1_0::to_client::LayerControl_SendFullLayer& msg )
 {
 	Rect size(msg.width, msg.height);
 	Ratio ratio(msg.xratio, msg.yratio);
@@ -185,7 +184,7 @@ void MainComHandler::requestStdTileName(TNID tile_id)
 	mPort->send(net::make_message(req));
 }
 
-void MainComHandler::handleAnswer_StdTileNameRequest( const proto::v1_0::to_client::Answer_StdTileNameRequest& answ )
+void MainComHandler::handleAnswer_StdTileNameRequest( proto::v1_0::to_client::Answer_StdTileNameRequest& answ )
 {
 	mTileMapper->identifyStdTile(answ.tileName, answ.tileId);
 }

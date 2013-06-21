@@ -38,7 +38,7 @@ public:
 	~Dispatcher();
 
 	template<msgid_type Id, proto::versions::Version V, typename FuncContext, typename CallContext>
-	void add(void (FuncContext::*func)(const proto::MsgFormat<Id, V>&), CallContext context)
+	void add(void (FuncContext::*func)(proto::MsgFormat<Id, V>&), CallContext context)
 	{
 		using namespace std::placeholders;
 
