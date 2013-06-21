@@ -36,6 +36,9 @@ private:
 	void handleServerInformation(proto::v1_0::to_client::Handshake_P2_ServerInformation& handshake);
 	void handleAccessGranted(proto::v1_0::to_client::Handshake_P4_AcceptesGranted& handshake);
 
+	virtual shared_ptr<ComInterface> getComInterface();
+
+
 private:
 	shared_ptr<ComHandler> mNextHandler;
 	net::Dispatcher mDispatcher;

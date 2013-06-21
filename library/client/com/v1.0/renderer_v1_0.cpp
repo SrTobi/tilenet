@@ -184,9 +184,8 @@ private:
 
 
 
-Renderer::Renderer(ClientWindow& window, const shared_ptr<TileMapper>& mapper, const shared_ptr<PackageManager>& pmanager, const shared_ptr<ServerInfo>& info)
-	: mWindow(window)
-	, mPackManager(pmanager)
+Renderer::Renderer(const shared_ptr<TileMapper>& mapper, const shared_ptr<PackageManager>& pmanager, const shared_ptr<ServerInfo>& info)
+	: mPackManager(pmanager)
 	, mTileMapper(mapper)
 	, mServerInfo(info)
 {

@@ -2,6 +2,7 @@
 #ifndef _CLIENT_HPP
 #define _CLIENT_HPP
 
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <future>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/steady_timer.hpp>
@@ -18,6 +19,7 @@ namespace com {
 	class ComHandler;
 }
 
+class ComInterface;
 class Messenger;
 class ClientWindow;
 class PackageManager;
@@ -36,13 +38,14 @@ public:
 	void postConnection(const shared_ptr<net::ConnectionPort>& port);
 	void stop(bool now = false);
 
-	ClientWindow& window() const;
+	sf::RenderWindow& window();
 	const shared_ptr<net::ConnectionPort>& port() const;
 	const shared_ptr<PackageManager>& pmanager() const;
 	boost::asio::io_service& service();
 
 	static void WaitForExit();
 private:
+	void init();
 	void run();
 	void disconnect();
 	void handleNewConnection(const shared_ptr<net::ConnectionPort>& port);
@@ -54,7 +57,8 @@ private:
 	boost::asio::io_service mService;
 	std::shared_ptr<com::ComHandler> mComHandler;
 	std::shared_ptr<net::ConnectionPort> mPort;
-	std::unique_ptr<ClientWindow> mWindow;
+	sf::RenderWindow mWindow;
+	weak_ptr<ComInterface> mComInterface;
 	std::shared_ptr<Messenger> mMessenger;
 	std::shared_ptr<PackageManager> mPackManager;
 	std::unique_ptr<boost::asio::io_service::work> mBusyWork;

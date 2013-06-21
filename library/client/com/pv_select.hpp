@@ -53,6 +53,9 @@ private:
 
 	void handleHandshake(proto::ComInitializing_ProtocolVersion& p);
 
+	virtual shared_ptr<ComInterface> getComInterface();
+
+
 private:
 	ClientApp& mApp;
 	shared_ptr<net::ConnectionPort> mPort;

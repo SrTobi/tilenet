@@ -43,6 +43,12 @@ void ProtocolVersionSelect::handleHandshake( proto::ComInitializing_ProtocolVers
 	mSelectedVersion = it->second->create(mApp, mPort);
 }
 
+shared_ptr<ComInterface> ProtocolVersionSelect::getComInterface()
+{
+	return nullptr;
+}
+
+
 
 
 }

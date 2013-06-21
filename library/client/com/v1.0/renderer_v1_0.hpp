@@ -7,7 +7,6 @@
 #include <unordered_map>
 
 #include "settings.hpp"
-#include "client/render_interface.hpp"
 #include "network/v1.0/protocol_v1_0.hpp"
 #include "network/v1.0/protocol_tile.hpp"
 
@@ -26,7 +25,6 @@ class TileMapper;
 
 
 class Renderer
-	: public RenderInterface
 {
 	typedef proto::v1_0::to_client::LayerControl_SendFullLayer LayerCommit;
 	typedef proto::v1_0::to_client::LayerControl_SendLayerUpdate LayerDelta;
@@ -34,7 +32,7 @@ class Renderer
 	class FrameLayer;
 	class RenderLayer;
 public:
-	Renderer(ClientWindow& window, const shared_ptr<TileMapper>& mapper, const shared_ptr<PackageManager>& pmanager, const shared_ptr<ServerInfo>& info);
+	Renderer(const shared_ptr<TileMapper>& mapper, const shared_ptr<PackageManager>& pmanager, const shared_ptr<ServerInfo>& info);
 	~Renderer();
 
 	virtual OVERRIDE void render(sf::RenderTarget& target);
@@ -54,7 +52,6 @@ private:
 	shared_ptr<TileMapper> mTileMapper;
 	shared_ptr<ServerInfo> mServerInfo;
 	shared_ptr<Package> mPackage;
-	ClientWindow& mWindow;
 
 	std::unordered_map<TNID, shared_ptr<Layer>> mIdToLayerMapping;
 	TNID mTopLayerId;

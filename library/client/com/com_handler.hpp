@@ -10,6 +10,9 @@ namespace net {
 }
 
 namespace client {
+
+class ComInterface;
+
 namespace com {
 
 
@@ -19,6 +22,8 @@ class ComHandler
 public:
 	virtual ~ComHandler() {}
 	virtual shared_ptr<ComHandler> handleMessage(const shared_ptr<net::Message>&) = 0;
+
+	virtual shared_ptr<ComInterface> getComInterface() = 0;
 };
 
 

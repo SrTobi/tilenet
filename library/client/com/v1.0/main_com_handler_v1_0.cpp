@@ -7,7 +7,6 @@
 #include "tile_mapper_v1_0.hpp"
 
 #include "client/client.hpp"
-#include "client/client_window.hpp"
 
 #include "network/message.hpp"
 
@@ -96,7 +95,6 @@ private:
 MainComHandler::MainComHandler( ClientApp& app, const shared_ptr<net::ConnectionPort>& port, const shared_ptr<ServerInfo>& svr_info)
 	: mApp(app)
 	, mPort(port)
-	, mWindow(app.window())
 	, mServerInfo(svr_info)
 	, mCommitManager(new TileLayerCommitManager())
 {
@@ -109,9 +107,7 @@ MainComHandler::MainComHandler( ClientApp& app, const shared_ptr<net::Connection
 void MainComHandler::init()
 {
 	mTileMapper = std::make_shared<TileMapper>(mPort);
-	mRenderer = std::make_shared<Renderer>(mApp.window(), mTileMapper, mApp.pmanager(), mServerInfo);
-
-	mWindow.setLayerRenderer(mRenderer);
+	mRenderer = std::make_shared<Renderer>(mTileMapper, mApp.pmanager(), mServerInfo);
 }
 
 
@@ -189,6 +185,24 @@ void MainComHandler::handleAnswer_StdTileNameRequest( proto::v1_0::to_client::An
 {
 	mTileMapper->identifyStdTile(answ.tileName, answ.tileId);
 }
+
+shared_ptr<ComInterface> MainComHandler::getComInterface()
+{
+	return std::static_pointer_cast<MainComHandler>(shared_from_this());
+}
+
+void MainComHandler::notifyRender( sf::RenderTarget& target )
+{
+	mRenderer->render(target);
+}
+
+void MainComHandler::notifyKeyevent( const sf::Event& event )
+{
+	throw std::exception("The method or operation is not implemented.");
+}
+
+
+
 
 
 

@@ -7,6 +7,7 @@
 #include "settings.hpp"
 
 #include "network/dispatcher.hpp"
+#include "client/com_interface.hpp"
 #include "client/com/com_handler.hpp"
 
 #include "network/v1.0/protocol_v1_0.hpp"
@@ -31,7 +32,7 @@ class TileMapper;
 class Renderer;
 
 class MainComHandler
-	: public ComHandler
+	: public ComHandler, public ComInterface
 {
 	typedef proto::v1_0::to_client::LayerControl_SendLayerUpdate Delta;
 	class TileLayerCommitManager;
@@ -55,13 +56,20 @@ private:
 	void handleLayerControl_sendFullLayer(proto::v1_0::to_client::LayerControl_SendFullLayer& msg);
 
 	void handleAnswer_StdTileNameRequest(proto::v1_0::to_client::Answer_StdTileNameRequest& answ);
+
+	virtual OVERRIDE shared_ptr<ComInterface> getComInterface();
+
+	virtual OVERRIDE void notifyRender( sf::RenderTarget& target );
+	virtual OVERRIDE void notifyKeyevent( const sf::Event& event );
+
+
+
 private:
 	shared_ptr<ComHandler> mNextHandler;
 	net::Dispatcher mDispatcher;
 	ClientApp& mApp;
 	shared_ptr<net::ConnectionPort> mPort;
 	shared_ptr<ServerInfo> mServerInfo;
-	ClientWindow& mWindow;
 	shared_ptr<Renderer> mRenderer;
 	shared_ptr<TileMapper> mTileMapper;
 

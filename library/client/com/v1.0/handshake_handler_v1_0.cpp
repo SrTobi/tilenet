@@ -57,6 +57,12 @@ void HandshakeHandler::handleAccessGranted( proto::v1_0::to_client::Handshake_P4
 	mNextHandler = MainComHandler::Create(mApp, mPort, mServerInfo);
 }
 
+shared_ptr<ComInterface> HandshakeHandler::getComInterface()
+{
+	return nullptr;
+}
+
+
 
 
 }}}

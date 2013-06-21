@@ -4,7 +4,7 @@
 #include <chrono>
 
 #include "client.hpp"
-#include "client_window.hpp"
+#include "com_interface.hpp"
 #include "messenger.hpp"
 
 #include "client/com/com_handler.hpp"
@@ -68,11 +68,21 @@ boost::asio::io_service& ClientApp::service()
 	return mService;
 }
 
+void ClientApp::init()
+{
+	mWindow.create(sf::VideoMode(800, 600), "tilenet");
+
+	if(!mWindow.isOpen())
+	{
+		NOT_IMPLEMENTED();
+	}
+}
+
+
 void ClientApp::run()
 {
 	// Setup window and its initialization
-	mWindow.reset(new ClientWindow(*this, mMessenger));
-	mService.post(std::bind(&ClientWindow::init, mWindow.get()));
+	mService.post(std::bind(&ClientApp::init, shared_from_this()));
 
 	// Search for packages
 	mPackManager->serachPackages();
@@ -128,10 +138,9 @@ const shared_ptr<PackageManager>& ClientApp::pmanager() const
 	return mPackManager;
 }
 
-ClientWindow& ClientApp::window() const
+sf::RenderWindow& ClientApp::window()
 {
-	tnAssert(mWindow);
-	return *mWindow;
+	return mWindow;
 }
 
 void ClientApp::processWindow()
@@ -142,7 +151,47 @@ void ClientApp::processWindow()
 
 	// process window and measure the time needed
 	steady_clock::time_point start = steady_clock::now();
-	mWindow->process();
+
+	{
+		auto ci = mComInterface.lock();
+		if(!mWindow.isOpen())
+		{
+			stop();
+		}
+
+		// Process event loop
+		sf::Event event;
+		while (mWindow.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				mWindow.close();
+			if(ci && (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) && event.key.code != sf::Keyboard::Unknown)
+			{
+				// HACK!!!
+				proto::v1_0::to_srv::Control_KeyEvent ke;
+				ke.type = (event.type == sf::Event::KeyPressed? proto::v1_0::to_srv::Control_KeyEvent::Evt_KeyDown : proto::v1_0::to_srv::Control_KeyEvent::Evt_KeyUp );
+				ke.data.key = proto::v1_0::KeyMapper::Inst().toCode(event.key.code);
+				ke.data.ch = 0;
+				ke.data.modifier = 0;
+
+				port()->send(net::make_message(ke));
+			}
+		}
+
+		mWindow.clear();
+
+		// If a renderer is set, then render 
+		if(ci)
+		{
+			ci->notifyRender(mWindow);
+		}
+
+
+
+		mMessenger->render(mWindow);
+		mWindow.display();
+	}
+
 	steady_clock::time_point end = steady_clock::now();
 
 	// call this function again, but wait until one frame time has expired
@@ -168,13 +217,17 @@ void ClientApp::onReceive( const shared_ptr<net::Message>& msg )
 	tnAssert(mComHandler);
 	auto newHandler = mComHandler->handleMessage(msg);
 	if(newHandler)
+	{
 		mComHandler = newHandler;
+		mComInterface = mComHandler->getComInterface();
+	}
 }
 
 OVERRIDE void ClientApp::onDisconnect()
 {
 	mMessenger->add(L"Disconnected!!!", sf::Color::Red);
-	mComHandler = nullptr;
+	mComInterface.reset();
+	mComHandler.reset();
 }
 
 void ClientApp::WaitForExit()
@@ -182,6 +235,7 @@ void ClientApp::WaitForExit()
 	if(Singleton)
 		CloseNotifier.wait();
 }
+
 
 
 
