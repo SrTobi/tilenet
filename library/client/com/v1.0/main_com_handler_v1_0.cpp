@@ -198,7 +198,18 @@ void MainComHandler::notifyRender( sf::RenderTarget& target )
 
 void MainComHandler::notifyKeyevent( const sf::Event& event )
 {
-	throw std::exception("The method or operation is not implemented.");
+	typedef proto::v1_0::to_srv::Control_KeyEvent KeyEvent;
+
+	KeyEvent ke;
+	ke.type = (event.type == sf::Event::KeyPressed? KeyEvent::Evt_KeyDown : KeyEvent::Evt_KeyUp );
+	ke.data.key = proto::v1_0::KeyMapper::Inst().toCode(event.key.code);
+	ke.data.ch = 0;
+	ke.data.modifier = (event.key.alt? TNKM_ALT : 0)
+					| (event.key.control? TNKM_CONTROL : 0)
+					| (event.key.shift? TNKM_SHIFT : 0)
+					| (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)? TNKM_ALTGR : 0);
+
+	mPort->send(net::make_message(ke));
 }
 
 

@@ -167,14 +167,7 @@ void ClientApp::processWindow()
 				mWindow.close();
 			if(ci && (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) && event.key.code != sf::Keyboard::Unknown)
 			{
-				// HACK!!!
-				proto::v1_0::to_srv::Control_KeyEvent ke;
-				ke.type = (event.type == sf::Event::KeyPressed? proto::v1_0::to_srv::Control_KeyEvent::Evt_KeyDown : proto::v1_0::to_srv::Control_KeyEvent::Evt_KeyUp );
-				ke.data.key = proto::v1_0::KeyMapper::Inst().toCode(event.key.code);
-				ke.data.ch = 0;
-				ke.data.modifier = 0;
-
-				port()->send(net::make_message(ke));
+				ci->notifyKeyevent(event);
 			}
 		}
 

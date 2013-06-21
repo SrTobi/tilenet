@@ -67,7 +67,7 @@ extern "C" {
 
 /**** key modifier ****/
 #define TNKM_SHIFT		0x001
-#define TNKM_STRG		0x002
+#define TNKM_CONTROL	0x002
 #define TNKM_ALT		0x004
 #define TNKM_ALTGR		0x008
 

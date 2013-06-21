@@ -89,7 +89,7 @@ void KeyMapper::init()
 	addCode(L"8", sf::Keyboard::Num8);
 	addCode(L"9", sf::Keyboard::Num9);
 	addCode(L"escape|esc", sf::Keyboard::Escape);
-	addCode(L"control|l-control", sf::Keyboard::LControl);
+	addCode(L"control|l-control|strg|l-strg", sf::Keyboard::LControl);
 	addCode(L"shift|l-shift", sf::Keyboard::LShift);
 	addCode(L"alt|l-alt", sf::Keyboard::LAlt);
 	addCode(L"system|l-system", sf::Keyboard::LSystem);
