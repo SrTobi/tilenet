@@ -144,6 +144,7 @@ void MainComHandler::handleLayerControl_sendLayerUpdate( proto::v1_0::to_client:
 
 void MainComHandler::handleLayerControl_sendFullLayer(proto::v1_0::to_client::LayerControl_SendFullLayer& msg )
 {
+	// Todo: Check values
 	Rect size(msg.width, msg.height);
 	Ratio ratio(msg.xratio, msg.yratio);
 

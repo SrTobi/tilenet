@@ -116,6 +116,7 @@ public:
 	{
 		bool first = true;
 		auto it = mTileField.storage().begin();
+		auto end = mTileField.storage().end();
 		for(auto& dt : delta.layerContent)
 		{
 			uint32 skip = dt.first;
@@ -125,6 +126,11 @@ public:
 			else
 				first = false;
 			it += skip;
+
+			if(it >= end)
+			{
+				NOT_IMPLEMENTED(/* msg is not valid! */)
+			}
 
 			*it = make_tile(dt.second);
 		}
