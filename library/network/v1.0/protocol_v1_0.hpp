@@ -13,6 +13,7 @@
 #include "../protocol.hpp"
 #include "protocol_tile.hpp"
 #include "key_mapping_v1_0.hpp"
+#include "protocol_view_v1_0.hpp"
 #include "utils/boost_unique_ptr_serialization.hpp"
 
 #define PROTOCOL_THIS_VERSION					v1_0
@@ -172,6 +173,18 @@ PROTOCOL_MESSAGE(LayerControl_SendLayerUpdate, to_client)
 	}
 };
 
+PROTOCOL_MESSAGE(LayerControl_SendFrame, to_client)
+{
+	TNID layerId;
+	TNID commitNr;
+	std::vector<TNID> sublayers_in_zorder;
+	std::vector<std::pair<TNID, proto::v1_0::PView>> update_views;
+
+	PROTOCOL_SERIALIZER(ar)
+	{
+		ar & layerId & commitNr & sublayers_in_zorder & update_views;
+	}
+};
 
 }
 
