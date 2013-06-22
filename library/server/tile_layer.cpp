@@ -41,7 +41,7 @@ void TileLayer::update( TNTILE* tiles, TNBOOL* toupdate )
 	std::vector<bool> updateList(toupdate, toupdate  + (toupdate? array_sizes : 0));
 
 	auto job = std::make_shared<job::UpdateLayerJob>(self<TileLayer>(), std::move(tileList), std::move(updateList));
-	Service::Inst().enqueJob(job);
+	Service::Inst().enqueJob(job, mUpdateStrand);
 }
 
 
@@ -170,36 +170,6 @@ OVERRIDE TileLayer::Commit TileLayer::getDelta( TNID nr )
 {
 	return mCommits.getDelta(nr);
 }
-
-
-
-/*
-shared_ptr<net::Message> TileLayer::getStateMessage()
-{
-	proto::curv::to_client::LayerControl_SendFullLayer fullLayer;
-
-	fullLayer.layerId = id();
-	fullLayer.xratio = ratio().x;
-	fullLayer.yratio = ratio().y;
-	fullLayer.width = size().w;
-	fullLayer.height = size().h;
-
-	auto& storage = mTileField.storage();
-	auto& content = fullLayer.layerContent;
-	content.reserve(storage.size());
-
-	for(auto& tile : mTileField.storage())
-	{
-		
-		content.push_back(net::PTile(tile));
-	}
-
-	tnAssert(content.size() == size().area());
-	tnAssert(storage.size() == content.size());
-	
-
-	return net::make_message(fullLayer);
-}*/
 
 
 }
