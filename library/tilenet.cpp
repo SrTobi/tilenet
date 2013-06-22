@@ -498,49 +498,24 @@ TNAPI TNERROR tilenet_attach_layer( TNPARTICIPANT participant, TNLAYER layer )
 
 TNAPI TNERROR tilenet_create_frame( TNLAYER* frame, TNFLAG flags )
 {
+	CHECK_NULL(frame);
 	try {
 		NOT_IMPLEMENTED();
 
 	} AUTO_CATCH(true);
 }
 
-TNAPI TNERROR tilenet_clear_frame( TNLAYER frame )
+TNAPI TNERROR tilenet_update_frame( TNLAYER frame, TNLAYER* layer_list, TNVIEW* view_list )
 {
 	CHECK_NULL(frame);
 
 	try {
 		NOT_IMPLEMENTED();
+
 	} AUTO_CATCH(true);
 }
 
-TNAPI TNERROR tilenet_frame_add( TNLAYER frame, TNLAYER layer, TNVIEW* view )
-{
-	CHECK_NULL(frame);
-	CHECK_NULL(layer);
 
-	try {
-		NOT_IMPLEMENTED();
-	} AUTO_CATCH(true);
-}
-
-TNAPI TNERROR tilenet_frame_remove( TNLAYER frame, TNLAYER layer )
-{
-	CHECK_NULL(frame);
-	CHECK_NULL(layer);
-
-	try {
-		NOT_IMPLEMENTED();
-	} AUTO_CATCH(true);
-}
-
-TNAPI TNERROR tilenet_update_view( TNVIEW view )
-{
-	CHECK_NULL(view);
-
-	try {
-		NOT_IMPLEMENTED();
-	} AUTO_CATCH(true);
-}
 
 TNAPI TNERROR tilenet_create_tilelayer( TNLAYER* layer, unsigned int width, unsigned int height, TNRATIO xr, TNRATIO yr, TNFLAG flags )
 {

@@ -199,17 +199,27 @@ typedef struct TilenetTile
 typedef struct TilenetView
 {
 	TNFLAG flags;
-	TNRATIO xr;
-	TNRATIO yr;
-	TNRATIO wr;
-	TNRATIO hr;
-	unsigned int width;
-	unsigned int height;
-	unsigned int x;
-	unsigned int y;
-	float z;
+
+	TNRATIO outter_xr;
+	TNRATIO outter_yr;
+	TNRATIO outter_wr;
+	TNRATIO outter_hr;
+	unsigned int outter_x;
+	unsigned int outter_y;
+	unsigned int outter_w;
+	unsigned int outter_h;
+
+	TNRATIO inner_xr;
+	TNRATIO inner_yr;
+	TNRATIO inner_wr;
+	TNRATIO inner_hr;
+	unsigned int inner_x;
+	unsigned int inner_y;
+	unsigned int inner_w;
+	unsigned int inner_h;
+
 	TNCOLOR color;
-} *TNVIEW;
+} TNVIEW;
 
 
 
@@ -240,10 +250,7 @@ TNAPI TNERROR tilenet_attach_layer(TNPARTICIPANT participant, TNLAYER layer);
 
 /**** layer: frame ****/
 TNAPI TNERROR tilenet_create_frame(TNLAYER* frame, TNFLAG flags);
-TNAPI TNERROR tilenet_clear_frame(TNLAYER frame);
-TNAPI TNERROR tilenet_frame_add(TNLAYER frame, TNLAYER layer, TNVIEW* view);
-TNAPI TNERROR tilenet_frame_remove(TNLAYER frame, TNLAYER layer);
-TNAPI TNERROR tilenet_update_view(TNVIEW view);
+TNAPI TNERROR tilenet_update_frame(TNLAYER frame, TNLAYER* layer_list, TNVIEW** view_list, size_t size);
 
 /**** layer: tile-layer ****/
 TNAPI TNERROR tilenet_create_tilelayer(TNLAYER* layer, unsigned int width, unsigned int height, TNRATIO xr, TNRATIO yr, TNFLAG flags);
