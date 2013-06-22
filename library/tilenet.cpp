@@ -12,11 +12,15 @@
 #include "server/server.hpp"
 #include "server/service.hpp"
 
+// layers
 #include "server/layer.hpp"
 #include "server/tile_layer.hpp"
+#include "server/frame_layer.hpp"
 
+// tile infos
 #include "server/std_tileset.hpp"
 
+// participants
 #include "server/participant.hpp"
 
 // Acceptors
@@ -500,7 +504,12 @@ TNAPI TNERROR tilenet_create_frame( TNLAYER* frame, TNFLAG flags )
 {
 	CHECK_NULL(frame);
 	try {
-		NOT_IMPLEMENTED();
+		auto* _frame = new srv::FrameLayer(flags);
+		srv::FrameLayer::Register(_frame->self<srv::FrameLayer>());
+		_frame->makeInitialCommit();
+		*frame = _frame;
+
+		return TNOK;
 
 	} AUTO_CATCH(true);
 }
