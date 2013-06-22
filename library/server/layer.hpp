@@ -8,7 +8,6 @@
 
 namespace srv {
 
-class Frame;
 
 class Layer
 	: public TilenetObject
