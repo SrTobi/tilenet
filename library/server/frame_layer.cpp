@@ -89,6 +89,10 @@ void FrameLayer::update( TNLAYER* layer_list, TNVIEW** view_list, size_t size )
 			sublayers.emplace(layer->self<Layer>(), std::make_pair(PView(), z));
 	}
 
+	if(sublayers.size() != size)
+	{
+		NOT_IMPLEMENTED(/* layer was used twice */);
+	}
 
 	auto job = std::make_shared<job::UpdateFrameJob>(self<FrameLayer>(), std::move(sublayers));
 	Service::Inst().enqueJob(job, mUpdateStrand);
