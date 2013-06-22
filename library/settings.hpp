@@ -32,7 +32,7 @@ using std::weak_ptr;
 										static bool BOOST_JOIN(_found_, __LINE__) = false;			\
 										if(! BOOST_JOIN(_found_, __LINE__))							\
 										{															\
-											std::clog << "Not Implemented: "<< _text << std::endl;	\
+											std::wclog << "Not Implemented: "<< _text << std::endl;	\
 											BOOST_JOIN(_found_, __LINE__) = true;					\
 										}															\
 									}
