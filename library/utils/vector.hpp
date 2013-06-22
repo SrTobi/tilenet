@@ -2,6 +2,7 @@
 #ifndef _VECTOR_HPP
 #define _VECTOR_HPP
 
+#include <boost/serialization/access.hpp>
 #include <vector>
 #include <sstream>
 
@@ -12,12 +13,12 @@ template<typename T>
 class basic_vector2
 {
 private:
-	/*friend class boost::serialization::access;
+	friend class boost::serialization::access;
 	template<typename Archive>
 	void serialize(Archive &ar, const unsigned int version){
 		ar & x;
 		ar & y;
-	}*/
+	}
 public:
 	basic_vector2()	: x(T(0)), y(T(0))									{}
 	basic_vector2(const basic_vector2& _v)	: x(_v.x), y(_v.y)			{}
