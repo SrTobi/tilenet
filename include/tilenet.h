@@ -232,7 +232,7 @@ TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init);
 TNAPI TNERROR tilenet_add_listen_acceptor(TNSERVER server, unsigned short port, unsigned int maxc);
 TNAPI TNERROR tilenet_add_local_acceptor(TNACCEPTOR* acceptor, TNSERVER server);
 TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen, size_t* fetched, size_t* timeout);
-TNAPI TNERROR tilenet_exit();
+TNAPI TNERROR tilenet_exit(size_t* timeout);
 
 /**** participant managment ****/
 TNAPI TNERROR tilenet_kick(TNPARTICIPANT participant, const wchar_t* reason);

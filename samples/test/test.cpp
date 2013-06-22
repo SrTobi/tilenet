@@ -86,7 +86,7 @@ void do_event(TNEVENT& e)
 			if(escape_code == key)
 			{
 				tilenet_kick(e.participant, L"");
-				tilenet_exit();
+				tilenet_exit(0);
 				exit(0);
 			}
 

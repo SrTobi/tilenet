@@ -459,6 +459,15 @@ TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen
 	} AUTO_CATCH(true);
 }
 
+
+TNAPI TNERROR tilenet_exit(size_t* timeout)
+{
+	IMPLEMENTATION_TODO("Implement timout for tilenet_exit");
+	srv::LocalAcceptor::WaitForClientExit();
+	return TNOK;
+}
+
+
 TNAPI TNERROR tilenet_kick( TNPARTICIPANT participant, const wchar_t* reason )
 {
 	try {
@@ -568,12 +577,6 @@ TNAPI TNERROR tilenet_stdtile(const wchar_t* name, TNID* id )
 		*id = srv::StdTileset::Inst().getTileId(name);
 		return TNOK;
 	} AUTO_CATCH(true);
-}
-
-TNAPI TNERROR tilenet_exit()
-{
-	srv::LocalAcceptor::WaitForClientExit();
-	return TNOK;
 }
 
 TNAPI TNERROR tilenet_keycode( const wchar_t* name, TNKEYCODE* code )
