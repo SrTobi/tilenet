@@ -1,7 +1,6 @@
 #include "includes.hpp"
 #include "layer_link_manager.hpp"
 
-
 namespace srv {
 
 
@@ -20,7 +19,7 @@ void LayerLinkManager::linkLayerToParticipant( const shared_ptr<Layer>& layer, c
 	mLinks.emplace_back(layer, participant);
 }
 
-void LayerLinkManager::updateFrameLinks( const shared_ptr<Frame>& frame )
+void LayerLinkManager::updateFrameLinks( const shared_ptr<FrameLayer>& frame, const std::vector<shared_ptr<Layer>>& addLayers, const std::vector<shared_ptr<Layer>>& removeLayers)
 {
 	NOT_IMPLEMENTED();
 }

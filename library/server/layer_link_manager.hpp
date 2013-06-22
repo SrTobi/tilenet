@@ -11,7 +11,7 @@
 namespace srv {
 
 class Layer;
-class Frame;
+class FrameLayer;
 class Participant;
 
 
@@ -22,7 +22,7 @@ public:
 	~LayerLinkManager();
 
 	void linkLayerToParticipant(const shared_ptr<Layer>& layer, const shared_ptr<Participant>& participant);
-	void updateFrameLinks(const shared_ptr<Frame>& frame);
+	void updateFrameLinks(const shared_ptr<FrameLayer>& frame, const std::vector<shared_ptr<Layer>>& addLayers, const std::vector<shared_ptr<Layer>>& removeLayers);
 	void unlinkLayer(const shared_ptr<Layer>& layer);
 	void unlinkParticipant(const shared_ptr<Participant>& participant);
 
