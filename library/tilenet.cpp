@@ -514,12 +514,14 @@ TNAPI TNERROR tilenet_create_frame( TNLAYER* frame, TNFLAG flags )
 	} AUTO_CATCH(true);
 }
 
-TNAPI TNERROR tilenet_update_frame( TNLAYER frame, TNLAYER* layer_list, TNVIEW* view_list )
+TNAPI TNERROR tilenet_update_frame( TNLAYER frame, TNLAYER* layer_list, TNVIEW** view_list, size_t size)
 {
 	CHECK_NULL(frame);
+	CHECK_CAST(_frame, frame, srv::FrameLayer);
 
 	try {
-		NOT_IMPLEMENTED();
+		_frame->update(layer_list, view_list, size);
+		return TNOK;
 
 	} AUTO_CATCH(true);
 }

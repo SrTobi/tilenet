@@ -4,6 +4,7 @@
 
 #include <mutex>
 #include <boost/asio/strand.hpp>
+#include <unordered_map>
 
 #include "settings.hpp"
 
@@ -21,26 +22,27 @@ namespace net {
 namespace srv {
 
 namespace job {
-	class UpdateFrameLayerJob;
+	class UpdateFrameJob;
 }
 
 class FrameLayer
 	: public Layer
 {
-	friend class job::UpdateFrameLayerJob;
+	typedef proto::curv::PView PView;
+	friend class job::UpdateFrameJob;
 public:
 	FrameLayer(TNFLAG flags);
 	~FrameLayer();
 
 	void makeInitialCommit();
-	//void update(TNTILE* tiles, TNBOOL* toupdate);
+	void update(TNLAYER* layer_list, TNVIEW** view_list, size_t size);
 
 
 	OVERRIDE void destroy();
 	OVERRIDE shared_ptr<TilenetObject> clone();
 
 private:
-	//Commit update(const std::vector<>& tiles, const std::vector<bool>& toupdate);
+	Commit update(std::unordered_map<shared_ptr<Layer>, std::pair<PView, short>>&& sublayers);
 	Commit makeFullSnapshotCommit(bool asNewCommit);
 
 
@@ -52,6 +54,8 @@ private:
 	boost::asio::strand mUpdateStrand;
 	std::mutex			mMutex;
 	CommitQueue			mCommits;
+
+	std::unordered_map<shared_ptr<Layer>, std::pair<PView, short>> mSubLayers;
 };
 
 
