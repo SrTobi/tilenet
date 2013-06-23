@@ -49,6 +49,7 @@ FrameLayer::Commit FrameLayer::makeFullSnapshotCommit( bool asNewCommit )
 
 	fullFrame.layerId = id();
 	fullFrame.commitNr = commitnr;
+	fullFrame.is_delta = false;
 
 	auto& zorder = fullFrame.sublayers_in_zorder;
 	auto& views = fullFrame.update_views;
@@ -205,20 +206,21 @@ FrameLayer::Commit FrameLayer::update(std::unordered_map<shared_ptr<Layer>, std:
 	sendframe.layerId = id();
 	sendframe.commitNr = commitnr;
 	sendframe.update_views = std::move(update_views);
+	sendframe.is_delta = !(need_to_send_zorder && always_view_set);
 
 	if(need_to_send_zorder)
 		sendframe.sublayers_in_zorder = std::move(layers_in_zorder);
 
 	Commit commit = net::make_message(sendframe);
 		
-	// check if it is a full commit
-	if(need_to_send_zorder && always_view_set)
+	// check if it is a delta commit
+	if(sendframe.is_delta)
 	{
-		// We have a full commit
-		mCommits.commit(commitnr, commit);
-	}else{
 		// We have a delta
 		mCommits.commitDelta(commitnr, commit);
+	}else{
+		// We have a full commit
+		mCommits.commit(commitnr, commit);
 	}
 
 	return commit;

@@ -177,6 +177,7 @@ PROTOCOL_MESSAGE(LayerControl_SendFrame, to_client)
 {
 	TNID layerId;
 	TNID commitNr;
+	bool is_delta;
 	std::vector<TNID> sublayers_in_zorder;
 	std::vector<std::pair<TNID, proto::v1_0::PView>> update_views;
 
