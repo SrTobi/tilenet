@@ -93,12 +93,12 @@ typedef unsigned char	TNBOOL;
 typedef uint32_t		TNFLAG;
 typedef unsigned int	TNEVTYPE;
 typedef uint32_t		TNCOLOR;
-typedef unsigned int	TNRATIO;
+typedef float			TNRATIO;
 typedef unsigned int	TNID;
 typedef uint32_t		TNPARTICIPANT;
 typedef unsigned int	TNKEYCODE;
 
-#define TNSTDRATIO						1000
+#define TNSTDRATIO						(1.0f)
 #define TN_ID_BITLENGTH					28
 #define TN_TAG_BITLENGTH				((sizeof(TNID)*8) - TN_ID_BITLENGTH)
 #define TNEXTRACTTAG(_p)				(_p >> TN_ID_BITLENGTH)

@@ -150,7 +150,8 @@ PROTOCOL_MESSAGE(LayerControl_SendFullLayer, to_client)
 {
 	TNID layerId;
 	TNID commitNr;
-	uint16 xratio, yratio, width, height;
+	float xratio, yratio;
+	uint16  width, height;
 	std::vector<net::PTile> layerContent;
 
 	PROTOCOL_SERIALIZER(ar)
