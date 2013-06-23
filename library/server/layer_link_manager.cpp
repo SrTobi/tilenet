@@ -1,6 +1,7 @@
 #include "includes.hpp"
 #include "layer_link_manager.hpp"
 
+#include "frame_layer.hpp"
 #include "utils/helper_functions.hpp"
 
 namespace srv {
@@ -129,7 +130,21 @@ void LayerLinkManager::linkLayerToParticipant( const shared_ptr<Layer>& layer, c
 
 void LayerLinkManager::updateFrameLinks( const shared_ptr<FrameLayer>& frame, const std::vector<shared_ptr<Layer>>& addLayers, const std::vector<shared_ptr<Layer>>& removeLayers)
 {
-	NOT_IMPLEMENTED();
+	std::lock_guard<std::mutex> guard(mMutex);
+
+	Node* fNode = _layer_node(frame);
+
+	for(auto& layer : removeLayers)
+	{
+		Node* lNode = _layer_node(layer);
+		fNode->removeChild(lNode);
+	}
+
+	for(auto& layer : addLayers)
+	{
+		Node* lNode = _layer_node(layer);
+		fNode->addChild(lNode);
+	}
 }
 
 void LayerLinkManager::unlinkLayer( const shared_ptr<Layer>& layer )
