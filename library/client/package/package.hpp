@@ -51,6 +51,7 @@ public:
 	Package(const PackageInfo& pi);
 	~Package();
 
+	const Rect& getTileSize() const;
 	shared_ptr<StdTile> getStdTileByName(const string& name);
 
 
@@ -59,7 +60,10 @@ public:
 private:
 	std::unordered_map<string, shared_ptr<StdTile>> mNameToStdTileMapping;
 	PackageInfo mInfo;
+	Rect mPackageTileSize;
 };
+
+
 
 
 }

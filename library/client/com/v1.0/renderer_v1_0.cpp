@@ -6,6 +6,8 @@
 #include "tile_mapper_v1_0.hpp"
 #include "server_info_v1_0.hpp"
 
+#include "client/render_view.hpp"
+
 #include "client/package/package.hpp"
 #include "client/package/package_manager.hpp"
 #include "client/package/components/std_tile.hpp"
@@ -34,8 +36,8 @@ class Renderer::Layer
 {
 public:
 
-	virtual void render(sf::RenderTarget& target) = 0;
-	virtual void getBounds(Rect& ratioSize, Rect& tileSize) const = 0;
+	virtual void render(RenderView& view) = 0;
+	virtual Vector getBounds() const = 0;
 private:
 };
 
@@ -92,7 +94,7 @@ public:
 	{
 	}
 
-	OVERRIDE void render(sf::RenderTarget& target)
+	OVERRIDE void render(RenderView& view)
 	{
 		for(unsigned int x = 0; x < mTileField.size().w; ++x)
 		{
@@ -102,14 +104,14 @@ public:
 				auto& tile = mTileField.at(pos);
 
 				if(tile)
-					tile->render(target, pos);
+					tile->render(view.target(), pos);
 			}
 		}
 	}
 
-	virtual OVERRIDE void getBounds(Rect& ratioSize, Rect& tileSize) const
+	virtual OVERRIDE Vector getBounds() const
 	{
-		tileSize = mTileField.size();
+		return Vector(mTileField.size()) * mRatio;
 	}
 
 	void update(const LayerDelta& delta)
@@ -192,22 +194,44 @@ public:
 	{
 	}
 
-	OVERRIDE void render(sf::RenderTarget& target)
+	OVERRIDE void render(RenderView& view)
 	{
-		for(TNID& id : mSubLayerZOrder)
+		for(TNID id : mSubLayerZOrder)
 		{
 			auto layer = mRenderer.layer(id);
+			auto it = mIdToViewMapping.find(id);
 
-			if(layer)
+			if(layer && it != mIdToViewMapping.end())
 			{
-				layer->render(target);
+				auto& subview = it->second;
+
+
+				Bounds outter = Bounds(	Vector(subview.outter_pos()) * subview.outter_posratio(),
+										Vector(subview.outter_size()) * subview.outter_sizeratio());
+				
+				Bounds inner = Bounds(	Vector(subview.inner_pos()) * subview.inner_posratio(),
+										Vector(subview.inner_size()) * subview.inner_sizeratio());
+
+
+				layer->render(RenderView(view, outter, inner));
 			}
 		}
 	}
 
-	virtual OVERRIDE void getBounds(Rect& ratioSize, Rect& tileSize) const
+	virtual OVERRIDE Vector getBounds() const
 	{
-		tileSize = Rect(10, 10);
+		Vector size;
+
+		for(auto& p : mIdToViewMapping)
+		{
+			Vector right_bottom = Vector(p.second.outter_pos()) * Vector(p.second.outter_posratio()) 
+								+ Vector(p.second.outter_size()) * Vector(p.second.outter_sizeratio());
+
+			size.x = std::max(size.x, right_bottom.x);
+			size.y = std::max(size.y, right_bottom.y);
+		}
+
+		return size;
 	}
 
 	void update(const FrameCommit& commit)
@@ -271,10 +295,11 @@ void Renderer::render(sf::RenderTarget& target)
 
 		if(topLayer)
 		{
-			sf::View view = target.getView();
-			calculateView(target, topLayer);
-			topLayer->render(target);
-			target.setView(view);
+			RenderView view(target, mPackage->getTileSize());
+			
+			Vector size = topLayer->getBounds();
+
+			topLayer->render(RenderView(view, Bounds::center(view.bounds(), size)));
 		}
 	}else{
 		if(mPackManager->isSearching())
@@ -360,7 +385,7 @@ void Renderer::applyDelta( const LayerDelta& delta )
 	if(l) l->update(delta);
 }
 
-
+/*
 void Renderer::calculateView(sf::RenderTarget& target, const shared_ptr<Layer>& layer)
 {
 	Rect fieldSize;
@@ -381,6 +406,6 @@ void Renderer::calculateView(sf::RenderTarget& target, const shared_ptr<Layer>& 
 									rsize.w, rsize.h));
 
 	target.setView(view);
-}
+}*/
 
 }}}

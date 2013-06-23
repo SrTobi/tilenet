@@ -61,6 +61,7 @@ bool PackageInfo::hasInterface( const string& interf) const
 
 Package::Package(const PackageInfo& pi)
 	: mInfo(pi)
+	, mPackageTileSize(8, 12)
 {
 	auto filename = pi.path() / "debug-tileset.txt";
 
@@ -122,6 +123,11 @@ shared_ptr<StdTile> Package::getStdTileByName( const string& name )
 		return nullptr;
 
 	return it->second;
+}
+
+const Rect& Package::getTileSize() const
+{
+	return mPackageTileSize;
 }
 
 const PackageInfo& Package::info()
