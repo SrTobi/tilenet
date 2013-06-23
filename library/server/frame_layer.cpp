@@ -125,9 +125,9 @@ FrameLayer::Commit FrameLayer::update(std::unordered_map<shared_ptr<Layer>, std:
 
 	bool always_view_set = true;
 	bool need_to_send_zorder = false;			// if this is true, we have to send the list with zordered layers
-	std::vector<TNID> layers_in_zorder(sublayers.size(), 0);
+	std::vector<TNID> layers_in_zorder(updateList.size(), 0);
 	std::vector<std::pair<TNID, PView>> update_views;
-	update_views.reserve(sublayers.size());
+	update_views.reserve(updateList.size());
 
 
 
