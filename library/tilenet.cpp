@@ -468,6 +468,7 @@ TNAPI TNERROR tilenet_exit(size_t* timeout)
 {
 	IMPLEMENTATION_TODO("Implement timout for tilenet_exit");
 	srv::LocalAcceptor::WaitForClientExit();
+	srv::Service::Shutdown();
 	return TNOK;
 }
 
