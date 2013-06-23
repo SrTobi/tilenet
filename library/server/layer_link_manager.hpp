@@ -3,7 +3,8 @@
 #define _LAYER_LINK_MANAGER_HPP
 
 
-#include <vector>
+#include <unordered_map>
+#include <mutex>
 #include "settings.hpp"
 
 
@@ -17,6 +18,7 @@ class Participant;
 
 class LayerLinkManager
 {
+	class Node;
 public:
 	LayerLinkManager();
 	~LayerLinkManager();
@@ -27,11 +29,17 @@ public:
 	void unlinkParticipant(const shared_ptr<Participant>& participant);
 
 	std::vector<shared_ptr<Participant>> getLinkedParticipants(const shared_ptr<Layer>& layer) const;
+	std::vector<shared_ptr<Layer>> getLinkedLayers(const shared_ptr<Participant>& participant) const;
 
 	static LayerLinkManager& Inst();
 private:
-	// MOCK!!!
-	std::vector<std::pair<shared_ptr<Layer>, shared_ptr<Participant>>> mLinks;
+	Node* _layer_node(const shared_ptr<Layer>& layer);
+	Node* _participant_node(const shared_ptr<Participant>& participant) const;
+
+private:
+	mutable std::mutex mMutex;
+	std::unordered_map<shared_ptr<Layer>, Node*> mLayerToNodeMapping;
+	std::unordered_map<shared_ptr<Participant>, Node*> mParticipantToNodeMapping;
 };
 
 
