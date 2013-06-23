@@ -24,6 +24,7 @@ ThreadPool::~ThreadPool()
 
 	for(auto& p : mThreads)
 	{
+		tnAssert(p.second.joinable());
 		p.second.join();
 	}
 }
@@ -40,6 +41,9 @@ void ThreadPool::setThreadCount(size_t count)
 
 	if(addThreads)
 	{
+		if(!mWork)
+			mWork.reset(new io_service::work(mService));
+
 		while(mThreads.size() < count)
 		{
 			std::thread thread(std::bind(&ThreadPool::runThread, this));
