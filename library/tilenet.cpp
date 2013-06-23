@@ -541,7 +541,7 @@ TNAPI TNERROR tilenet_create_tilelayer( TNLAYER* layer, unsigned int width, unsi
 	} AUTO_CATCH(true);
 }
 
-TNAPI TNERROR tilenet_update_tilelayer(TNLAYER layer, TNTILE* tiles, TNBOOL* toupdate)
+TNAPI TNERROR tilenet_update_tilelayer(TNLAYER layer, const TNTILE* tiles, const TNBOOL* toupdate)
 {
 	CHECK_NULL(tiles);
 	CHECK_CAST(_layer, layer, srv::TileLayer);

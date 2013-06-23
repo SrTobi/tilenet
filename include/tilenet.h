@@ -254,7 +254,7 @@ TNAPI TNERROR tilenet_update_frame(TNLAYER frame, TNLAYER* layer_list, TNVIEW** 
 
 /**** layer: tile-layer ****/
 TNAPI TNERROR tilenet_create_tilelayer(TNLAYER* layer, unsigned int width, unsigned int height, TNRATIO xr, TNRATIO yr, TNFLAG flags);
-TNAPI TNERROR tilenet_update_tilelayer(TNLAYER layer, TNTILE* tiles, TNBOOL* toupdate);
+TNAPI TNERROR tilenet_update_tilelayer(TNLAYER layer, const TNTILE* tiles, const TNBOOL* toupdate);
 
 /**** tileset ****/
 TNAPI TNERROR tilenet_stdtile(const wchar_t* name, TNID* id);

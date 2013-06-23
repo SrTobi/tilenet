@@ -33,7 +33,7 @@ public:
 	~TileLayer();
 
 	void makeInitialCommit();
-	void update(TNTILE* tiles, TNBOOL* toupdate);
+	void update(const TNTILE* tiles, const TNBOOL* toupdate);
 
 	const Ratio& ratio() const;
 	const Rect&	size() const;

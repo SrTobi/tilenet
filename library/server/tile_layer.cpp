@@ -33,7 +33,7 @@ void TileLayer::makeInitialCommit()
 
 
 
-void TileLayer::update( TNTILE* tiles, TNBOOL* toupdate )
+void TileLayer::update( const TNTILE* tiles, const TNBOOL* toupdate )
 {
 	const unsigned int array_sizes =  mTileField.storage().size();
 
