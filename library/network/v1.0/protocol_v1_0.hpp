@@ -183,7 +183,7 @@ PROTOCOL_MESSAGE(LayerControl_SendFrame, to_client)
 
 	PROTOCOL_SERIALIZER(ar)
 	{
-		ar & layerId & commitNr & sublayers_in_zorder & update_views;
+		ar & layerId & commitNr & is_delta & sublayers_in_zorder & update_views;
 	}
 };
 
