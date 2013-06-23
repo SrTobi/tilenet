@@ -178,7 +178,69 @@ private:
 
 
 
+class Renderer::FrameLayer
+	: public Renderer::Layer
+{
+	typedef proto::v1_0::PView PView;
+public:
+	FrameLayer(Renderer& renderer)
+		: mRenderer(renderer)
+	{
+	}
 
+	~FrameLayer()
+	{
+	}
+
+	OVERRIDE void render(sf::RenderTarget& target)
+	{
+		for(TNID& id : mSubLayerZOrder)
+		{
+			auto layer = mRenderer.layer(id);
+
+			if(layer)
+			{
+				layer->render(target);
+			}
+		}
+	}
+
+	virtual OVERRIDE void getBounds(Rect& ratioSize, Rect& tileSize) const
+	{
+		tileSize = Rect(10, 10);
+	}
+
+	void update(const FrameCommit& commit)
+	{
+		if(commit.sublayers_in_zorder.size())
+		{
+			mSubLayerZOrder = commit.sublayers_in_zorder;
+
+			// erase old views
+			for(auto it = mIdToViewMapping.begin(); it != mIdToViewMapping.end();)
+			{
+				if(std::find(mSubLayerZOrder.begin(), mSubLayerZOrder.end(), it->first) == mSubLayerZOrder.end())
+				{
+					it = mIdToViewMapping.erase(it);
+				}else{
+					++it;
+				}
+			}
+		}
+
+		for(auto& p : commit.update_views)
+		{
+			if(!p.second.empty())
+				mIdToViewMapping[p.first] = p.second;
+		}
+
+	}
+
+private:
+	Renderer& mRenderer;
+	std::vector<TNID> mSubLayerZOrder;
+	std::unordered_map<TNID, PView> mIdToViewMapping;
+};
 
 
 
@@ -266,6 +328,30 @@ void Renderer::updateLayer( const LayerCommit& commit )
 	auto l = std::dynamic_pointer_cast<RenderLayer>(layer(commit.layerId));
 	if(l) l->update(commit);
 }
+
+
+void Renderer::updateFrame( const FrameCommit& commit )
+{
+	auto& layer_ptr = mIdToLayerMapping[commit.layerId];
+
+	shared_ptr<FrameLayer> frame;
+	if(layer_ptr)
+	{
+		frame = std::dynamic_pointer_cast<FrameLayer>(layer_ptr);
+
+		if(!frame)
+		{
+			NOT_IMPLEMENTED();
+		}
+
+	}else{
+		layer_ptr = frame = std::make_shared<FrameLayer>(std::ref(*this));
+	}
+
+	frame->update(commit);
+}
+
+
 
 
 void Renderer::applyDelta( const LayerDelta& delta )

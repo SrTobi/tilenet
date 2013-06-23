@@ -2,6 +2,7 @@
 
 #include "utils/field.hpp"
 
+
 #include "main_com_handler_v1_0.hpp"
 #include "renderer_v1_0.hpp"
 #include "tile_mapper_v1_0.hpp"
@@ -102,6 +103,7 @@ MainComHandler::MainComHandler( ClientApp& app, const shared_ptr<net::Connection
 	mDispatcher.add(&MainComHandler::handleLayerControl_sendFullLayer, this);
 	mDispatcher.add(&MainComHandler::handleLayerControl_sendLayerUpdate, this);
 	mDispatcher.add(&MainComHandler::handleAnswer_StdTileNameRequest, this);
+	mDispatcher.add(&MainComHandler::handleLayerControl_sendFrame, this);
 }
 
 void MainComHandler::init()
@@ -164,13 +166,7 @@ void MainComHandler::handleLayerControl_sendFullLayer(proto::v1_0::to_client::La
 
 void MainComHandler::handleLayerControl_sendFrame( proto::v1_0::to_client::LayerControl_SendFrame& msg )
 {
-	IMPLEMENTATION_TODO("handle frame");
-	if(msg.is_delta)
-	{
-
-	}else{
-
-	}
+	mRenderer->updateFrame(msg);
 }
 
 

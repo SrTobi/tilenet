@@ -28,6 +28,7 @@ class Renderer
 {
 	typedef proto::v1_0::to_client::LayerControl_SendFullLayer LayerCommit;
 	typedef proto::v1_0::to_client::LayerControl_SendLayerUpdate LayerDelta;
+	typedef proto::v1_0::to_client::LayerControl_SendFrame FrameCommit;
 	class Layer;
 	class FrameLayer;
 	class RenderLayer;
@@ -41,7 +42,7 @@ public:
 	void defineLayer(TNID id, Rect size, Ratio r);
 	void updateLayer(const LayerCommit& commit);
 	void applyDelta(const LayerDelta& delta);
-
+	void updateFrame(const FrameCommit& commit);
 private:
 	shared_ptr<Layer> layer(TNID id) const;
 

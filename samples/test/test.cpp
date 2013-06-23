@@ -72,7 +72,7 @@ public:
 	void flush()
 	{
 		tilenet_update_tilelayer(m_handle, m_content.data(), m_updated.data());
-		memset(m_updated.data(), 0, m_width * m_height * sizeof(TNTILE));
+		std::fill(m_updated.begin(), m_updated.end(), 0);
 	}
 
 	void attachTo(TNPARTICIPANT p)
@@ -81,7 +81,9 @@ public:
 	}
 
 	unsigned int width() const { return m_width; }
-	unsigned int height() const { return m_height; }
+	unsigned int height() const { return m_height;}
+
+	TNLAYER handle() const { return m_handle; }
 
 private:
 	const unsigned int m_width, m_height;
@@ -90,47 +92,124 @@ private:
 	std::vector<TNBOOL> m_updated;
 };
 
+class Frame
+{
+public:
+	Frame()
+	{
+		tilenet_create_frame(&m_handle, 0);
+	}
 
+	~Frame()
+	{
+	}
+
+
+	void attachTo(TNPARTICIPANT p)
+	{
+		tilenet_attach_layer(p, m_handle);
+	}
+
+	void addChild(Layer* layer, unsigned int x, unsigned int y)
+	{
+		layers.push_back(layer->handle());
+
+		TNVIEW view;
+
+		view.color = COL_WHITE;
+		view.flags = 0;
+
+		view.outter_x = x;
+		view.outter_y = y;
+		view.outter_w = layer->width();
+		view.outter_h = layer->height();
+		
+		view.outter_xr = TNSTDRATIO;
+		view.outter_yr = TNSTDRATIO;
+		view.outter_wr = TNSTDRATIO;
+		view.outter_hr = TNSTDRATIO;
+
+		view.inner_x = 0;
+		view.inner_y = 0;
+		view.inner_w = layer->width();
+		view.inner_h = layer->height();
+
+		view.inner_xr = TNSTDRATIO;
+		view.inner_yr = TNSTDRATIO;
+		view.inner_wr = TNSTDRATIO;
+		view.inner_hr = TNSTDRATIO;
+
+		std::vector<TNVIEW*> viewstack(layers.size(), nullptr);
+		viewstack.back() = &view;
+
+		tilenet_update_frame(m_handle, layers.data(), viewstack.data(), layers.size());
+	}
+
+private:
+	std::vector<TNLAYER> layers;
+	TNLAYER m_handle;
+};
 
 #define LAYER_W	10
 #define LAYER_H 10
 
 TNSERVER srv;
 StdTile a_tile(L"test-a");
-Layer* layer;
+Layer* layer1;
+Layer* layer2;
+Frame* frame;
 TNTILE* layerContent;
 
 
 void init_testlayer()
 {
-	layer = new Layer(10, 10);
+	layer1 = new Layer(10, 10);
 
 	
-	layer->tile(0,0) = a_tile();
-	layer->tile(1,0) = a_tile(TNMAKE_COLOR(0xff, 0, 0xff, 0));
-	layer->tile(9,9) = a_tile(TNMAKE_COLOR(0xff, 0xff, 0, 0));
-	layer->flush();
+	layer1->tile(0,0) = a_tile();
+	layer1->tile(1,0) = a_tile(TNMAKE_COLOR(0xff, 0, 0xff, 0));
+	layer1->tile(9,9) = a_tile(TNMAKE_COLOR(0xff, 0xff, 0, 0));
+	layer1->flush();
+
+
+	layer2 = new Layer(10, 10);
+
+
+	layer2->tile(0,0) = a_tile();
+	layer2->tile(1,0) = a_tile(TNMAKE_COLOR(0xff, 0, 0xff, 0));
+	layer2->tile(9,9) = a_tile(TNMAKE_COLOR(0xff, 0xff, 0, 0));
+	layer2->flush();
+
+	frame = new Frame();
+	frame->addChild(layer1, 0, 0);
+	frame->addChild(layer2, 15, 0);
 }
 
 unsigned int pos = 0;
 
 void update_layer()
 {
-	layer->tile(pos++ % (90) + 10) = a_tile(TNMAKE_COLOR(0xff, rand() % 0xff, rand() % 0xff, rand() % 0xff));
-	layer->flush();
+	layer1->tile(pos++ % (90) + 10) = a_tile(TNMAKE_COLOR(0xff, rand() % 0xff, rand() % 0xff, rand() % 0xff));
+	layer1->flush();
+
+	layer2->tile(rand() % 100) = a_tile(TNMAKE_COLOR(0xff, 0xaa, 0xaa, rand() % 0xff));
+	layer2->flush();
 }
 
 void do_event(TNEVENT& e)
 {
-	/*switch(e.type)
+	switch(e.type)
 	{
 	case TNEV_CONNECT:
 		std::cout << "Player connected!\n";
 
-		layer->attachTo(e.participant);
+		frame->attachTo(e.participant);
 		break;
 	case TNEV_DISCONNECT:
 		std::cout << "Player disconnected!\n";
+		tilenet_exit(0);
+		exit(0);
+		break;
 	case TNEV_KEYDOWN:
 		{
 			TNKEYCODE key = e.data.keyevent.key;
@@ -152,7 +231,7 @@ void do_event(TNEVENT& e)
 		}break;
 	default:
 		break;
-	}*/
+	}
 }
 
 
@@ -167,7 +246,7 @@ int main()
 	config.options = 0;
 
 	tilenet_set_service_thread_count(1);
-	/*init_testlayer();
+	init_testlayer();
 
 
 	tilenet_create_server(&srv, &config);
@@ -193,10 +272,11 @@ int main()
 		}
 
 	}
-	*/
 
 
 
 	std::cin.get();
+
+	tilenet_exit(0);
 	return 0;
 }
