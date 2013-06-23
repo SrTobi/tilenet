@@ -26,7 +26,7 @@ FrameLayer::~FrameLayer()
 
 void FrameLayer::makeInitialCommit()
 {
-	NOT_IMPLEMENTED();
+	makeFullSnapshotCommit(true);
 }
 
 OVERRIDE void FrameLayer::destroy()
@@ -50,13 +50,27 @@ FrameLayer::Commit FrameLayer::makeFullSnapshotCommit( bool asNewCommit )
 	fullFrame.layerId = id();
 	fullFrame.commitNr = commitnr;
 
-	NOT_IMPLEMENTED()
-	/*auto& storage = mTileField.storage();
-	auto& content = fullLayer.layerContent;
-	content = storage;
+	auto& zorder = fullFrame.sublayers_in_zorder;
+	auto& views = fullFrame.update_views;
 
-	tnAssert(content.size() == size().area());
-	tnAssert(storage.size() == content.size());*/
+	zorder.resize(mSubLayers.size(), 0);
+	views.reserve(mSubLayers.size());
+
+	for(auto& p : mSubLayers)
+	{
+		const auto& z = p.second.second;
+		const auto& layer = p.first;
+		const auto& view = p.second.first;
+
+		// add sublayer to z list
+		tnAssert(z < zorder.size() && zorder[z] == 0);
+		zorder[z] = layer->id();
+
+		// add views
+		views.emplace_back(layer->id(), view);
+	}
+
+	tnAssert(views.size() == zorder.size());
 
 	Commit com = net::make_message(fullFrame);
 
@@ -88,6 +102,8 @@ void FrameLayer::update( TNLAYER* layer_list, TNVIEW** view_list, size_t size )
 		else
 			sublayers.emplace(layer->self<Layer>(), std::make_pair(PView(), z));
 	}
+
+	IMPLEMENTATION_TODO("Detect circular dependencies???")
 
 	if(sublayers.size() != size)
 	{
