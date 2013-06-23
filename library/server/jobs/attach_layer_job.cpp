@@ -41,13 +41,18 @@ void AttachLayerJob::process()
 		mParticipant->port()->send(net::make_message(attach));
 	}
 
-	// send the layer to the client
+	// send the all layers to the client
 	{
-		TNID lastCommit = mLayer->currentCommitNr();
-		auto commits = mLayer->getCommitsUpTo(lastCommit);
+		std::vector<shared_ptr<Layer>> layers = llm.getLinkedLayers(mParticipant);
 
-		for(auto commit : commits)
-			mParticipant->port()->send(commit);
+		for(auto& layer : layers)
+		{
+			TNID lastCommit = layer->currentCommitNr();
+			auto commits = layer->getCommitsUpTo(lastCommit);
+
+			for(auto commit : commits)
+				mParticipant->port()->send(commit);
+		}
 	}
 }
 
