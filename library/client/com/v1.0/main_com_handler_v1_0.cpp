@@ -161,6 +161,20 @@ void MainComHandler::handleLayerControl_sendFullLayer(proto::v1_0::to_client::La
 		mRenderer->applyDelta(dt);
 }
 
+
+void MainComHandler::handleLayerControl_sendFrame( proto::v1_0::to_client::LayerControl_SendFrame& msg )
+{
+	IMPLEMENTATION_TODO("handle frame");
+	if(msg.is_delta)
+	{
+
+	}else{
+
+	}
+}
+
+
+
 shared_ptr<MainComHandler> MainComHandler::Create( ClientApp& app, const shared_ptr<net::ConnectionPort>& port, const shared_ptr<ServerInfo>& svr_info)
 {
 	shared_ptr<MainComHandler> ptr(new MainComHandler(app, port, svr_info));

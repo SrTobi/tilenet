@@ -54,6 +54,7 @@ private:
 	void handleLayerControl_attachLayer(proto::v1_0::to_client::LayerControl_AttachLayer& msg);
 	void handleLayerControl_sendLayerUpdate(proto::v1_0::to_client::LayerControl_SendLayerUpdate& msg);
 	void handleLayerControl_sendFullLayer(proto::v1_0::to_client::LayerControl_SendFullLayer& msg);
+	void handleLayerControl_sendFrame(proto::v1_0::to_client::LayerControl_SendFrame& msg);
 
 	void handleAnswer_StdTileNameRequest(proto::v1_0::to_client::Answer_StdTileNameRequest& answ);
 
