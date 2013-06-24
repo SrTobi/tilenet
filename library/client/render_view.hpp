@@ -31,18 +31,20 @@ class RenderView
 public:
 	RenderView(sf::RenderTarget& target, const Rect& tileSize);
 	RenderView(RenderView& view, const Bounds& outter_bounds);
-	RenderView(RenderView& view, const Bounds& outter_bounds, const Bounds& inner_bounds);
+	RenderView(RenderView& view, const Bounds& outter_bounds, const Bounds& inner_bounds, const sf::Color& color);
 	~RenderView();
 
 	sf::RenderTarget& target();
 
 	Bounds bounds() const;
+	const sf::Color& color() const;
 
 private:
 	sf::FloatRect _calcViewport(const Bounds& outter, const Vector& topSize);
 private:
 	sf::RenderTarget& mTarget;
 	sf::View mOldView;
+	sf::Color mColor;
 	Vector mSize;
 };
 

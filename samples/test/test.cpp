@@ -110,13 +110,13 @@ public:
 		tilenet_attach_layer(p, m_handle);
 	}
 
-	void addChild(Layer* layer, unsigned int x, unsigned int y)
+	void addChild(Layer* layer, unsigned int x, unsigned int y, TNCOLOR color = COL_WHITE)
 	{
 		layers.push_back(layer->handle());
 
 		TNVIEW view;
 
-		view.color = COL_WHITE;
+		view.color = color;
 		view.flags = 0;
 
 		view.outter_x = x;
@@ -182,7 +182,7 @@ void init_testlayer()
 
 	frame = new Frame();
 	frame->addChild(layer1, 0, 0);
-	frame->addChild(layer2, 15, 0);
+	frame->addChild(layer2, 15, 0, 0xffff8888);
 }
 
 unsigned int pos = 0;

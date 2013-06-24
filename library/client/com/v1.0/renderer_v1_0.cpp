@@ -50,7 +50,7 @@ private:
 	{
 	public:
 		virtual ~Tile() {}
-		virtual void render(sf::RenderTarget& target, const Point& pos) = 0;
+		virtual void render(sf::RenderTarget& target, const Point& pos, const sf::Color& color) = 0;
 	};
 
 	class StdIdTile
@@ -64,7 +64,7 @@ private:
 		{
 		}
 
-		virtual OVERRIDE void render(sf::RenderTarget& target, const Point& pos)
+		virtual OVERRIDE void render(sf::RenderTarget& target, const Point& pos, const sf::Color& color)
 		{
 			std::shared_ptr<StdTile> tile = mTile.lock();
 
@@ -75,7 +75,7 @@ private:
 
 			if(tile)
 			{
-				tile->render(target, pos, mColor);
+				tile->render(target, pos, mColor * color);
 			}
 		}
 
@@ -104,7 +104,7 @@ public:
 				auto& tile = mTileField.at(pos);
 
 				if(tile)
-					tile->render(view.target(), pos);
+					tile->render(view.target(), pos, view.color());
 			}
 		}
 	}
@@ -213,7 +213,7 @@ public:
 										Vector(subview.inner_size()) * subview.inner_sizeratio());
 
 
-				layer->render(RenderView(view, outter, inner));
+				layer->render(RenderView(view, outter, inner, to_sf_color(subview.color())));
 			}
 		}
 	}

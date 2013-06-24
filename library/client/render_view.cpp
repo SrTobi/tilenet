@@ -39,6 +39,7 @@ RenderView::RenderView( sf::RenderTarget& target, const Rect& tileSize )
 	: mTarget(target)
 	, mOldView(target.getView())
 	, mSize(target.getSize().x / float(tileSize.w), target.getSize().y / float(tileSize.h))
+	, mColor(sf::Color::White)
 {
 }
 
@@ -46,6 +47,7 @@ RenderView::RenderView( RenderView& view, const Bounds& outter_bounds)
 	: mTarget(view.target())
 	, mSize(outter_bounds.size)
 	, mOldView(mTarget.getView())
+	, mColor(view.color())
 {
 	sf::View newView(sf::FloatRect(0.0f, 0.0f, outter_bounds.size.w, outter_bounds.size.h));
 	newView.setViewport(_calcViewport(outter_bounds, view.mSize));
@@ -53,10 +55,11 @@ RenderView::RenderView( RenderView& view, const Bounds& outter_bounds)
 	mTarget.setView(newView);
 }
 
-RenderView::RenderView( RenderView& view, const Bounds& outter_bounds, const Bounds& inner_bounds )
+RenderView::RenderView( RenderView& view, const Bounds& outter_bounds, const Bounds& inner_bounds, const sf::Color& color )
 	: mTarget(view.target())
 	, mSize(inner_bounds.size)
 	, mOldView(mTarget.getView())
+	, mColor(color * view.color())
 {
 	sf::View newView(sf::FloatRect(inner_bounds.position.x, inner_bounds.position.y, inner_bounds.size.w, inner_bounds.size.h));
 	newView.setViewport(_calcViewport(outter_bounds, view.mSize));
@@ -89,6 +92,11 @@ sf::FloatRect RenderView::_calcViewport(const Bounds& outter, const Vector& topS
 	Vector rsize = (outter.size * old_size) / topSize;
 
 	return sf::FloatRect(rpos.x, rpos.y, rsize.w, rsize.h);
+}
+
+const sf::Color& RenderView::color() const
+{
+	return mColor;
 }
 
 }
