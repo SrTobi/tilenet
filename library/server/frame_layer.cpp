@@ -24,6 +24,14 @@ FrameLayer::~FrameLayer()
 {
 }
 
+void FrameLayer::init()
+{
+	Layer::init();
+	makeInitialCommit();
+}
+
+
+
 void FrameLayer::makeInitialCommit()
 {
 	makeFullSnapshotCommit(true);
@@ -31,7 +39,7 @@ void FrameLayer::makeInitialCommit()
 
 OVERRIDE void FrameLayer::destroy()
 {
-	NOT_IMPLEMENTED();
+	Layer::destroy();
 }
 
 OVERRIDE shared_ptr<TilenetObject> FrameLayer::clone()

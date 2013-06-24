@@ -109,23 +109,81 @@ LayerLinkManager::~LayerLinkManager()
 {
 }
 
+
+void LayerLinkManager::registerParticipant( const shared_ptr<Participant> participant )
+{
+	std::lock_guard<std::mutex> guard(mMutex);
+	bool newe = false;
+	std::tie(std::ignore, newe) = mParticipantToNodeMapping.emplace(participant, nullptr);
+
+	tnAssert(newe);
+}
+
+void LayerLinkManager::unregisterParticipant( const shared_ptr<Participant> participant )
+{
+	std::lock_guard<std::mutex> guard(mMutex);
+	auto it = mParticipantToNodeMapping.find(participant);
+	tnAssert(it != mParticipantToNodeMapping.end());
+
+	Node* pNode = it->second;
+	if(pNode)
+		pNode->removeParticipant(participant);
+
+	mParticipantToNodeMapping.erase(it);
+}
+
+void LayerLinkManager::registerLayer( const shared_ptr<Layer> layer )
+{
+	std::lock_guard<std::mutex> guard(mMutex);
+	bool newe = false;
+	std::tie(std::ignore, newe) = mLayerToNodeMapping.emplace(layer, new Node(layer));
+
+	tnAssert(newe);
+}
+
+void LayerLinkManager::unregisterLayer( const shared_ptr<Layer> layer )
+{
+	std::lock_guard<std::mutex> guard(mMutex);
+
+	auto it = mLayerToNodeMapping.find(layer);
+	tnAssert(it != mLayerToNodeMapping.end());
+
+	Node* lNode = it->second;
+
+	for(auto& p : lNode->participants())
+	{
+		auto it = mParticipantToNodeMapping.find(p);
+		tnAssert(it != mParticipantToNodeMapping.end());
+
+		it->second = nullptr;
+	}
+
+	lNode->unlink();
+	delete lNode;
+}
+
+
 void LayerLinkManager::linkLayerToParticipant( const shared_ptr<Layer>& layer, const shared_ptr<Participant>& participant )
 {
 	std::lock_guard<std::mutex> guard(mMutex);
 
 	auto it = mParticipantToNodeMapping.find(participant);
 
-	if(it != mParticipantToNodeMapping.end())
-	{
-		it->second->removeParticipant(participant);
-	}else{
-		std::tie(it, std::ignore) = mParticipantToNodeMapping.emplace(participant, nullptr);
-	}
+	if(it == mParticipantToNodeMapping.end())
+		return;
+
+	Node* pNode = it->second;
+	if(pNode)
+		pNode->removeParticipant(participant);
+
 
 	Node* lNode = _layer_node(layer);
-	lNode->addParticipant(participant);
+	if(lNode)
+	{
+		lNode->addParticipant(participant);
 
-	it->second = lNode;
+		it->second = lNode;
+	}
 }
 
 void LayerLinkManager::updateFrameLinks( const shared_ptr<FrameLayer>& frame, const std::vector<shared_ptr<Layer>>& addLayers, const std::vector<shared_ptr<Layer>>& removeLayers)
@@ -134,47 +192,24 @@ void LayerLinkManager::updateFrameLinks( const shared_ptr<FrameLayer>& frame, co
 
 	Node* fNode = _layer_node(frame);
 
-	for(auto& layer : removeLayers)
+	if(fNode)
 	{
-		Node* lNode = _layer_node(layer);
-		fNode->removeChild(lNode);
-	}
-
-	for(auto& layer : addLayers)
-	{
-		Node* lNode = _layer_node(layer);
-		fNode->addChild(lNode);
-	}
-}
-
-void LayerLinkManager::unlinkLayer( const shared_ptr<Layer>& layer )
-{
-	std::lock_guard<std::mutex> guard(mMutex);
-
-	auto it = mLayerToNodeMapping.find(layer);
-
-	if(it != mLayerToNodeMapping.end())
-	{
-		Node* lNode = it->second;
-
-		for(auto& p : lNode->participants())
+		for(auto& layer : removeLayers)
 		{
-			mParticipantToNodeMapping.erase(p);
+			Node* lNode = _layer_node(layer);
+			if(lNode)
+				fNode->removeChild(lNode);
 		}
 
-		lNode->unlink();
-		delete lNode;
+		for(auto& layer : addLayers)
+		{
+			Node* lNode = _layer_node(layer);
+			if(lNode)
+				fNode->addChild(lNode);
+		}
 	}
 }
 
-void LayerLinkManager::unlinkParticipant( const shared_ptr<Participant>& participant )
-{
-	std::lock_guard<std::mutex> guard(mMutex);
-
-	Node* pNode = _participant_node(participant);
-	if(pNode)
-		pNode->removeParticipant(participant);
-}
 
 std::vector<shared_ptr<Participant>> LayerLinkManager::getLinkedParticipants(const shared_ptr<Layer>& layer) const
 {
@@ -182,10 +217,10 @@ std::vector<shared_ptr<Participant>> LayerLinkManager::getLinkedParticipants(con
 
 	std::vector<shared_ptr<Participant>> watchingParticipants;
 
-	auto it = mLayerToNodeMapping.find(layer);
-	if(it != mLayerToNodeMapping.end())
+	Node* lNode = _layer_node(layer);
+	if(lNode)
 	{
-		it->second->addWatchingParticipants(watchingParticipants);
+		lNode->addWatchingParticipants(watchingParticipants);
 	}
 
 
@@ -217,16 +252,11 @@ LayerLinkManager& LayerLinkManager::Inst()
 	return inst;
 }
 
-LayerLinkManager::Node* LayerLinkManager::_layer_node( const shared_ptr<Layer>& layer )
+LayerLinkManager::Node* LayerLinkManager::_layer_node( const shared_ptr<Layer>& layer ) const
 {
 	auto it = mLayerToNodeMapping.find(layer);
 
-	if(it == mLayerToNodeMapping.end())
-	{
-		std::tie(it, std::ignore) = mLayerToNodeMapping.emplace(layer, new Node(layer));
-	}
-
-	return it->second;
+	return it == mLayerToNodeMapping.end() ? nullptr : it->second;
 }
 
 LayerLinkManager::Node* LayerLinkManager::_participant_node( const shared_ptr<Participant>& participant ) const
@@ -235,6 +265,10 @@ LayerLinkManager::Node* LayerLinkManager::_participant_node( const shared_ptr<Pa
 
 	return it == mParticipantToNodeMapping.end() ? nullptr : it->second;
 }
+
+
+
+
 
 
 

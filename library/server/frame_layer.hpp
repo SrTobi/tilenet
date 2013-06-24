@@ -34,7 +34,7 @@ public:
 	FrameLayer(TNFLAG flags);
 	~FrameLayer();
 
-	void makeInitialCommit();
+	void init();
 	void update(TNLAYER* layer_list, TNVIEW** view_list, size_t size);
 
 
@@ -44,6 +44,7 @@ public:
 private:
 	Commit update(std::unordered_map<shared_ptr<Layer>, std::pair<PView, unsigned short>>&& sublayers);
 	Commit makeFullSnapshotCommit(bool asNewCommit);
+	void makeInitialCommit();
 
 
 	virtual OVERRIDE std::vector<Commit> getCommitsUpTo(TNID nr);

@@ -26,6 +26,13 @@ TileLayer::~TileLayer()
 }
 
 
+void TileLayer::init()
+{
+	Layer::init();
+	makeInitialCommit();
+}
+
+
 void TileLayer::makeInitialCommit()
 {
 	makeFullSnapshotCommit(true);
@@ -141,7 +148,7 @@ const Rect& TileLayer::size() const
 
 OVERRIDE void TileLayer::destroy()
 {
-	NOT_IMPLEMENTED();
+	Layer::destroy();
 }
 
 OVERRIDE shared_ptr<TilenetObject> TileLayer::clone()

@@ -23,17 +23,20 @@ public:
 	LayerLinkManager();
 	~LayerLinkManager();
 
+	void registerParticipant(const shared_ptr<Participant> participant);
+	void unregisterParticipant(const shared_ptr<Participant> participant);
+	void registerLayer(const shared_ptr<Layer> layer);
+	void unregisterLayer(const shared_ptr<Layer> layer);
+
 	void linkLayerToParticipant(const shared_ptr<Layer>& layer, const shared_ptr<Participant>& participant);
 	void updateFrameLinks(const shared_ptr<FrameLayer>& frame, const std::vector<shared_ptr<Layer>>& addLayers, const std::vector<shared_ptr<Layer>>& removeLayers);
-	void unlinkLayer(const shared_ptr<Layer>& layer);
-	void unlinkParticipant(const shared_ptr<Participant>& participant);
 
 	std::vector<shared_ptr<Participant>> getLinkedParticipants(const shared_ptr<Layer>& layer) const;
 	std::vector<shared_ptr<Layer>> getLinkedLayers(const shared_ptr<Participant>& participant) const;
 
 	static LayerLinkManager& Inst();
 private:
-	Node* _layer_node(const shared_ptr<Layer>& layer);
+	Node* _layer_node(const shared_ptr<Layer>& layer) const;
 	Node* _participant_node(const shared_ptr<Participant>& participant) const;
 
 private:

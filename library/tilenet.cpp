@@ -507,7 +507,7 @@ TNAPI TNERROR tilenet_create_frame( TNLAYER* frame, TNFLAG flags )
 	try {
 		auto* _frame = new srv::FrameLayer(flags);
 		srv::FrameLayer::Register(_frame->self<srv::FrameLayer>());
-		_frame->makeInitialCommit();
+		_frame->init();
 		*frame = _frame;
 
 		return TNOK;
@@ -536,7 +536,7 @@ TNAPI TNERROR tilenet_create_tilelayer( TNLAYER* layer, unsigned int width, unsi
 	try {
 		auto* l = new srv::TileLayer(Rect(width, height), Ratio(xr, yr), flags);
 		srv::TileLayer::Register(l->self<srv::TileLayer>());
-		l->makeInitialCommit();
+		l->init();
 		*layer = l;
 		return TNOK;
 	} AUTO_CATCH(true);

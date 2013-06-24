@@ -64,7 +64,7 @@ private:
 		{
 			auto& llm = LayerLinkManager::Inst();
 
-			llm.unlinkParticipant(participant()->shared_from_this());
+			llm.unregisterParticipant(participant()->shared_from_this());
 		}
 
 		// Send event
@@ -220,6 +220,11 @@ Participant::~Participant()
 void Participant::init()
 {
 	using namespace std::placeholders;
+
+
+	auto& llm = LayerLinkManager::Inst();
+	llm.registerParticipant(shared_from_this());
+
 
 	mPort->setHandler(shared_from_this());
 	mPort->bind(shared_from_this());

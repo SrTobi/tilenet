@@ -19,7 +19,7 @@ public:
 	Layer();
 	~Layer();
 
-	virtual OVERRIDE void destroy() = 0;
+	virtual OVERRIDE void destroy();
 	virtual OVERRIDE shared_ptr<TilenetObject> clone() = 0;
 
 	TNID currentCommitNr() const;
@@ -27,6 +27,7 @@ public:
 	virtual Commit getDelta(TNID nr) = 0;
 
 protected:
+	void init();
 	TNID newCommit();
 private:
 	std::atomic<TNID> mCommit;
