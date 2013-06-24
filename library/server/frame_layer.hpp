@@ -42,7 +42,7 @@ public:
 	OVERRIDE shared_ptr<TilenetObject> clone();
 
 private:
-	Commit update(std::unordered_map<shared_ptr<Layer>, std::pair<PView, short>>&& sublayers);
+	Commit update(std::unordered_map<shared_ptr<Layer>, std::pair<PView, unsigned short>>&& sublayers);
 	Commit makeFullSnapshotCommit(bool asNewCommit);
 
 
@@ -55,7 +55,7 @@ private:
 	std::mutex			mMutex;
 	CommitQueue			mCommits;
 
-	std::unordered_map<shared_ptr<Layer>, std::pair<PView, short>> mSubLayers;
+	std::unordered_map<shared_ptr<Layer>, std::pair<PView, unsigned short>> mSubLayers;
 };
 
 

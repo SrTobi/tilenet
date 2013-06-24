@@ -9,7 +9,7 @@
 namespace srv {
 namespace job {
 	
-UpdateFrameJob::UpdateFrameJob( const shared_ptr<FrameLayer>& frame, std::unordered_map<shared_ptr<Layer>, std::pair<PView, short>>&& sublayers)
+UpdateFrameJob::UpdateFrameJob( const shared_ptr<FrameLayer>& frame, std::unordered_map<shared_ptr<Layer>, std::pair<PView, unsigned short>>&& sublayers)
 	: mFrame(frame)
 	, mSublayers(std::move(sublayers))
 {

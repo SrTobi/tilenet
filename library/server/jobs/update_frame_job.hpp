@@ -23,7 +23,7 @@ namespace job {
 	{
 		typedef proto::curv::PView PView;
 	public:
-		UpdateFrameJob(const shared_ptr<FrameLayer>& frame, std::unordered_map<shared_ptr<Layer>, std::pair<PView, short>>&& sublayers);
+		UpdateFrameJob(const shared_ptr<FrameLayer>& frame, std::unordered_map<shared_ptr<Layer>, std::pair<PView, unsigned short>>&& sublayers);
 		~UpdateFrameJob();
 
 
@@ -31,7 +31,7 @@ namespace job {
 
 	private:
 		shared_ptr<FrameLayer> mFrame;
-		std::unordered_map<shared_ptr<Layer>, std::pair<PView, short>> mSublayers;
+		std::unordered_map<shared_ptr<Layer>, std::pair<PView, unsigned short>> mSublayers;
 	};
 
 

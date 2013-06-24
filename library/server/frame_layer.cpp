@@ -64,7 +64,7 @@ FrameLayer::Commit FrameLayer::makeFullSnapshotCommit( bool asNewCommit )
 		const auto& view = p.second.first;
 
 		// add sublayer to z list
-		tnAssert(z < zorder.size() && zorder[z] == 0);
+		tnAssert(std::size_t(z) < zorder.size() && zorder[z] == 0);
 		zorder[z] = layer->id();
 
 		// add views
@@ -85,9 +85,9 @@ void FrameLayer::update( TNLAYER* layer_list, TNVIEW** view_list, size_t size )
 {
 	const bool update_views = (view_list != nullptr);
 
-	std::unordered_map<shared_ptr<Layer>, std::pair<PView, short>> sublayers;
+	std::unordered_map<shared_ptr<Layer>, std::pair<PView, unsigned short>> sublayers;
 
-	short z = 0;
+	unsigned short z = 0;
 	auto* end = layer_list + size;
 	for(;layer_list < end; ++layer_list, ++view_list, ++z)
 	{
@@ -115,7 +115,7 @@ void FrameLayer::update( TNLAYER* layer_list, TNVIEW** view_list, size_t size )
 	Service::Inst().enqueJob(job, mUpdateStrand);
 }
 
-FrameLayer::Commit FrameLayer::update(std::unordered_map<shared_ptr<Layer>, std::pair<PView, short>>&& sublayers )
+FrameLayer::Commit FrameLayer::update(std::unordered_map<shared_ptr<Layer>, std::pair<PView, unsigned short>>&& sublayers )
 {
 	auto& llm = LayerLinkManager::Inst();
 
