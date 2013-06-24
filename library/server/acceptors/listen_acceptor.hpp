@@ -15,7 +15,7 @@ struct ListenAcceptor
 public:
 	typedef unsigned short port_type;
 
-	ListenAcceptor(port_type port, uint32 maxConnections);
+	ListenAcceptor(const shared_ptr<Server>& server, port_type port, uint32 maxConnections);
 	~ListenAcceptor();
 
 	virtual OVERRIDE void start();

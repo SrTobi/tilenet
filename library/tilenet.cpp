@@ -411,7 +411,7 @@ TNAPI TNERROR tilenet_add_listen_acceptor(TNSERVER server, unsigned short port, 
 	CHECK_OBJ(_server, server, srv::Server);
 
 	try {
-		auto* acceptor = new srv::ListenAcceptor(port, maxc);
+		auto* acceptor = new srv::ListenAcceptor(_server->self<srv::Server>(), port, maxc);
 		acceptor->start();
 
 		return TNOK;

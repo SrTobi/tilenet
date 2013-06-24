@@ -48,6 +48,11 @@ public:
 		tilenet_create_tilelayer(&m_handle, w, h, TNSTDRATIO, TNSTDRATIO, 0);
 	}
 
+	~Layer()
+	{
+		tilenet_destroy(m_handle);
+	}
+
 	const TNTILE& tile(unsigned int x, unsigned int y) const
 	{
 		return tile(y * m_width + x);
@@ -102,6 +107,7 @@ public:
 
 	~Frame()
 	{
+		tilenet_destroy(m_handle);
 	}
 
 
@@ -216,6 +222,10 @@ void do_event(TNEVENT& e)
 			const wchar_t* name = L"";
 			tilenet_keyname(key, &name);
 			std::wcout << "Keydown[" << std::wstring(name) << "]\n";
+
+			delete layer1;
+			delete layer2;
+			delete frame;
 
 
 			TNKEYCODE escape_code = 0;

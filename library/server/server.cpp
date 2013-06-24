@@ -9,13 +9,20 @@ namespace srv {
 	
 
 
-Acceptor::Acceptor()
+Acceptor::Acceptor(const shared_ptr<Server>& server)
+	: mServer(server)
 {
 }
 
 Acceptor::~Acceptor()
 {
 }
+
+const shared_ptr<Server>& Acceptor::server() const
+{
+	return mServer;
+}
+
 
 
 
@@ -25,6 +32,7 @@ Server::Server(const TNSVRCONFIG* init)
 	, mServerInfo(init->info)
 	, mPackageName(init->pkg)
 	, mPackageInterface(init->pkgi)
+	, mNumParticipants(0)
 {
 
 }
@@ -36,7 +44,11 @@ Server::~Server()
 
 void Server::destroy()
 {
-	NOT_IMPLEMENTED();
+	if(mNumParticipants > 0 || mNumAcceptors > 0)
+	{
+		// Do not destroy if participants are connected to the server
+		NOT_IMPLEMENTED();
+	}
 }
 
 shared_ptr<TilenetObject> Server::clone()
@@ -62,8 +74,25 @@ bool Server::fetchNextEvent( TNEVENT* dest, size_t* timeout )
 std::shared_ptr<Participant> Server::addParticipant( const shared_ptr<net::ConnectionPort>& conport )
 {
 	shared_ptr<Participant> participant = Participant::Create(mEvents, conport, self<Server>());
-
+	++mNumParticipants;
 	return participant;
+}
+
+
+void Server::removeParticipant( const std::shared_ptr<Participant>& p )
+{
+	--mNumParticipants;
+}
+
+
+void Server::addAcceptor()
+{
+	++mNumAcceptors;
+}
+
+void Server::removeAcceptor()
+{
+	--mNumAcceptors;
 }
 
 
@@ -92,6 +121,8 @@ const string& Server::packageInterface() const
 {
 	return mPackageInterface;
 }
+
+
 
 
 

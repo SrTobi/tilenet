@@ -61,11 +61,6 @@ private:
 
 	void onDisconnect()
 	{
-		{
-			auto& llm = LayerLinkManager::Inst();
-
-			llm.unregisterParticipant(participant()->shared_from_this());
-		}
 
 		// Send event
 		{
@@ -241,7 +236,6 @@ void Participant::kick( const string& reason )
 
 void Participant::attachLayer( const shared_ptr<Layer>& layer )
 {
-	mAttachedLayer = layer;
 	shared_ptr<job::AttachLayerJob> job = std::make_shared<job::AttachLayerJob>(shared_from_this(), layer);
 	Service::Inst().enqueJob(job);
 }
@@ -256,6 +250,14 @@ void Participant::onReceive( const shared_ptr<net::Message>& msg )
 
 void Participant::onDisconnect()
 {
+	{
+		auto& llm = LayerLinkManager::Inst();
+
+		llm.unregisterParticipant(shared_from_this());
+
+		mServer->removeParticipant(shared_from_this());
+	}
+
 	mHandler->onDisconnect();
 }
 

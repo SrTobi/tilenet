@@ -4,7 +4,8 @@
 
 namespace srv {
 
-srv::ListenAcceptor::ListenAcceptor( port_type port, uint32 maxConnections )
+srv::ListenAcceptor::ListenAcceptor(const shared_ptr<Server>& server, port_type port, uint32 maxConnections )
+	: Acceptor(server)
 {
 	NOT_IMPLEMENTED();
 }

@@ -11,7 +11,7 @@ namespace srv {
 LocalAcceptor* LocalAcceptor::Singleton = 0;
 
 LocalAcceptor::LocalAcceptor(const shared_ptr<Server>& server)
-	: mServer(server)
+	: Acceptor(server)
 {
 	if(Singleton)
 	{
@@ -37,7 +37,7 @@ OVERRIDE void LocalAcceptor::start()
 
 	cl->postConnection(theirPort);
 	cl->start();
-	mServer->addParticipant(mPort);
+	server()->addParticipant(mPort);
 }
 
 OVERRIDE void LocalAcceptor::stop()

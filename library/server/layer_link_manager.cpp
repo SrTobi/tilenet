@@ -160,6 +160,8 @@ void LayerLinkManager::unregisterLayer( const shared_ptr<Layer> layer )
 
 	lNode->unlink();
 	delete lNode;
+
+	mLayerToNodeMapping.erase(it);
 }
 
 

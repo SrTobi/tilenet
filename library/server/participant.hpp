@@ -52,8 +52,6 @@ private:
 	shared_ptr<net::ConnectionPort> mPort;
 	shared_ptr<EventQueue> mEventQueue;
 	shared_ptr<StatusHandler> mHandler;
-
-	shared_ptr<Layer> mAttachedLayer;
 };
 
 
