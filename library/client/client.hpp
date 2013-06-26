@@ -67,14 +67,14 @@ private:
 	std::promise<void> mClosePromise;
 	steady_timer mWindowProcessTimer;
 	float mFrameRate;
-	float mSecurityVoilationSeverity;
+	float mSecurityViolationSeverity;
 	const bool mIsSingleton;
 	Log	log;
 
 	static std::future<void> CloseNotifier;
 	static ClientApp* Singleton;
 
-	static const unsigned int SecurityVoilationKindness = 40;
+	static const unsigned int SecurityViolationKindness = 40;
 };
 
 

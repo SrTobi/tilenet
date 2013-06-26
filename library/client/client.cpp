@@ -127,7 +127,7 @@ void ClientApp::postConnection( const shared_ptr<net::ConnectionPort>& port )
 
 void ClientApp::handleNewConnection( const shared_ptr<net::ConnectionPort>& port )
 {
-	mSecurityVoilationSeverity = SecurityVoilationKindness;
+	mSecurityViolationSeverity = SecurityViolationKindness;
 	mPort = port;
 	mComHandler = std::make_shared<com::ProtocolVersionSelect>(*this, port);
 	mPort->setHandler(shared_from_this());
@@ -235,9 +235,9 @@ void ClientApp::onReceive( const shared_ptr<net::Message>& msg )
 		auto* svf = boost::get_error_info<excp::SVFactor>(e);
 
 		if(svf)
-			mSecurityVoilationSeverity -= *svf;
+			mSecurityViolationSeverity -= *svf;
 
-		if(!svf || mSecurityVoilationSeverity <= 0.0f)
+		if(!svf || mSecurityViolationSeverity <= 0.0f)
 		{
 			// Ok we had too many errors... disconnect!
 			mPort->disconnect();
