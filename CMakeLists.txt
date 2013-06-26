@@ -2,9 +2,8 @@ cmake_minimum_required( VERSION 2.8 )
 
 project(tilenet)
 
-
-#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
-
+################### set module path ###################
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 
 ################### setup options ###################
