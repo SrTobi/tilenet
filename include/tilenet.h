@@ -45,6 +45,7 @@ extern "C" {
 #define TNINTERNALERROR		((TNERROR)2)	//!< Internal error occured. This should not be returned normally. Please submit a ticket!
 #define TNNOTSUPPORTED		((TNERROR)3)	//!< An operation is not supported in the current version or compilation mode or by the used object
 #define TNBUFFERUNDERSIZED	((TNERROR)4)	//!< The given buffer was to short to take all the output
+#define TNALREADYEXISTS		((TNERROR)5)	//!< A resource already existed
 
 #define TNNULLARG			((TNERROR)100)	//!< Indicates, that a given argument was null but must not be null
 #define TNINVARG			((TNERROR)101)	//!< Indicates that an argument has an invalid value
@@ -73,7 +74,8 @@ extern "C" {
 #define TNERRI_INFOCODE						((TNERRINFO)2)	//!< Determinates the info code caused the error (int)
 #define TNERRI_ELEMCOPIED					((TNERRINFO)3)	//!< Indicates the number of elements copied into an undersized buffer (int)
 #define TNERRI_BADID						((TNERRINFO)4)	//!< Determinates the id that caused the error (int)
-#define TNERRI_BADARG						((TNERRINFO)5)	//!< Returns the name of the argument, which caused the error
+#define TNERRI_BADARG						((TNERRINFO)5)	//!< Returns the name of the argument, which caused the error (string)
+#define TNERRI_BADINDEX						((TNERRINFO)6)	//!< Returns the index of the field in an array, which caused the error (int)
 
 //@} (Error information)
 

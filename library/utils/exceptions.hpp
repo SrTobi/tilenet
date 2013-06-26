@@ -21,6 +21,9 @@ typedef boost::error_info<Tag<TNERRI_INFOCODE>, int>		InfoCode;		//!< error info
 typedef boost::error_info<Tag<TNERRI_ELEMCOPIED>, int>		CopiedEements;	//!< Number of elements already copied by an operation
 typedef boost::error_info<Tag<TNERRI_BADID>, int>			BadId;			//!< The id which was bad
 typedef boost::error_info<Tag<TNERRI_BADARG>, string>		BadArgument;	//!< Name of the bad argument
+typedef boost::error_info<Tag<TNERRI_BADINDEX>, int>		BadIndex;		//!< Index of the bad field
+
+
 template<typename ErrorInfo>
 struct get_infocode
 {
@@ -120,8 +123,10 @@ struct SpecificCodeException
 
 typedef SpecificCodeException<TNNOTSUPPORTED> NotSupportedException;
 typedef SpecificCodeException<TNBUFFERUNDERSIZED> BufferUndersizedException;
+typedef SpecificCodeException<TNALREADYEXISTS> AlreadyExistsException;
 
 typedef SpecificCodeException<TNNULLARG> NullArgException;
+typedef SpecificCodeException<TNINVARG> InvalidArgException;
 typedef SpecificCodeException<TNBADID> BadIdException;
 typedef SpecificCodeException<TNBADTYPE> BadTypeException;
 typedef SpecificCodeException<TNEMPTY> EmptyStringException;
@@ -132,8 +137,10 @@ typedef SpecificCodeException<TNWRONGINFOTYPE> WrongInfoTypeException;
 
 DEFAULT_DESCRIPTION(NotSupportedException,		"Operation is not supported by the object!");
 DEFAULT_DESCRIPTION(BufferUndersizedException,	"Buffer is to small to take all informations!");
+DEFAULT_DESCRIPTION(AlreadyExistsException,		"Resource already exists!");
 
 DEFAULT_DESCRIPTION(NullArgException,			"Pointer argument is a nullptr!");
+DEFAULT_DESCRIPTION(InvalidArgException,		"An argument is invalid");
 DEFAULT_DESCRIPTION(BadIdException,				"Used id does not exist!");
 DEFAULT_DESCRIPTION(BadTypeException,			"Object has the wrong type");
 DEFAULT_DESCRIPTION(EmptyStringException,		"String is empty, but not supposed to");

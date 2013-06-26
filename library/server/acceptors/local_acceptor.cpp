@@ -15,7 +15,7 @@ LocalAcceptor::LocalAcceptor(const shared_ptr<Server>& server)
 {
 	if(Singleton)
 	{
-		NOT_IMPLEMENTED();
+		BOOST_THROW_EXCEPTION(excp::AlreadyExistsException() << excp::InfoWhat(L"A local acceptor was already created!"));
 	}
 
 	Singleton = this;

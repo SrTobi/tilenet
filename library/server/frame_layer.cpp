@@ -97,7 +97,7 @@ void FrameLayer::update( TNLAYER* layer_list, TNVIEW** view_list, size_t size )
 		auto* layer = dynamic_cast<Layer*>(*layer_list);
 
 		if(!layer)
-			NOT_IMPLEMENTED();
+			BOOST_THROW_EXCEPTION(excp::InvalidArgException() << excp::BadIndex(z) << excp::InfoWhat(L"Update list for frame contains a non layer/null object!"));
 
 		IMPLEMENTATION_TODO("Check view values")
 
