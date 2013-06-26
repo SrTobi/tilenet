@@ -63,7 +63,7 @@ extern "C" {
 
 ///@} (Error codes)
 	
-/** @name [ERR_INFO_CODES] Error information
+/** @name Error information
  *	@{
  *	
  *	Codes to get informations about the last error. See @ref error_infos for more informations.
