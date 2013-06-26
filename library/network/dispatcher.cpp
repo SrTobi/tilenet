@@ -20,7 +20,7 @@ void Dispatcher::dispatch(const shared_ptr<Message>& msg) const
 	if(it == mHandlers.end())
 	{
 		// No handler found
-		NOT_IMPLEMENTED();
+		BOOST_THROW_EXCEPTION(excp::DispatchException() << excp::BadId(msg->id()) << excp::SVFactor(1.0f) << excp::InfoWhat(L"Failed to dispatch the message!"));
 	}
 
 	it->second(msg);
