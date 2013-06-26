@@ -10,6 +10,7 @@
 extern "C" {
 #endif
 
+/** @file */
 
 #ifdef TILENET_AS_LIB
 #	define TNAPI
@@ -27,12 +28,23 @@ extern "C" {
 
 
 /**** error codes ****/
+
+/**
+ * @defgroup ERRORS Errors
+ * @{
+ */
+
+/** @name Error codes
+ *	@{
+ *
+ *	Codes returned by tilenet functions indicating errors, fails or success. See @ref error_handling for more informations.
+ */
+
 #define TNOK				((TNERROR)0)	//!< Indicates that no error occured
 #define TNUNKNOWN			((TNERROR)1)	//!< Indicates an unknown error
-#define TNINTERNALERROR		((TNERROR)2)	//!< Internal error occured. This should not be returned normaly. Please submit a ticket!
+#define TNINTERNALERROR		((TNERROR)2)	//!< Internal error occured. This should not be returned normally. Please submit a ticket!
 #define TNNOTSUPPORTED		((TNERROR)3)	//!< An operation is not supported in the current version or compilation mode or by the used object
 #define TNBUFFERUNDERSIZED	((TNERROR)4)	//!< The given buffer was to short to take all the output
-#define TNTIMEOUT			((TNERROR)5)	//!< The operation returned because of a timeout (this code will not cause a change in the internal error state!)
 
 #define TNNULLARG			((TNERROR)100)	//!< Indicates, that a given argument was null but must not be null
 #define TNBADID				((TNERROR)101)	//!< Indicates, that a given id does not exist
@@ -42,7 +54,17 @@ extern "C" {
 #define TNNOERROR			((TNERROR)200)	//!< There was no last error 
 #define TNINFONOTSET		((TNERROR)201)	//!< Wanted info was not set for the error
 #define TNWRONGINFOTYPE		((TNERROR)202)	//!< Info has another type
+	
+/**** fail codes ****/
+#define TNTIMEOUT			((TNERROR)-1)	//!< The operation returned because of a timeout (this code will not cause a change in the internal error state!)
 
+///@} (Error codes)
+	
+/** @name [ERR_INFO_CODES] Error information
+ *	@{
+ *	
+ *	Codes to get informations about the last error. See @ref error_infos for more informations.
+ */
 
 /**** error info codes ****/
 #define TNERRI_DESCRIPTION					((TNERRINFO)0)	//!< Gives an descritpion of the error (string)
@@ -51,6 +73,10 @@ extern "C" {
 #define TNERRI_ELEMCOPIED					((TNERRINFO)3)	//!< Indicates the number of elements copied into an undersized buffer (int)
 #define TNERRI_BADID						((TNERRINFO)4)	//!< Determinates the id that caused the error (int)
 #define TNERRI_BADARG						((TNERRINFO)5)	//!< Returns the name of the argument, which caused the error
+
+//@} (Error information)
+
+//@} (ERRORS)
 
 /**** server options ****/
 #define TNSC_CONSOLE	0x0004
@@ -89,7 +115,7 @@ extern "C" {
 #define TNCT_UNDERLINE	0x0004000
 
 /**** definitions ****/
-typedef unsigned int	TNERROR;
+typedef int				TNERROR;
 typedef unsigned int	TNERRINFO;
 typedef unsigned char	TNBOOL;
 typedef uint32_t		TNFLAG;

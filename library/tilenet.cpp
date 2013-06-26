@@ -312,6 +312,8 @@ TNAPI TNERROR tilenet_get_error_int(TNERRINFO infono, int* dest )
  * \return TNNOERROR, if there was no error in this thread
  * \return TNBUFFERUNDERSIZED, if buflen was smaller then the number of codes, which should be copied!
  *
+ * \note This function will not modify the internal (error)state, even if it fails!
+ *
  *
  **/
 TNAPI TNERROR tilenet_get_info_list(TNERRINFO* dest, size_t buflen, size_t* copied )
@@ -340,18 +342,23 @@ TNAPI TNERROR tilenet_get_info_list(TNERRINFO* dest, size_t buflen, size_t* copi
 /**
  * @brief Returns the last error code
  *
- * If no error occurred in this thread TNOK will be the code returned.
- *
- * \return The code of the last error occurred in the current thread.
+ * The value is only related to the last call if the return code of the last call indicates an error!
+ * The internal error code might also not be set, if the documentation says so (e.g TNTIMEOUT, tilenet_get_error_string, ...)
+ * If no error occurred in this thread TNOK will be returned.
+ * The internal error code is thread local; if the internal error is set in one
+ * thread, it will not affect the internal error code of other threads.
+ * 
+ * \return The code of the last error occurred in the current thread or TNOK if no error occurred
  *
  * \note This function can not fail.
  * \note This function will not modify the internal (error)state!
+ * \note A succeeding call to a tilenet function will not set the internal error code to TNOK!
  *
  **/
 TNAPI TNERROR tilenet_get_last_error()
 {
 	SET_SAVE_ERROR(false);
-	if(LastThreadError.get())
+	if(!LastThreadError.get())
 		return TNOK;
 
 	return LastThreadError->errorcode;
@@ -456,7 +463,7 @@ TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen
 			timeout = &zero_time;
 		}
 
-		return TNOK;
+		return *fetched ? TNOK : TNTIMEOUT;
 	} AUTO_CATCH;
 }
 
