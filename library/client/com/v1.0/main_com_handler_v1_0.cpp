@@ -153,7 +153,7 @@ void MainComHandler::handleLayerControl_sendFullLayer(proto::v1_0::to_client::La
 	// Check content size
 	if(msg.layerContent.size() != size.area())
 	{
-		NOT_IMPLEMENTED();
+		BOOST_THROW_EXCEPTION(excp::ProtocolException() << excp::SVFactor(5.0f) << excp::InfoWhat(L"Layercontent is malformed!"));
 	}
 
 	// get deltas waiting to be put

@@ -131,7 +131,7 @@ public:
 
 			if(it >= end)
 			{
-				NOT_IMPLEMENTED(/* msg is not valid! */)
+				BOOST_THROW_EXCEPTION(excp::ProtocolException() << excp::SVFactor(5.0f) << excp::InfoWhat(L"Layercontent[delta] is malformed!"));
 			}
 
 			*it = make_tile(dt.second);
@@ -166,7 +166,8 @@ private:
 			}
 			break;
 		default:
-			NOT_IMPLEMENTED();
+
+			BOOST_THROW_EXCEPTION(excp::ProtocolException() << excp::BadId(ptile.type()) << excp::BadArgument(L"tile::type") << excp::SVFactor(0.5f) << excp::InfoWhat(L"Unknown tile type!"));
 		}
 		return nullptr;
 	}
@@ -367,7 +368,7 @@ void Renderer::updateFrame( const FrameCommit& commit )
 
 		if(!frame)
 		{
-			NOT_IMPLEMENTED();
+			BOOST_THROW_EXCEPTION(excp::ProtocolException() << excp::BadId(commit.layerId) << excp::BadArgument(L"commit.layerId") << excp::SVFactor(5.0f) << excp::InfoWhat(L"Id missmatches expected type[frame]!"));
 		}
 
 	}else{

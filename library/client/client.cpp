@@ -127,6 +127,7 @@ void ClientApp::postConnection( const shared_ptr<net::ConnectionPort>& port )
 
 void ClientApp::handleNewConnection( const shared_ptr<net::ConnectionPort>& port )
 {
+	mSecurityVoilationSeverity = SecurityVoilationKindness;
 	mPort = port;
 	mComHandler = std::make_shared<com::ProtocolVersionSelect>(*this, port);
 	mPort->setHandler(shared_from_this());
@@ -218,11 +219,34 @@ void ClientApp::processWindow()
 void ClientApp::onReceive( const shared_ptr<net::Message>& msg )
 {
 	tnAssert(mComHandler);
-	auto newHandler = mComHandler->handleMessage(msg);
-	if(newHandler)
+
+	try {
+		auto newHandler = mComHandler->handleMessage(msg);
+		if(newHandler)
+		{
+			mComHandler = newHandler;
+			mComInterface = mComHandler->getComInterface();
+		}
+
+	} catch(const excp::ExceptionBase& e)
 	{
-		mComHandler = newHandler;
-		mComInterface = mComHandler->getComInterface();
+		log.error() << lexical_convert<string>(boost::diagnostic_information(e));
+
+		auto* svf = boost::get_error_info<excp::SVFactor>(e);
+
+		if(svf)
+			mSecurityVoilationSeverity -= *svf;
+
+		if(!svf || mSecurityVoilationSeverity <= 0.0f)
+		{
+			// Ok we had too many errors... disconnect!
+			mPort->disconnect();
+		}
+
+
+	} catch(...)
+	{
+		log.error() << lexical_convert<string>(boost::current_exception_diagnostic_information());
 	}
 }
 

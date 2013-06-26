@@ -38,7 +38,7 @@ void ProtocolVersionSelect::handleHandshake( proto::ComInitializing_ProtocolVers
 	if(it == mFactories.end())
 	{
 		// Version was not found!!!
-		NOT_IMPLEMENTED();
+		BOOST_THROW_EXCEPTION(excp::NetworkException() << excp::BadArgument(L"protocol::version") << excp::InfoWhat(L"Protocl version not available"));
 	}
 
 	mSelectedVersion = it->second->create(mApp, mPort);
