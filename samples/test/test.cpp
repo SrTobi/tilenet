@@ -264,13 +264,14 @@ int main()
 	tilenet_add_local_acceptor(0, srv);
 
 
+	size_t timeout = 100;
 	while(true)
 	{
 		TNEVENT events[EVENT_BUF_LENGTH];
 
 		size_t fetched;
-		size_t timeout = 100;
-		tilenet_fetch_events(srv, events, EVENT_BUF_LENGTH, &fetched, &timeout);
+		if(timeout > 0)
+			tilenet_fetch_events(srv, events, EVENT_BUF_LENGTH, &fetched, &timeout);
 
 		if(fetched)
 		{
@@ -279,6 +280,7 @@ int main()
 				do_event(events[i]);
 			}
 		}else{
+			timeout = 100;
 			update_layer();
 		}
 

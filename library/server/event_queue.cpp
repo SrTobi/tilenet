@@ -49,7 +49,8 @@ bool EventQueue::pop(TNEVENT* event, std::chrono::milliseconds& timeout)
 			 return false;
 		 }
 
-		 timeout -= std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time); 
+		 // 0 <= new timeout <= old timeout
+		 timeout -= std::min(timeout, std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time)); 
 	}
 
 
