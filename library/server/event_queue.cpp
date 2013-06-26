@@ -45,6 +45,7 @@ bool EventQueue::pop(TNEVENT* event, std::chrono::milliseconds& timeout)
 	{
 		 if(mSignal.wait_for(lock, timeout) == std::cv_status::timeout)
 		 {
+			 timeout = std::chrono::milliseconds(0);
 			 return false;
 		 }
 
