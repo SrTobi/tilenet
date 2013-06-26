@@ -22,6 +22,7 @@ typedef boost::error_info<Tag<TNERRI_ELEMCOPIED>, int>		CopiedEements;	//!< Numb
 typedef boost::error_info<Tag<TNERRI_BADID>, int>			BadId;			//!< The id which was bad
 typedef boost::error_info<Tag<TNERRI_BADARG>, string>		BadArgument;	//!< Name of the bad argument
 typedef boost::error_info<Tag<TNERRI_BADINDEX>, int>		BadIndex;		//!< Index of the bad field
+typedef boost::error_info<Tag<TNERRI_BADSTRING>, string>		BadString;		//!< Value of the bad string 
 
 
 template<typename ErrorInfo>

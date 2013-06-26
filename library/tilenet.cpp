@@ -616,27 +616,33 @@ TNAPI TNERROR tilenet_keycode( const wchar_t* name, TNKEYCODE* code )
 	SET_SAVE_ERROR(true);
 	CHECK_NULL(name, L"name");
 	CHECK_NULL(code, L"code");
-	if(!proto::curv::KeyMapper::Inst().toCode(name, code))
-	{
-		NOT_IMPLEMENTED();
-	}
-	return TNOK;
+
+	try {
+		if(!proto::curv::KeyMapper::Inst().toCode(name, code))
+		{
+			BOOST_THROW_EXCEPTION(excp::InvalidArgException() << excp::BadString(name) << excp::InfoWhat(L"The name is not related to a keycode."));
+		}
+		return TNOK;
+	}AUTO_CATCH;
 }
 
 TNAPI TNERROR tilenet_keyname( TNKEYCODE code, const wchar_t** name )
 {
 	SET_SAVE_ERROR(true);
 	CHECK_NULL(name, L"name");
-	auto& keyname = proto::curv::KeyMapper::Inst().toName(code);
 
-	if(keyname.empty())
-	{
-		NOT_IMPLEMENTED();
-	}else{
-		*name = keyname.c_str();
-	}
+	try {
+		auto& keyname = proto::curv::KeyMapper::Inst().toName(code);
 
-	return TNOK;
+		if(keyname.empty())
+		{
+			BOOST_THROW_EXCEPTION(excp::InvalidArgException() << excp::BadId(code) << excp::InfoWhat(L"The code is not related to a key."));
+		}else{
+			*name = keyname.c_str();
+		}
+
+		return TNOK;
+	}AUTO_CATCH;
 }
 
 

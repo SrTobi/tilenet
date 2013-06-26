@@ -76,6 +76,7 @@ extern "C" {
 #define TNERRI_BADID						((TNERRINFO)4)	//!< Determinates the id that caused the error (int)
 #define TNERRI_BADARG						((TNERRINFO)5)	//!< Returns the name of the argument, which caused the error (string)
 #define TNERRI_BADINDEX						((TNERRINFO)6)	//!< Returns the index of the field in an array, which caused the error (int)
+#define TNERRI_BADSTRING					((TNERRINFO)7)	//!< Returns the string value, which caused the error (string)
 
 //@} (Error information)
 
