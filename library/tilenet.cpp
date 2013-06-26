@@ -478,8 +478,6 @@ TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen
 TNAPI TNERROR tilenet_exit(size_t* timeout)
 {
 	SET_SAVE_ERROR(true);
-	IMPLEMENTATION_TODO("Implement timout for tilenet_exit");
-
 
 	auto start_time = std::chrono::system_clock::now();
 
