@@ -212,6 +212,8 @@ void copy_string(const string& src, wchar_t* dest, size_t buflen)
 
 	size_t len = std::min(src.size(), buflen-1);
 
+	// use a static assert because if types change we will be f***ed
+	static_assert(std::is_same<string::value_type, wchar_t>::value, "strings do not have the same type!");
 	memcpy(dest, src.c_str(), len * sizeof(wchar_t));
 	dest[len] = L'\0';
 
@@ -271,9 +273,9 @@ void copy_string(const string& src, wchar_t* dest, size_t buflen)
 TNAPI TNERROR tilenet_get_error_string(TNERRINFO infono, wchar_t* dest, size_t buflen )
 {
 	SET_SAVE_ERROR(false);
+	CHECK_IF_ERROR();
 	CHECK_NULL(dest, L"dest");
 	CHECK_NULL(buflen, L"buflen");
-	CHECK_IF_ERROR();
 
 	try {
 		string infoString = get_error<string>(infono);
@@ -300,8 +302,8 @@ TNAPI TNERROR tilenet_get_error_string(TNERRINFO infono, wchar_t* dest, size_t b
 TNAPI TNERROR tilenet_get_error_int(TNERRINFO infono, int* dest )
 {
 	SET_SAVE_ERROR(false);
-	CHECK_NULL(dest, L"dest");
 	CHECK_IF_ERROR();
+	CHECK_NULL(dest, L"dest");
 
 	try {
 		*dest = get_error<int>(infono);
@@ -328,10 +330,10 @@ TNAPI TNERROR tilenet_get_error_int(TNERRINFO infono, int* dest )
 TNAPI TNERROR tilenet_get_info_list(TNERRINFO* dest, size_t buflen, size_t* copied )
 {
 	SET_SAVE_ERROR(false);
+	CHECK_IF_ERROR();
 	CHECK_NULL(dest, L"dest");
 	CHECK_NULL(buflen, L"buflen");
 	CHECK_NULL(copied, L"copied");
-	CHECK_IF_ERROR();
 
 	struct {
 		TNERRINFO operator ()(const std::pair<TNERRINFO, ThreadErrorInfo::value_type>& p)
