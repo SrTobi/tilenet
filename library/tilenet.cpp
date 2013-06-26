@@ -211,30 +211,31 @@ void copy_string(const string& src, wchar_t* dest, size_t buflen)
 }
 
 
-#define AUTO_CATCH(_reset_error)																		\
-	catch(const excp::ExceptionBase& e) {																		\
-		return process_exception(e, _reset_error);														\
-	} catch(const std::exception& e)																			\
+#define AUTO_CATCH																						\
+	catch(const excp::ExceptionBase& e) {																\
+		return process_exception(e, _save_error);														\
+	} catch(const std::exception& e)																	\
 	{ 																									\
-		if(_reset_error)																				\
+		if(_save_error)																					\
 			reset_error(TNINTERNALERROR, lexical_convert<string>(e.what()));							\
 		return TNINTERNALERROR;																			\
-	} catch(const boost::exception& e)																		\
+	} catch(const boost::exception& e)																	\
 	{ 																									\
-		if(_reset_error)																				\
+		if(_save_error)																					\
 			reset_error(TNINTERNALERROR, lexical_convert<string>(boost::diagnostic_information(e)));	\
 		return TNINTERNALERROR;																			\
 	} catch(...)																						\
 	{ 																									\
 		return TNUNKNOWN;																				\
-	}
+}
 
-#define CHECK_RETURN(_cond, _ret)	if(!(_cond)){return (_ret);}
-#define CHECK_NULL(_expr)			CHECK_RETURN(_expr, TNNULLARG)
-#define CHECK_EMPTY(_str)			CHECK_RETURN(*(_str), TNEMPTY)
-#define CHECK_IF_ERROR()			CHECK_RETURN(LastThreadError.get(), TNNOERROR)
-#define CHECK_CAST(_dest, _src, _type)	auto* _dest = dynamic_cast<_type*>(_src); CHECK_RETURN(_dest, TNBADTYPE);
-#define CHECK_OBJ(_dest, _src, _type)	CHECK_CAST(_tmp_##_dest, _src, _type); auto _dest = _tmp_##_dest->self<_type>();
+#define SET_SAVE_ERROR(_v)						const bool _save_error = _v;
+#define CHECK_RETURN(_cond, _ret, _arg)			if(!(_cond)){ if(_save_error) { reset_error(_ret, lexical_convert<string>(ERRCODE_DESCRIPTION(_ret))); add_errinfo(TNERRI_BADARG, _arg); } return (_ret);}
+#define CHECK_NULL(_expr, _arg)					CHECK_RETURN(_expr, TNNULLARG, _arg)
+#define CHECK_EMPTY(_str, _arg)					CHECK_RETURN(*(_str), TNEMPTY, _arg)
+#define CHECK_IF_ERROR()						CHECK_RETURN(LastThreadError.get(), TNNOERROR, L"")
+#define CHECK_CAST(_dest, _src, _type, _arg)	auto* _dest = dynamic_cast<_type*>(_src); CHECK_RETURN(_dest, TNBADTYPE, _arg);
+#define CHECK_OBJ(_dest, _src, _type, _arg)		CHECK_CAST(_tmp_##_dest, _src, _type, _arg); auto _dest = _tmp_##_dest->self<_type>();
 /// @endcond
 
 /**
@@ -260,8 +261,9 @@ void copy_string(const string& src, wchar_t* dest, size_t buflen)
  **/
 TNAPI TNERROR tilenet_get_error_string(TNERRINFO infono, wchar_t* dest, size_t buflen )
 {
-	CHECK_NULL(dest);
-	CHECK_NULL(buflen);
+	SET_SAVE_ERROR(false);
+	CHECK_NULL(dest, L"dest");
+	CHECK_NULL(buflen, L"buflen");
 	CHECK_IF_ERROR();
 
 	try {
@@ -270,7 +272,7 @@ TNAPI TNERROR tilenet_get_error_string(TNERRINFO infono, wchar_t* dest, size_t b
 
 		return TNOK;
 
-	} AUTO_CATCH(false);
+	} AUTO_CATCH;
 }
 
 /**
@@ -288,7 +290,8 @@ TNAPI TNERROR tilenet_get_error_string(TNERRINFO infono, wchar_t* dest, size_t b
  **/
 TNAPI TNERROR tilenet_get_error_int(TNERRINFO infono, int* dest )
 {
-	CHECK_NULL(dest);
+	SET_SAVE_ERROR(false);
+	CHECK_NULL(dest, L"dest");
 	CHECK_IF_ERROR();
 
 	try {
@@ -296,7 +299,7 @@ TNAPI TNERROR tilenet_get_error_int(TNERRINFO infono, int* dest )
 
 		return TNOK;
 
-	} AUTO_CATCH(false);
+	} AUTO_CATCH;
 }
 
 /**
@@ -313,9 +316,10 @@ TNAPI TNERROR tilenet_get_error_int(TNERRINFO infono, int* dest )
  **/
 TNAPI TNERROR tilenet_get_info_list(TNERRINFO* dest, size_t buflen, size_t* copied )
 {
-	CHECK_NULL(dest);
-	CHECK_NULL(buflen);
-	CHECK_NULL(copied);
+	SET_SAVE_ERROR(false);
+	CHECK_NULL(dest, L"dest");
+	CHECK_NULL(buflen, L"buflen");
+	CHECK_NULL(copied, L"copied");
 	CHECK_IF_ERROR();
 
 	struct {
@@ -329,7 +333,7 @@ TNAPI TNERROR tilenet_get_info_list(TNERRINFO* dest, size_t buflen, size_t* copi
 		copy_its(LastThreadError->infos.begin(), LastThreadError->infos.end(), dest, buflen, copied, extractor);
 
 		return TNOK;
-	} AUTO_CATCH(false);
+	} AUTO_CATCH;
 }
 
 
@@ -342,11 +346,11 @@ TNAPI TNERROR tilenet_get_info_list(TNERRINFO* dest, size_t buflen, size_t* copi
  *
  * \note This function can not fail.
  * \note This function will not modify the internal (error)state!
- * \note Trivial argument errors are not stored
  *
  **/
 TNAPI TNERROR tilenet_get_last_error()
 {
+	SET_SAVE_ERROR(false);
 	if(LastThreadError.get())
 		return TNOK;
 
@@ -355,73 +359,79 @@ TNAPI TNERROR tilenet_get_last_error()
 
 TNAPI TNERROR tilenet_destroy(TNOBJ obj)
 {
-	CHECK_NULL(obj);
+	SET_SAVE_ERROR(true);
+	CHECK_NULL(obj, L"obj");
 
 	try {
 		TilenetObject::Destroy(obj);
 		return TNOK;
 
-	} AUTO_CATCH(true);
+	} AUTO_CATCH;
 }
 
 TNAPI TNERROR tilenet_clone(TNOBJ src, TNOBJ* dest)
 {
-	CHECK_NULL(src);
-	CHECK_NULL(dest);
+	SET_SAVE_ERROR(true);
+	CHECK_NULL(src, L"src");
+	CHECK_NULL(dest, L"dest");
 
 	try {
 		*dest = src->clone().get();
 		return TNOK;
 
-	} AUTO_CATCH(true);
+	} AUTO_CATCH;
 }
 
 
 
 TNAPI TNERROR tilenet_set_service_thread_count(size_t count)
 {
+	SET_SAVE_ERROR(true);
 
 	try {
 		srv::Service::Inst().setThreadCount(count);
 		return TNOK;
 
-	} AUTO_CATCH(true);
+	} AUTO_CATCH;
 }
 
 TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init)
 {
-	CHECK_NULL(server);
-	CHECK_NULL(init);
-	CHECK_NULL(init->name);
-	CHECK_NULL(init->info);
-	CHECK_NULL(init->pkg);
-	CHECK_NULL(init->pkgi);
+	SET_SAVE_ERROR(true);
+	CHECK_NULL(server, L"server");
+	CHECK_NULL(init, L"init");
+	CHECK_NULL(init->name, L"init::name");
+	CHECK_NULL(init->info, L"init::info");
+	CHECK_NULL(init->pkg, L"init::pkg");
+	CHECK_NULL(init->pkgi, L"init::pkgi");
 
 	try {
 		*server = new ::srv::Server(init);
 		return TNOK;
 
-	} AUTO_CATCH(true);
+	} AUTO_CATCH;
 }
 
 
 TNAPI TNERROR tilenet_add_listen_acceptor(TNSERVER server, unsigned short port, unsigned int maxc)
 {
-	CHECK_NULL(server);
-	CHECK_OBJ(_server, server, srv::Server);
+	SET_SAVE_ERROR(true);
+	CHECK_NULL(server, L"server");
+	CHECK_OBJ(_server, server, srv::Server, L"server");
 
 	try {
 		auto* acceptor = new srv::ListenAcceptor(_server->self<srv::Server>(), port, maxc);
 		acceptor->start();
 
 		return TNOK;
-	} AUTO_CATCH(true);
+	} AUTO_CATCH;
 }
 
 TNAPI TNERROR tilenet_add_local_acceptor(TNACCEPTOR* acceptor, TNSERVER server)
 {
-	CHECK_NULL(server);
-	CHECK_OBJ(_server, server, srv::Server);
+	SET_SAVE_ERROR(true);
+	CHECK_NULL(server, L"server");
+	CHECK_OBJ(_server, server, srv::Server, L"server");
 
 	try {
 		auto* _acceptor = new srv::LocalAcceptor(_server->self<srv::Server>());
@@ -436,18 +446,19 @@ TNAPI TNERROR tilenet_add_local_acceptor(TNACCEPTOR* acceptor, TNSERVER server)
 		}
 
 		return TNOK;
-	} AUTO_CATCH(true);
+	} AUTO_CATCH;
 }
 
 
 
 TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen, size_t* fetched, size_t* timeout)
 {
-	CHECK_NULL(server);
-	CHECK_NULL(dest);
-	CHECK_NULL(buflen);
-	CHECK_NULL(fetched);
-	CHECK_OBJ(_server, server, srv::Server);
+	SET_SAVE_ERROR(true);
+	CHECK_NULL(server, L"server");
+	CHECK_NULL(dest, L"dest");
+	CHECK_NULL(buflen, L"buflen");
+	CHECK_NULL(fetched, L"fetched");
+	CHECK_OBJ(_server, server, srv::Server, L"server");
 
 	try {
 		size_t zero_time = 0;
@@ -460,12 +471,13 @@ TNAPI TNERROR tilenet_fetch_events(TNSERVER server, TNEVENT* dest, size_t buflen
 		}
 
 		return TNOK;
-	} AUTO_CATCH(true);
+	} AUTO_CATCH;
 }
 
 
 TNAPI TNERROR tilenet_exit(size_t* timeout)
 {
+	SET_SAVE_ERROR(true);
 	IMPLEMENTATION_TODO("Implement timout for tilenet_exit");
 	srv::LocalAcceptor::WaitForClientExit();
 	srv::Service::Shutdown();
@@ -475,6 +487,8 @@ TNAPI TNERROR tilenet_exit(size_t* timeout)
 
 TNAPI TNERROR tilenet_kick( TNPARTICIPANT participant, const wchar_t* reason )
 {
+	SET_SAVE_ERROR(true);
+
 	try {
 		shared_ptr<srv::Participant> p = srv::Participant::Resolve(participant);
 
@@ -484,26 +498,28 @@ TNAPI TNERROR tilenet_kick( TNPARTICIPANT participant, const wchar_t* reason )
 
 		return TNOK;
 
-	} AUTO_CATCH(true);
+	} AUTO_CATCH;
 }
 
 TNAPI TNERROR tilenet_attach_layer( TNPARTICIPANT participant, TNLAYER layer )
 {
-	CHECK_NULL(layer);
-	CHECK_CAST(_layer, layer, srv::Layer);
+	SET_SAVE_ERROR(true);
+	CHECK_NULL(layer, L"layer");
+	CHECK_CAST(_layer, layer, srv::Layer, L"layer");
 
 	try {
 		shared_ptr<srv::Participant> p = srv::Participant::Resolve(participant);
 		
 		p->attachLayer(_layer->self<srv::Layer>());
 		return TNOK;
-	} AUTO_CATCH(true);
+	} AUTO_CATCH;
 }
 
 
 TNAPI TNERROR tilenet_create_frame( TNLAYER* frame, TNFLAG flags )
 {
-	CHECK_NULL(frame);
+	SET_SAVE_ERROR(true);
+	CHECK_NULL(frame, L"frame");
 	try {
 		auto* _frame = new srv::FrameLayer(flags);
 		srv::FrameLayer::Register(_frame->self<srv::FrameLayer>());
@@ -512,26 +528,28 @@ TNAPI TNERROR tilenet_create_frame( TNLAYER* frame, TNFLAG flags )
 
 		return TNOK;
 
-	} AUTO_CATCH(true);
+	} AUTO_CATCH;
 }
 
 TNAPI TNERROR tilenet_update_frame( TNLAYER frame, TNLAYER* layer_list, TNVIEW** view_list, size_t size)
 {
-	CHECK_NULL(frame);
-	CHECK_CAST(_frame, frame, srv::FrameLayer);
+	SET_SAVE_ERROR(true);
+	CHECK_NULL(frame, L"frame");
+	CHECK_CAST(_frame, frame, srv::FrameLayer, L"frame");
 
 	try {
 		_frame->update(layer_list, view_list, size);
 		return TNOK;
 
-	} AUTO_CATCH(true);
+	} AUTO_CATCH;
 }
 
 
 
 TNAPI TNERROR tilenet_create_tilelayer( TNLAYER* layer, unsigned int width, unsigned int height, TNRATIO xr, TNRATIO yr, TNFLAG flags )
 {
-	CHECK_NULL(layer);
+	SET_SAVE_ERROR(true);
+	CHECK_NULL(layer, L"layer");
 
 	try {
 		auto* l = new srv::TileLayer(Rect(width, height), Ratio(xr, yr), flags);
@@ -539,37 +557,40 @@ TNAPI TNERROR tilenet_create_tilelayer( TNLAYER* layer, unsigned int width, unsi
 		l->init();
 		*layer = l;
 		return TNOK;
-	} AUTO_CATCH(true);
+	} AUTO_CATCH;
 }
 
 TNAPI TNERROR tilenet_update_tilelayer(TNLAYER layer, const TNTILE* tiles, const TNBOOL* toupdate)
 {
-	CHECK_NULL(tiles);
-	CHECK_CAST(_layer, layer, srv::TileLayer);
+	SET_SAVE_ERROR(true);
+	CHECK_NULL(tiles, L"tiles");
+	CHECK_CAST(_layer, layer, srv::TileLayer, L"layer");
 	
 	try {
 		_layer->update(tiles, toupdate);
 
 		return TNOK;
-	} AUTO_CATCH(true);
+	} AUTO_CATCH;
 }
 
 
 TNAPI TNERROR tilenet_stdtile(const wchar_t* name, TNID* id )
 {
-	CHECK_NULL(name);
-	CHECK_NULL(id);
+	SET_SAVE_ERROR(true);
+	CHECK_NULL(name, L"name");
+	CHECK_NULL(id, L"id");
 
 	try {
 		*id = srv::StdTileset::Inst().getTileId(name);
 		return TNOK;
-	} AUTO_CATCH(true);
+	} AUTO_CATCH;
 }
 
 TNAPI TNERROR tilenet_keycode( const wchar_t* name, TNKEYCODE* code )
 {
-	CHECK_NULL(name);
-	CHECK_NULL(code);
+	SET_SAVE_ERROR(true);
+	CHECK_NULL(name, L"name");
+	CHECK_NULL(code, L"code");
 	if(!proto::curv::KeyMapper::Inst().toCode(name, code))
 	{
 		NOT_IMPLEMENTED();
@@ -579,7 +600,8 @@ TNAPI TNERROR tilenet_keycode( const wchar_t* name, TNKEYCODE* code )
 
 TNAPI TNERROR tilenet_keyname( TNKEYCODE code, const wchar_t** name )
 {
-	CHECK_NULL(name);
+	SET_SAVE_ERROR(true);
+	CHECK_NULL(name, L"name");
 	auto& keyname = proto::curv::KeyMapper::Inst().toName(code);
 
 	if(keyname.empty())

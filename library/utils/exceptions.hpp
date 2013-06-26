@@ -19,8 +19,8 @@ struct Tag {};
 typedef boost::error_info<Tag<TNERRI_DESCRIPTION>, string>	InfoWhat;		//!< Short describtion of the exception
 typedef boost::error_info<Tag<TNERRI_INFOCODE>, int>		InfoCode;		//!< error info code that raised the exception
 typedef boost::error_info<Tag<TNERRI_ELEMCOPIED>, int>		CopiedEements;	//!< Number of elements already copied by an operation
-typedef boost::error_info<Tag<TNERRI_BADID>, int>			BadId;
-
+typedef boost::error_info<Tag<TNERRI_BADID>, int>			BadId;			//!< The id which was bad
+typedef boost::error_info<Tag<TNERRI_BADARG>, string>		BadArgument;	//!< Name of the bad argument
 template<typename ErrorInfo>
 struct get_infocode
 {
@@ -40,7 +40,9 @@ struct DefaultExceptionDescription
 	static_assert(sizeof(Exception) != sizeof(Exception), "'Exception' has no default description!");
 };
 
-#define DEFAULT_DESCRIPTION(_excp, _desc) template<> struct DefaultExceptionDescription<_excp>{ static const char* Description() { return _desc; } };
+#define DEFAULT_DESCRIPTION(_excp, _desc)	template<> struct DefaultExceptionDescription<_excp>{ static const char* Description() { return _desc; } };
+#define ERRCODE_DESCRIPTION(_code)			excp::DefaultExceptionDescription<excp::SpecificCodeException<_code>>::Description()
+
 
 //! Base of most exceptions thrown by alacarte
 struct ExceptionBase : public boost::exception, std::exception
@@ -116,20 +118,29 @@ struct SpecificCodeException
 
 };
 
+typedef SpecificCodeException<TNNOTSUPPORTED> NotSupportedException;
+typedef SpecificCodeException<TNBUFFERUNDERSIZED> BufferUndersizedException;
 
+typedef SpecificCodeException<TNNULLARG> NullArgException;
+typedef SpecificCodeException<TNBADID> BadIdException;
+typedef SpecificCodeException<TNBADTYPE> BadTypeException;
+typedef SpecificCodeException<TNEMPTY> EmptyStringException;
+
+typedef SpecificCodeException<TNNOERROR> NoErrorException;
 typedef SpecificCodeException<TNINFONOTSET> InfoNotSetException;
 typedef SpecificCodeException<TNWRONGINFOTYPE> WrongInfoTypeException;
-typedef SpecificCodeException<TNBUFFERUNDERSIZED> BufferUndersizedException;
-typedef SpecificCodeException<TNNOERROR> NoErrorException;
-typedef SpecificCodeException<TNBADID> BadIdException;
-typedef SpecificCodeException<TNNOTSUPPORTED> NotSupportedException;
 
+DEFAULT_DESCRIPTION(NotSupportedException,		"Operation is not supported by the object!");
+DEFAULT_DESCRIPTION(BufferUndersizedException,	"Buffer is to small to take all informations!");
+
+DEFAULT_DESCRIPTION(NullArgException,			"Pointer argument is a nullptr!");
+DEFAULT_DESCRIPTION(BadIdException,				"Used id does not exist!");
+DEFAULT_DESCRIPTION(BadTypeException,			"Object has the wrong type");
+DEFAULT_DESCRIPTION(EmptyStringException,		"String is empty, but not supposed to");
+
+DEFAULT_DESCRIPTION(NoErrorException,			"There is no last error!");
 DEFAULT_DESCRIPTION(InfoNotSetException,		"Desired information is not available for the last error!");
 DEFAULT_DESCRIPTION(WrongInfoTypeException,		"Desired information has another type!");
-DEFAULT_DESCRIPTION(BufferUndersizedException,	"Buffer is to small to take all informations!");
-DEFAULT_DESCRIPTION(NoErrorException,			"There is no last error!");
-DEFAULT_DESCRIPTION(BadIdException,				"Used id does not exist!");
-DEFAULT_DESCRIPTION(NotSupportedException,		"Operation is not supported by the object!");
 
 
 /**

@@ -49,6 +49,7 @@ extern "C" {
 #define TNERRI_INFOCODE						((TNERRINFO)2)	//!< Determinates the info code caused the error (int)
 #define TNERRI_ELEMCOPIED					((TNERRINFO)3)	//!< Indicates the number of elements copied into an undersized buffer (int)
 #define TNERRI_BADID						((TNERRINFO)4)	//!< Determinates the id that caused the error (int)
+#define TNERRI_BADARG						((TNERRINFO)5)	//!< Returns the name of the argument, which caused the error
 
 /**** server options ****/
 #define TNSC_CONSOLE	0x0004
