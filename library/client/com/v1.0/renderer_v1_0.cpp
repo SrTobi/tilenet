@@ -212,8 +212,8 @@ public:
 				Bounds inner = Bounds(	Vector(subview.inner_pos()) * subview.inner_posratio(),
 										Vector(subview.inner_size()) * subview.inner_sizeratio());
 
-
-				layer->render(RenderView(view, outter, inner, to_sf_color(subview.color())));
+				RenderView newView(view, outter, inner, to_sf_color(subview.color()));
+				layer->render(newView);
 			}
 		}
 	}
@@ -299,7 +299,8 @@ void Renderer::render(sf::RenderTarget& target)
 			
 			Vector size = topLayer->getBounds();
 
-			topLayer->render(RenderView(view, Bounds::center(view.bounds(), size)));
+			RenderView newView(view, Bounds::center(view.bounds(), size));
+			topLayer->render(newView);
 		}
 	}else{
 		if(mPackManager->isSearching())
