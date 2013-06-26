@@ -74,7 +74,7 @@ void ClientApp::init()
 
 	if(!mWindow.isOpen())
 	{
-		NOT_IMPLEMENTED();
+		stop();
 	}
 }
 
