@@ -223,15 +223,16 @@ void do_event(TNEVENT& e)
 			tilenet_keyname(key, &name);
 			std::wcout << "Keydown[" << std::wstring(name) << "]\n";
 
-			delete layer1;
-			delete layer2;
-			delete frame;
-
 
 			TNKEYCODE escape_code = 0;
 			tilenet_keycode(L"esc", &escape_code);
 			if(escape_code == key)
 			{
+				delete layer1;
+				delete layer2;
+				delete frame;
+
+
 				tilenet_kick(e.participant, L"I don't like you!!!");
 				tilenet_exit(0);
 				exit(0);
