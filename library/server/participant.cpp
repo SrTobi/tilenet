@@ -160,8 +160,7 @@ private:
 
 	void onDisconnect()
 	{
-		// Hmm... maybe he has changed his mind..
-		//NOT_IMPLEMENTED();
+		// Hmm... maybe he has changed his mind...
 		/* Do nothing */
 	}
 
@@ -170,7 +169,7 @@ private:
 		if(!confirmation.accept_handshake)
 		{
 			// Ok... they don't want to be our participant
-			NOT_IMPLEMENTED();
+			participant()->kick(L"No handshake accept!");
 		}
 
 		// accept the participant
