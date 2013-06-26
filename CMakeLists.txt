@@ -70,6 +70,7 @@ set(rxml_includes				"${PROJECT_SOURCE_DIR}/extras/rxml/include")
 set(rapidxml_includes			"${PROJECT_SOURCE_DIR}/extras/rapidxml-1.13")
 set(tilenet_library_pch_file	"${PROJECT_SOURCE_DIR}/library/includes.hpp")
 set(tilenet_include_file		"${PROJECT_SOURCE_DIR}/include/tilenet.h")
+set(tilenet_debug_include_file	"${PROJECT_SOURCE_DIR}/include/tilenet_debug.h")
 
 
 ################### setup include directories ###################

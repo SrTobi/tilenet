@@ -7,6 +7,9 @@
 #include <boost/variant/variant.hpp>
 
 #include "tilenet.h"
+#include "tilenet_debug.h"
+
+
 #include "settings.hpp"
 
 #include "server/server.hpp"
@@ -68,6 +71,12 @@ void add_errinfo(TNERRINFO info, const string& str)
 	tnAssert(LastThreadError->infos.count(info) == 0);
 	LastThreadError->infos.insert(std::make_pair(info, str));
 }
+
+void reset_error()
+{
+	LastThreadError.reset();
+}
+
 
 void reset_error(TNERROR code, const string& description)
 {
@@ -632,14 +641,22 @@ TNAPI TNERROR tilenet_keyname( TNKEYCODE code, const wchar_t** name )
 
 
 
+/////////////////////////////////////////////////////////////////////////////////////// debugging functions ///////////////////////////////////////////////////////////////////////////////////////
 
 
 
 
+TNAPI TNERROR dtilenet_reset_error_state( TNERROR code )
+{
+	if(code == TNOK)
+		reset_error();
+	else if(code > TNOK)
+		reset_error(code, L"no info[set by dtilenet_reset_error_state]");
+	else
+		return TNINVARG;
 
-
-
-
+	return TNOK;
+}
 
 
 

@@ -47,7 +47,8 @@ extern "C" {
 #define TNBUFFERUNDERSIZED	((TNERROR)4)	//!< The given buffer was to short to take all the output
 
 #define TNNULLARG			((TNERROR)100)	//!< Indicates, that a given argument was null but must not be null
-#define TNBADID				((TNERROR)101)	//!< Indicates, that a given id does not exist
+#define TNINVARG			((TNERROR)101)	//!< Indicates that an argument has an invalid value
+#define TNBADID				((TNERROR)102)	//!< Indicates, that a given id does not exist
 #define TNBADTYPE			((TNERROR)103)	//!< The object had the wrong type
 #define TNEMPTY				((TNERROR)104)	//!< An argument was empty (e.g. a string)
 
