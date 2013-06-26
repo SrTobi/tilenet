@@ -104,7 +104,7 @@ struct CodeException
 
 template<TNERROR ErrCode>
 struct SpecificCodeException
-	: public ExceptionBase
+	: public CodeException
 {
 	virtual OVERRIDE TNERROR getErrorCode() const
 	{
