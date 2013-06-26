@@ -20,7 +20,8 @@
 #define TILENET_PARAM_TEST_CASE(_name, ...)	\
 			void _name (__VA_ARGS__)
 
-
+#define TILENET_AUTO_TEST_CASE(_name) \
+			BOOST_AUTO_TEST_CASE(_name)
 
 #define TILENET_PARAM_TEST(_func, ...)	\
 			TILENET_PARAM_TEST_NAMED(_func, BOOST_JOIN(_func, BOOST_JOIN(_in_, __LINE__)), __VA_ARGS__)
