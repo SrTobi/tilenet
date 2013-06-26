@@ -44,6 +44,7 @@ public:
 	boost::asio::io_service& service();
 
 	static void WaitForExit();
+	static bool WaitForExit(std::chrono::milliseconds& timeout);
 private:
 	void init();
 	void run();

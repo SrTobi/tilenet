@@ -32,6 +32,7 @@ extern "C" {
 #define TNINTERNALERROR		((TNERROR)2)	//!< Internal error occured. This should not be returned normaly. Please submit a ticket!
 #define TNNOTSUPPORTED		((TNERROR)3)	//!< An operation is not supported in the current version or compilation mode or by the used object
 #define TNBUFFERUNDERSIZED	((TNERROR)4)	//!< The given buffer was to short to take all the output
+#define TNTIMEOUT			((TNERROR)5)	//!< The operation returned because of a timeout (this code will not cause a change in the internal error state!)
 
 #define TNNULLARG			((TNERROR)100)	//!< Indicates, that a given argument was null but must not be null
 #define TNBADID				((TNERROR)101)	//!< Indicates, that a given id does not exist
@@ -235,7 +236,7 @@ TNAPI TNERROR tilenet_destroy(TNOBJ obj);
 TNAPI TNERROR tilenet_clone(TNOBJ src, TNOBJ* dest);
 
 /**** service managment ****/
-TNAPI TNERROR tilenet_fetch_service(size_t timeout);
+TNAPI TNERROR tilenet_fetch_service(size_t* timeout);
 TNAPI TNERROR tilenet_set_service_thread_count(size_t count);
 
 /**** server management ****/

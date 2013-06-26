@@ -230,6 +230,27 @@ void ClientApp::WaitForExit()
 }
 
 
+bool ClientApp::WaitForExit(std::chrono::milliseconds& timeout)
+{
+	if(Singleton)
+	{		
+		auto start_time = std::chrono::system_clock::now();
+		bool exited = (CloseNotifier.wait_for(timeout) != std::future_status::timeout) && !Singleton;
+
+		if(exited)
+		{
+			timeout -= std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time); 
+		}else{
+			timeout = std::chrono::milliseconds(0);
+		}
+
+
+		return exited;
+	}
+	return true;
+}
+
+
 
 
 

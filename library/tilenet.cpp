@@ -479,8 +479,31 @@ TNAPI TNERROR tilenet_exit(size_t* timeout)
 {
 	SET_SAVE_ERROR(true);
 	IMPLEMENTATION_TODO("Implement timout for tilenet_exit");
-	srv::LocalAcceptor::WaitForClientExit();
+
+
+	auto start_time = std::chrono::system_clock::now();
+
+	if(timeout)
+	{
+		std::chrono::milliseconds timeout_in_milliseconds(*timeout);
+		if(srv::LocalAcceptor::WaitForClientExit(timeout_in_milliseconds))
+		{
+			*timeout = 0;
+			return TNTIMEOUT;
+		}
+	}else{
+		srv::LocalAcceptor::WaitForExit();
+	}
+
+
 	srv::Service::Shutdown();
+
+	if(timeout)
+	{
+		auto op_duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time);
+		*timeout -= std::min(*timeout, static_cast<std::size_t>(op_duration.count()));
+	}
+	
 	return TNOK;
 }
 

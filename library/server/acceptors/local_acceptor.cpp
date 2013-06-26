@@ -63,9 +63,16 @@ void LocalAcceptor::uncouple()
 	mClient.reset();
 }
 
-void LocalAcceptor::WaitForClientExit()
+
+void LocalAcceptor::WaitForExit()
 {
 	client::ClientApp::WaitForExit();
+}
+
+
+bool LocalAcceptor::WaitForClientExit(std::chrono::milliseconds& timeout)
+{
+	return client::ClientApp::WaitForExit(timeout);
 }
 
 

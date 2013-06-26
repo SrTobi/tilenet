@@ -2,6 +2,7 @@
 #ifndef _LOCAL_ACCEPTOR_HPP
 #define _LOCAL_ACCEPTOR_HPP
 
+#include <chrono>
 #include "settings.hpp"
 #include "server/server.hpp"
 #include "network/connection_port.hpp"
@@ -29,7 +30,8 @@ public:
 	virtual OVERRIDE void destroy();
 	virtual OVERRIDE shared_ptr<TilenetObject> clone();
 
-	static void WaitForClientExit();
+	static void WaitForExit();
+	static bool WaitForClientExit(std::chrono::milliseconds& timeout);
 private:
 	static LocalAcceptor* Singleton;
 
