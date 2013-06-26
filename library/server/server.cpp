@@ -44,10 +44,15 @@ Server::~Server()
 
 void Server::destroy()
 {
-	if(mNumParticipants > 0 || mNumAcceptors > 0)
+	// Do not destroy if participants are connected to the server
+	if(mNumParticipants > 0)
 	{
-		// Do not destroy if participants are connected to the server
-		NOT_IMPLEMENTED();
+		BOOST_THROW_EXCEPTION(excp::NotReadyException() << excp::InfoWhat(L"Participants are still connected to the server!"));
+	}
+
+	if(mNumAcceptors > 0)
+	{
+		BOOST_THROW_EXCEPTION(excp::NotReadyException() << excp::InfoWhat(L"Acceptors are still related to the server!"));
 	}
 }
 

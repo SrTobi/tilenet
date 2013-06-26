@@ -149,6 +149,7 @@ struct SpecificCodeException
 typedef SpecificCodeException<TNNOTSUPPORTED> NotSupportedException;
 typedef SpecificCodeException<TNBUFFERUNDERSIZED> BufferUndersizedException;
 typedef SpecificCodeException<TNALREADYEXISTS> AlreadyExistsException;
+typedef SpecificCodeException<TNNOTREADY> NotReadyException;
 
 typedef SpecificCodeException<TNNULLARG> NullArgException;
 typedef SpecificCodeException<TNINVARG> InvalidArgException;
@@ -163,6 +164,7 @@ typedef SpecificCodeException<TNWRONGINFOTYPE> WrongInfoTypeException;
 DEFAULT_DESCRIPTION(NotSupportedException,		"Operation is not supported by the object!");
 DEFAULT_DESCRIPTION(BufferUndersizedException,	"Buffer is to small to take all informations!");
 DEFAULT_DESCRIPTION(AlreadyExistsException,		"Resource already exists!");
+DEFAULT_DESCRIPTION(NotReadyException,			"Resource is not ready for the operation!");
 
 DEFAULT_DESCRIPTION(NullArgException,			"Pointer argument is a nullptr!");
 DEFAULT_DESCRIPTION(InvalidArgException,		"An argument is invalid");

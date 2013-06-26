@@ -46,6 +46,7 @@ extern "C" {
 #define TNNOTSUPPORTED		((TNERROR)3)	//!< An operation is not supported in the current version or compilation mode or by the used object
 #define TNBUFFERUNDERSIZED	((TNERROR)4)	//!< The given buffer was to short to take all the output
 #define TNALREADYEXISTS		((TNERROR)5)	//!< A resource already existed
+#define TNNOTREADY			((TNERROR)6)	//!< An operation can not be executed because preconditions are not met
 
 #define TNNULLARG			((TNERROR)100)	//!< Indicates, that a given argument was null but must not be null
 #define TNINVARG			((TNERROR)101)	//!< Indicates that an argument has an invalid value
