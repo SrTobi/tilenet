@@ -52,6 +52,10 @@ private:
 	shared_ptr<net::ConnectionPort> mPort;
 	shared_ptr<EventQueue> mEventQueue;
 	shared_ptr<StatusHandler> mHandler;
+
+	float mSecurityViolationSeverity;
+
+	static const unsigned int SecurityViolationKindness = 50;
 };
 
 

@@ -75,18 +75,20 @@ private:
 
 	void handleRequestStdTileName(proto::curv::to_srv::Request_StdTileName& req)
 	{
+		try {
+			const string& tilename = StdTileset::Inst().getTileName(req.tileId);
 
-		// Todo: try {} catch
-		const string& tilename = StdTileset::Inst().getTileName(req.tileId);
+			{
+				proto::curv::to_client::Answer_StdTileNameRequest answ;
 
+				answ.tileId = req.tileId;
+				answ.tileName = tilename;
 
+				port()->send(net::make_message(answ));
+			}
+		}catch(const excp::BadIdException& e)
 		{
-			proto::curv::to_client::Answer_StdTileNameRequest answ;
-
-			answ.tileId = req.tileId;
-			answ.tileName = tilename;
-
-			port()->send(net::make_message(answ));
+			BOOST_RETHROW(e << excp::SVFactor(4.0f));
 		}
 	}
 
@@ -105,7 +107,7 @@ private:
 			event.type = TNEV_KEYUP;
 			break;
 		default:
-			NOT_IMPLEMENTED();
+			BOOST_THROW_EXCEPTION(excp::ProtocolException() << excp::BadArgument(L"keyevent.type") << excp::SVFactor(0.3) << excp::InfoWhat(L"Unknown key action!"));
 		}
 
 		equeue()->push(event);
@@ -203,6 +205,7 @@ Participant::Participant( const shared_ptr<EventQueue>& eventQueue, const shared
 	: mPort(port)
 	, mEventQueue(eventQueue)
 	, mServer(server)
+	, mSecurityViolationSeverity(SecurityViolationKindness)
 {
 }
 
@@ -245,10 +248,32 @@ void Participant::attachLayer( const shared_ptr<Layer>& layer )
 
 void Participant::onReceive( const shared_ptr<net::Message>& msg )
 {
-	shared_ptr<StatusHandler> handler = mHandler->onMessage(msg);
+	Log log(L"participant");
+	try {
+		shared_ptr<StatusHandler> handler = mHandler->onMessage(msg);
 
-	if(handler)
-		mHandler = handler;
+		if(handler)
+			mHandler = handler;
+	} catch(const excp::ExceptionBase& e)
+	{
+		log.error() << lexical_convert<string>(boost::diagnostic_information(e));
+
+		auto* svf = boost::get_error_info<excp::SVFactor>(e);
+
+		if(svf)
+			mSecurityViolationSeverity -= *svf;
+
+		if(!svf || mSecurityViolationSeverity <= 0.0f)
+		{
+			// Ok we had too many errors... disconnect!
+			kick(L"Too many security violations!");
+		}
+
+
+	} catch(...)
+	{
+		log.error() << lexical_convert<string>(boost::current_exception_diagnostic_information());
+	}
 }
 
 void Participant::onDisconnect()
