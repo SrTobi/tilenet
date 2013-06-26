@@ -20,22 +20,23 @@ ClientApp* ClientApp::Singleton;
 
 
 
-ClientApp::ClientApp()
+ClientApp::ClientApp(bool asSingleton)
 	: log(L"client")
 	, mFrameRate(30.0)
 	, mWindowProcessTimer(mService)
 	, mMessenger(std::make_shared<Messenger>(10, std::chrono::milliseconds(2000), 13))
 	, mPackManager(std::make_shared<PackageManager>())
+	, mIsSingleton(asSingleton)
 {
-	if(Singleton)
+	if(asSingleton)
 	{
-		// Client already exists
-		NOT_IMPLEMENTED();
+		tnAssert(!Singleton);
+
+		// Set future first, because Singleton is checked in WaitForExit first!
+		CloseNotifier = mClosePromise.get_future();
+		Singleton = this;
 	}
 
-	// Set future first, because Singleton is checked in WaitForExit first!
-	CloseNotifier = mClosePromise.get_future();
-	Singleton = this;
 
 	// Add std paths to the package manager (TODO: load it)
 	mPackManager->addPackagePath(".");
@@ -43,8 +44,11 @@ ClientApp::ClientApp()
 
 ClientApp::~ClientApp()
 {
-	Singleton = nullptr;
-	mClosePromise.set_value();
+	if(mIsSingleton)
+	{
+		Singleton = nullptr;
+		mClosePromise.set_value();
+	}
 }
 
 void ClientApp::start()

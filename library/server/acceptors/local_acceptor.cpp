@@ -28,7 +28,7 @@ LocalAcceptor::~LocalAcceptor()
 
 OVERRIDE void LocalAcceptor::start()
 {
-	shared_ptr<client::ClientApp> cl = std::make_shared<client::ClientApp>();
+	shared_ptr<client::ClientApp> cl = std::make_shared<client::ClientApp>(true);
 	shared_ptr<net::ConnectionPort> theirPort;
 
 	mClient = cl;

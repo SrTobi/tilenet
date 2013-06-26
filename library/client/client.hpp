@@ -31,7 +31,7 @@ class ClientApp
 {
 	typedef boost::asio::basic_waitable_timer<std::chrono::steady_clock> steady_timer;
 public:
-	ClientApp();
+	ClientApp(bool asSingleton);
 	~ClientApp();
 
 	void start();
@@ -67,6 +67,7 @@ private:
 	std::promise<void> mClosePromise;
 	steady_timer mWindowProcessTimer;
 	float mFrameRate;
+	const bool mIsSingleton;
 	Log	log;
 
 	static std::future<void> CloseNotifier;
