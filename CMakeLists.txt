@@ -24,7 +24,7 @@ option(Tilenet_COPY_MEDIA					"Copies the media files for samples and tests into
 
 ################### setup pre compiled header macro ###################
 if(Tilenet_USE_PRE_COMPILED_HEADER)
-	add_subdirectory("extras/pch")
+	include("extras/cmake/pch_for_cmake.txt")
 	add_definitions(-DTILENET_USE_PRECOMPILED_HEADER)
 else(Tilenet_USE_PRE_COMPILED_HEADER)
 
