@@ -45,7 +45,7 @@ const string& StdTileset::getTileName( TNID id ) const
 	
 	if(id >= mTileIdToNameMapping.size() || mTileIdToNameMapping.at(id).empty())
 	{
-		NOT_IMPLEMENTED();
+		BOOST_THROW_EXCEPTION(excp::BadIdException() << excp::BadId(id) << excp::InfoWhat(L"Id is not related to any registered tile!"));
 	}
 
 	return mTileIdToNameMapping.at(id);
