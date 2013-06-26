@@ -26,7 +26,7 @@ if(ec == TNOK)
 }
 ~~~~~~~~~~~~~~~~~~~~~~
 
-For further error codes see @ref ERRORS
+For further error codes see @ref ERRORS.
 
 Error information			{#error_infos}
 =================
@@ -42,14 +42,7 @@ This error state is thread local, so each thread has its own state. Some functio
 You can use these functions to get more informations about the error.
 Note that the internal error state might be reseted by a call to another tilenet function (other than the above-mentioned).
 
-~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-
-
-
-
-~~~~~~~~~~~~~~~~~~~~~~
-
-For more information codes see @ref ERRORS
+For more information codes see @ref ERRORS.
 
 tilenet_get_last_error
 ======================
