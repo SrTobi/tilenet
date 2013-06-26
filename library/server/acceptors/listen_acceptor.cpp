@@ -30,10 +30,5 @@ OVERRIDE void srv::ListenAcceptor::destroy()
 	NOT_IMPLEMENTED();
 }
 
-OVERRIDE shared_ptr<TilenetObject> srv::ListenAcceptor::clone()
-{
-	NOT_IMPLEMENTED();
-}
-
 
 }

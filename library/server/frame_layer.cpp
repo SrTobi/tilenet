@@ -42,11 +42,6 @@ OVERRIDE void FrameLayer::destroy()
 	Layer::destroy();
 }
 
-OVERRIDE shared_ptr<TilenetObject> FrameLayer::clone()
-{
-	NOT_IMPLEMENTED();
-}
-
 FrameLayer::Commit FrameLayer::makeFullSnapshotCommit( bool asNewCommit )
 {
 	std::lock_guard<std::mutex> guard(mMutex);

@@ -369,20 +369,6 @@ TNAPI TNERROR tilenet_destroy(TNOBJ obj)
 	} AUTO_CATCH;
 }
 
-TNAPI TNERROR tilenet_clone(TNOBJ src, TNOBJ* dest)
-{
-	SET_SAVE_ERROR(true);
-	CHECK_NULL(src, L"src");
-	CHECK_NULL(dest, L"dest");
-
-	try {
-		*dest = src->clone().get();
-		return TNOK;
-
-	} AUTO_CATCH;
-}
-
-
 
 TNAPI TNERROR tilenet_set_service_thread_count(size_t count)
 {

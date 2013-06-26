@@ -39,7 +39,6 @@ public:
 	const Rect&	size() const;
 
 	OVERRIDE void destroy();
-	OVERRIDE shared_ptr<TilenetObject> clone();
 
 private:
 	Commit update(const std::vector<net::PTile>& tiles, const std::vector<bool>& toupdate);

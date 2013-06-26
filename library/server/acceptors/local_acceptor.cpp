@@ -53,10 +53,6 @@ OVERRIDE void LocalAcceptor::destroy()
 		cl->stop(true);
 }
 
-OVERRIDE shared_ptr<TilenetObject> LocalAcceptor::clone()
-{
-	BOOST_THROW_EXCEPTION(excp::NotSupportedException() << excp::InfoWhat(L"Local acceptor can not be cloned!"));
-}
 
 void LocalAcceptor::uncouple()
 {

@@ -30,7 +30,6 @@ public:
 	virtual ~Acceptor();
 
 	virtual OVERRIDE void destroy() = 0;
-	virtual OVERRIDE shared_ptr<TilenetObject> clone() = 0;
 
 	virtual void start() = 0;
 	virtual void stop() = 0;
@@ -48,7 +47,6 @@ public:
 	~Server();
 
 	virtual OVERRIDE void destroy();
-	virtual OVERRIDE shared_ptr<TilenetObject> clone();
 
 	std::shared_ptr<Participant> addParticipant(const shared_ptr<net::ConnectionPort>& conport);
 	void removeParticipant(const std::shared_ptr<Participant>& p);

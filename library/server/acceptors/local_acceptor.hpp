@@ -28,7 +28,6 @@ public:
 	virtual OVERRIDE void start();
 	virtual OVERRIDE void stop();
 	virtual OVERRIDE void destroy();
-	virtual OVERRIDE shared_ptr<TilenetObject> clone();
 
 	static void WaitForExit();
 	static bool WaitForClientExit(std::chrono::milliseconds& timeout);

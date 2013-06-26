@@ -39,7 +39,6 @@ public:
 
 
 	OVERRIDE void destroy();
-	OVERRIDE shared_ptr<TilenetObject> clone();
 
 private:
 	Commit update(std::unordered_map<shared_ptr<Layer>, std::pair<PView, unsigned short>>&& sublayers);

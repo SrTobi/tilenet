@@ -151,11 +151,6 @@ OVERRIDE void TileLayer::destroy()
 	Layer::destroy();
 }
 
-OVERRIDE shared_ptr<TilenetObject> TileLayer::clone()
-{
-	NOT_IMPLEMENTED();
-}
-
 OVERRIDE std::vector<TileLayer::Commit> TileLayer::getCommitsUpTo( TNID nr )
 {
 	std::vector<Commit> result;

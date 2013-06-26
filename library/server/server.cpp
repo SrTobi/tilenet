@@ -51,11 +51,6 @@ void Server::destroy()
 	}
 }
 
-shared_ptr<TilenetObject> Server::clone()
-{
-	BOOST_THROW_EXCEPTION(excp::NotSupportedException() << excp::InfoWhat(L"Server can not be cloned!"));
-}
-
 
 bool Server::fetchNextEvent( TNEVENT* dest, size_t* timeout )
 {

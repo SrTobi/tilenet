@@ -20,7 +20,6 @@ public:
 	~Layer();
 
 	virtual OVERRIDE void destroy();
-	virtual OVERRIDE shared_ptr<TilenetObject> clone() = 0;
 
 	TNID currentCommitNr() const;
 	virtual std::vector<Commit> getCommitsUpTo(TNID nr) = 0;

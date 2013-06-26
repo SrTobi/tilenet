@@ -21,7 +21,6 @@ public:
 	virtual OVERRIDE void start();
 	virtual OVERRIDE void stop();
 	virtual OVERRIDE void destroy();
-	virtual OVERRIDE shared_ptr<TilenetObject> clone();
 private:
 	port_type mPort;
 	uint32 mMaxConnections;
