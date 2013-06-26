@@ -232,7 +232,7 @@ void do_event(TNEVENT& e)
 			tilenet_keycode(L"esc", &escape_code);
 			if(escape_code == key)
 			{
-				tilenet_kick(e.participant, L"");
+				tilenet_kick(e.participant, L"I don't like you!!!");
 				tilenet_exit(0);
 				exit(0);
 			}

@@ -143,6 +143,12 @@ sf::RenderWindow& ClientApp::window()
 	return mWindow;
 }
 
+
+const shared_ptr<Messenger>& ClientApp::messenger() const
+{
+	return mMessenger;
+}
+
 void ClientApp::processWindow()
 {
 	using namespace std::chrono;
@@ -249,6 +255,8 @@ bool ClientApp::WaitForExit(std::chrono::milliseconds& timeout)
 	}
 	return true;
 }
+
+
 
 
 

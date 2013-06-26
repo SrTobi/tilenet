@@ -56,6 +56,7 @@ private:
 	void handleLayerControl_sendFullLayer(proto::v1_0::to_client::LayerControl_SendFullLayer& msg);
 	void handleLayerControl_sendFrame(proto::v1_0::to_client::LayerControl_SendFrame& msg);
 
+	void handleKick_Reason(proto::v1_0::to_client::Kick_Reason& msg);
 	void handleAnswer_StdTileNameRequest(proto::v1_0::to_client::Answer_StdTileNameRequest& answ);
 
 	virtual OVERRIDE shared_ptr<ComInterface> getComInterface();

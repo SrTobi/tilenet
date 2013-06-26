@@ -8,6 +8,7 @@
 #include "tile_mapper_v1_0.hpp"
 
 #include "client/client.hpp"
+#include "client/messenger.hpp"
 
 #include "network/message.hpp"
 
@@ -104,6 +105,7 @@ MainComHandler::MainComHandler( ClientApp& app, const shared_ptr<net::Connection
 	mDispatcher.add(&MainComHandler::handleLayerControl_sendLayerUpdate, this);
 	mDispatcher.add(&MainComHandler::handleAnswer_StdTileNameRequest, this);
 	mDispatcher.add(&MainComHandler::handleLayerControl_sendFrame, this);
+	mDispatcher.add(&MainComHandler::handleKick_Reason, this);
 }
 
 void MainComHandler::init()
@@ -220,6 +222,12 @@ void MainComHandler::notifyKeyevent( const sf::Event& event )
 
 	mPort->send(net::make_message(ke));
 }
+
+void MainComHandler::handleKick_Reason( proto::v1_0::to_client::Kick_Reason& msg )
+{
+	mApp.messenger()->add(L"Kick reason: " + msg.reason);
+}
+
 
 
 

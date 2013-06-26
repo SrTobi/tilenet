@@ -42,6 +42,7 @@ public:
 	const shared_ptr<net::ConnectionPort>& port() const;
 	const shared_ptr<PackageManager>& pmanager() const;
 	boost::asio::io_service& service();
+	const shared_ptr<Messenger>& messenger() const;
 
 	static void WaitForExit();
 	static bool WaitForExit(std::chrono::milliseconds& timeout);

@@ -229,7 +229,11 @@ void Participant::init()
 
 void Participant::kick( const string& reason )
 {
-	IMPLEMENTATION_TODO("send reason");
+	{
+		proto::curv::to_client::Kick_Reason k;
+		k.reason = reason;
+		mPort->send(net::make_message(k));
+	}
 
 	mPort->disconnect();
 }

@@ -44,6 +44,7 @@ namespace to_client {
 		Handshake_P1_ProtocolVersion	= 0x70,
 		Handshake_P2_ServerInformation	= 0x71,
 		Handshake_P4_AcceptesGranted	= 0x72,
+		Kick_Reason						= 0x73,
 
 		LayerControl_AttachLayer		= 0x90,
 		LayerControl_SendFrame			= 0x91,
@@ -58,19 +59,9 @@ namespace to_client {
 } // ids
 } // v1_0
 
+// ####################################################################### to server #######################################################################
 
-PROTOCOL_MESSAGE(Handshake_P2_ServerInformation, to_client)
-{
-	string server_name;
-	string server_info;
-	string package_name;
-	string package_interface;
-
-	PROTOCOL_SERIALIZER(ar)
-	{
-		ar & server_name & server_info & package_name & package_interface;
-	}
-};
+/////////////// handshake ///////////////
 
 
 PROTOCOL_MESSAGE(Handshake_P3_accessrequest, to_srv)
@@ -83,6 +74,8 @@ PROTOCOL_MESSAGE(Handshake_P3_accessrequest, to_srv)
 	}
 };
 
+/////////////// requests ///////////////
+
 PROTOCOL_MESSAGE(Request_StdTileName, to_srv)
 {
 	TNID tileId;
@@ -94,6 +87,7 @@ PROTOCOL_MESSAGE(Request_StdTileName, to_srv)
 };
 
 
+/////////////// key control ///////////////
 
 PROTOCOL_MESSAGE(Control_KeyEvent, to_srv)
 {
@@ -113,17 +107,24 @@ PROTOCOL_MESSAGE(Control_KeyEvent, to_srv)
 };
 
 
-PROTOCOL_MESSAGE(Answer_StdTileNameRequest, to_client)
+// ####################################################################### to client #######################################################################
+
+
+/////////////// handshake/connection ///////////////
+
+
+PROTOCOL_MESSAGE(Handshake_P2_ServerInformation, to_client)
 {
-	TNID tileId;
-	string tileName;
+	string server_name;
+	string server_info;
+	string package_name;
+	string package_interface;
 
 	PROTOCOL_SERIALIZER(ar)
 	{
-		ar & tileId & tileName;
+		ar & server_name & server_info & package_name & package_interface;
 	}
 };
-
 
 
 PROTOCOL_MESSAGE(Handshake_P4_AcceptesGranted, to_client)
@@ -135,6 +136,18 @@ PROTOCOL_MESSAGE(Handshake_P4_AcceptesGranted, to_client)
 		ar & access_granted;
 	}
 };
+
+PROTOCOL_MESSAGE(Kick_Reason, to_client)
+{
+	string reason;
+
+	PROTOCOL_SERIALIZER(ar)
+	{
+		ar & reason;
+	}
+};
+
+/////////////// layer control ///////////////
 
 PROTOCOL_MESSAGE(LayerControl_AttachLayer, to_client)
 {
@@ -187,6 +200,21 @@ PROTOCOL_MESSAGE(LayerControl_SendFrame, to_client)
 		ar & layerId & commitNr & is_delta & sublayers_in_zorder & update_views;
 	}
 };
+
+
+/////////////// answers ///////////////
+
+PROTOCOL_MESSAGE(Answer_StdTileNameRequest, to_client)
+{
+	TNID tileId;
+	string tileName;
+
+	PROTOCOL_SERIALIZER(ar)
+	{
+		ar & tileId & tileName;
+	}
+};
+
 
 }
 
