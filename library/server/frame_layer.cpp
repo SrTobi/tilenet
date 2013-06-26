@@ -111,7 +111,7 @@ void FrameLayer::update( TNLAYER* layer_list, TNVIEW** view_list, size_t size )
 
 	if(sublayers.size() != size)
 	{
-		NOT_IMPLEMENTED(/* layer was used twice */);
+		BOOST_THROW_EXCEPTION(excp::InvalidArgException() << excp::InfoWhat(L"Update list for frame contains a layer more then once!"));
 	}
 
 	auto job = std::make_shared<job::UpdateFrameJob>(self<FrameLayer>(), std::move(sublayers));
