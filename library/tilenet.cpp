@@ -375,6 +375,19 @@ TNAPI TNERROR tilenet_get_last_error()
 	return LastThreadError->errorcode;
 }
 
+/**
+ *	@brief Destroys an object
+ *
+ *	This function tries to clean up object related data first.
+ *	If the clean up was successfull, the user claim to use object expires. 
+ *
+ *	\param obj The object which should be destroyed
+ *	\return TNOK if cleanup was successful and user claim expired 
+ *	\return An error might be returned because cleanup failed
+ *
+ *	\note If cleanup fails the user claim remains persistent
+ *
+ */
 TNAPI TNERROR tilenet_destroy(TNOBJ obj)
 {
 	SET_SAVE_ERROR(true);
