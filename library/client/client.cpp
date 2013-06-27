@@ -2,6 +2,8 @@
 
 #include <thread>
 #include <chrono>
+#include <boost/asio.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "client.hpp"
 #include "com_interface.hpp"
@@ -11,6 +13,8 @@
 #include "client/com/pv_select.hpp"
 
 #include "package/package_manager.hpp"
+
+#include "network/socket_connection_port.hpp"
 
 namespace client {
 
@@ -116,6 +120,51 @@ void ClientApp::disconnect()
 	if(mPort)
 		mPort->disconnect();
 	mPort.reset();
+}
+
+
+void ClientApp::connectTo( const string& addr, const string& service )
+{
+	IMPLEMENTATION_TODO(L"Put this into its own class");
+	using namespace boost::asio;
+	using namespace boost::asio::ip;
+	typedef net::SocketConnectionPort::socket_ptr socket_ptr;
+
+	disconnect();
+	
+	messenger()->add(L"Try to connect to " + addr);
+
+	// create socket
+	socket_ptr socket = std::make_shared<tcp::socket>(mService);
+
+	// try to reach host
+	tcp::resolver resolver(mService);
+	tcp::resolver::query query(lexical_convert<std::string>(addr), lexical_convert<std::string>(service));
+	tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+	tcp::resolver::iterator end;
+
+	boost::system::error_code error = boost::asio::error::host_not_found;
+	while(error && endpoint_iterator != end)
+	{
+		socket->close();
+		socket->connect(*endpoint_iterator++, error);
+
+		if(error)
+		{
+			messenger()->add(L"Failed to connect " + lexical_convert<string>(endpoint_iterator->host_name()) + L"!", sf::Color::Yellow);
+		}
+	}
+
+	if(error || endpoint_iterator == end)
+	{
+		messenger()->add(L"Failed to connect!!!", sf::Color::Red);
+		return;
+	}
+
+	//mConnectedEndPoint = *endpoint_iterator;
+
+	messenger()->add(L"Connected to " + lexical_convert<string>(endpoint_iterator->host_name()) + L":" + lexical_convert<string>(endpoint_iterator->service_name()));
+	postConnection(net::SocketConnectionPort::Create(mService, socket));
 }
 
 

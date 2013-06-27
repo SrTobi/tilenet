@@ -166,6 +166,8 @@ Layer* layer2;
 Frame* frame;
 TNTILE* layerContent;
 
+TNACCEPTOR listenAcceptor;
+
 
 void init_testlayer()
 {
@@ -213,8 +215,6 @@ void do_event(TNEVENT& e)
 		break;
 	case TNEV_DISCONNECT:
 		std::cout << "Player disconnected!\n";
-		tilenet_exit(0);
-		exit(0);
 		break;
 	case TNEV_KEYDOWN:
 		{
@@ -222,6 +222,14 @@ void do_event(TNEVENT& e)
 			const wchar_t* name = L"";
 			tilenet_keyname(key, &name);
 			std::wcout << "Keydown[" << std::wstring(name) << "]\n";
+
+
+			TNKEYCODE enter_code = 0;
+			tilenet_keycode(L"enter", &enter_code);
+			if(enter_code == key)
+			{
+				tilenet_kick(e.participant, L"@!!!link:localhost:2165");
+			}
 
 
 			TNKEYCODE escape_code = 0;
@@ -262,14 +270,18 @@ int main()
 
 	tilenet_create_server(&srv, &config);
 	tilenet_add_local_acceptor(0, srv);
-
+	
+	if(tilenet_add_listen_acceptor(&listenAcceptor, srv, 2165, 16) > TNOK)
+	{
+		std::cout << L"Acceptor could not be created!\n";
+	}
 
 	size_t timeout = 100;
 	while(true)
 	{
 		TNEVENT events[EVENT_BUF_LENGTH];
 
-		size_t fetched;
+		size_t fetched = 0;
 		if(timeout > 0)
 			tilenet_fetch_events(srv, events, EVENT_BUF_LENGTH, &fetched, &timeout);
 

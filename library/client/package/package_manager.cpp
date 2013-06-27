@@ -169,7 +169,7 @@ shared_ptr<Package> PackageManager::loadPackageByPackageInfo( const PackageInfo&
 
 const std::vector<PackageInfo>& PackageManager::getPackageInfos()
 {
-	if(mPackageInfosWaiter.valid())
+	if(mPackageInfos.empty() && mPackageInfosWaiter.valid())
 	{
 		mPackageInfos = mPackageInfosWaiter.get();
 	}

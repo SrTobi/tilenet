@@ -225,7 +225,31 @@ void MainComHandler::notifyKeyevent( const sf::Event& event )
 
 void MainComHandler::handleKick_Reason( proto::v1_0::to_client::Kick_Reason& msg )
 {
-	mApp.messenger()->add(L"Kick reason: " + msg.reason);
+	string reason = msg.reason;
+
+	if(reason.find(L"@!!!") == 0)
+	{
+		reason = reason.substr(4);
+		
+		auto pos = reason.find(L':');
+
+		if(pos == string::npos)
+			return;
+
+		string cmd = reason.substr(0, pos);
+		string args = reason.substr(pos + 1);
+
+		if(cmd == L"link")
+		{
+			auto delim = args.find(L':');
+
+			if(delim != string::npos)
+				mApp.connectTo(args.substr(0, delim), args.substr(delim + 1));
+		}
+
+	}else{
+		mApp.messenger()->add(L"Kick reason: " + msg.reason);
+	}
 }
 
 

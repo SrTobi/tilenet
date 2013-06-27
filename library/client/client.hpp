@@ -35,6 +35,7 @@ public:
 	~ClientApp();
 
 	void start();
+	void connectTo(const string& addr, const string& service);
 	void postConnection(const shared_ptr<net::ConnectionPort>& port);
 	void stop(bool now = false);
 
