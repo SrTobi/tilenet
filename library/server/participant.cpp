@@ -100,7 +100,7 @@ private:
 
 		if(proto::curv::KeyMapper::Inst().isKeycode(e.data.key))
 		{
-			BOOST_THROW_EXCEPTION(excp::ProtocolException() << excp::BadArgument(L"keyevent.key") << excp::SVFactor(0.3) << excp::InfoWhat(L"Unknown key!"));
+			BOOST_THROW_EXCEPTION(excp::ProtocolException() << excp::BadArgument(L"keyevent.key") << excp::SVFactor(0.3f) << excp::InfoWhat(L"Unknown key!"));
 		}
 
 
@@ -113,7 +113,7 @@ private:
 			event.type = TNEV_KEYUP;
 			break;
 		default:
-			BOOST_THROW_EXCEPTION(excp::ProtocolException() << excp::BadArgument(L"keyevent.type") << excp::SVFactor(0.3) << excp::InfoWhat(L"Unknown key action!"));
+			BOOST_THROW_EXCEPTION(excp::ProtocolException() << excp::BadArgument(L"keyevent.type") << excp::SVFactor(0.3f) << excp::InfoWhat(L"Unknown key action!"));
 		}
 
 		equeue()->push(event);
@@ -211,7 +211,7 @@ Participant::Participant( const shared_ptr<EventQueue>& eventQueue, const shared
 	: mPort(port)
 	, mEventQueue(eventQueue)
 	, mServer(server)
-	, mSecurityViolationSeverity(SecurityViolationKindness)
+	, mSecurityViolationSeverity(static_cast<float>(SecurityViolationKindness))
 {
 }
 
