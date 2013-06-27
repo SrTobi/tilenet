@@ -19,7 +19,7 @@ class Message
 	: public boost::noncopyable
 {
 public:
-	Message(const msgid_type id, const std::vector<byte>&& msg);
+	Message(const msgid_type id, std::vector<byte>&& msg);
 	~Message();
 
 	std::size_t size() const;
@@ -39,8 +39,7 @@ shared_ptr<Message> make_message(const proto::MsgFormat<Id, V>& msg)
 	std::stringstream ss;
 	boost::archive::text_oarchive archive(ss);
 
-	msgid_type msgId = Id;
-	archive << msgId << msg;
+	archive << msg;
 
 	std::string buf = ss.str();
 
@@ -56,10 +55,7 @@ void extract_message(const shared_ptr<Message>& msg, proto::MsgFormat<Id, V>& de
 {
 	std::stringstream ss(std::string(msg->buffer().begin(), msg->buffer().end()));
 	boost::archive::text_iarchive archive(ss);
-	msgid_type extrId;
-	archive >> extrId;
 
-	tnAssert(extrId == Id);
 	archive >> dest;
 }
 

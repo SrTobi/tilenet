@@ -11,8 +11,8 @@ namespace net {
 
 
 
-Message::Message(const msgid_type id, const std::vector<byte>&& msg)
-	: mBuffer(msg)
+Message::Message(const msgid_type id, std::vector<byte>&& msg)
+	: mBuffer(std::move(msg))
 	, mId(id)
 {
 }
