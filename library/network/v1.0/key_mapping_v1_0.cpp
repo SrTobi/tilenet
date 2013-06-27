@@ -22,8 +22,8 @@ bool KeyMapper::toCode(const string& name, TNKEYCODE* code) const
 	{
 		return false;
 	}
-
-	*code = it->second;
+	if(code)
+		*code = it->second;
 	return true;
 }
 
@@ -39,10 +39,16 @@ TNKEYCODE KeyMapper::toCode( sf::Keyboard::Key key ) const
 
 const string& KeyMapper::toName( TNKEYCODE code ) const
 {
-	if(code >= mCodeToMapping.size() || !mCodeToMapping[code])
+	if(code >= mCodeToNameMapping.size() || !mCodeToNameMapping[code])
 		return mEmptyString;
-	return *mCodeToMapping[code];
+	return *mCodeToNameMapping[code];
 }
+
+bool KeyMapper::isKeycode(TNKEYCODE code) const
+{
+	return 0 <= code && code < mCodeToNameMapping.size();
+}
+
 
 const KeyMapper& KeyMapper::Inst()
 {
@@ -171,8 +177,8 @@ void KeyMapper::addCode( const string& names, sf::Keyboard::Key sfmlKey )
 			if(first)
 			{
 				first = false;
-				tnAssert(mCodeToMapping.size() == code);
-				mCodeToMapping.push_back(&(res.first->first));
+				tnAssert(mCodeToNameMapping.size() == code);
+				mCodeToNameMapping.push_back(&(res.first->first));
 			}
 		}
 

@@ -21,6 +21,7 @@ public:
 	bool toCode(const string& name, TNKEYCODE* code) const;
 	TNKEYCODE toCode(sf::Keyboard::Key key) const;
 
+	bool isKeycode(TNKEYCODE code) const;
 	const string& toName(TNKEYCODE code) const;
 
 	static const KeyMapper& Inst();
@@ -30,7 +31,7 @@ private:
 	void addCode(const string& names, sf::Keyboard::Key sfmlKey);
 private:
 	const string mEmptyString;
-	std::vector<const string*> mCodeToMapping;
+	std::vector<const string*> mCodeToNameMapping;
 	std::unordered_map<string, TNKEYCODE> mNameToCodeMapping;
 	std::unordered_map<unsigned int, TNKEYCODE> mSfmlToCodeMapping;
 	unsigned int mNextCode;
