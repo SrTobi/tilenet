@@ -98,6 +98,12 @@ private:
 		event.participant = participant()->id();
 		event.data.keyevent = e.data;
 
+		if(proto::curv::KeyMapper::Inst().isKeycode(e.data.key))
+		{
+			BOOST_THROW_EXCEPTION(excp::ProtocolException() << excp::BadArgument(L"keyevent.key") << excp::SVFactor(0.3) << excp::InfoWhat(L"Unknown key!"));
+		}
+
+
 		switch(e.type)
 		{
 		case proto::curv::to_srv::Control_KeyEvent::Evt_KeyDown:
