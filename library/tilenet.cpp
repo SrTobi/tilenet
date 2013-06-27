@@ -401,6 +401,17 @@ TNAPI TNERROR tilenet_destroy(TNOBJ obj)
 }
 
 
+/**
+ *	@brief Sets the amount of internal service threads.
+ *
+ *	Service threads are used to execute internal managment tasks.
+ *	These tasks can mainly be executed independently, so the more threads
+ *	are used the more tasks can be executed simultaneously.
+ *
+ *	\param count Number of threads used to execute internal tasks as from now
+ *	
+ *	\return TNOK, if new threads were created
+ */
 TNAPI TNERROR tilenet_set_service_thread_count(size_t count)
 {
 	SET_SAVE_ERROR(true);
