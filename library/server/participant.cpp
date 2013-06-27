@@ -98,7 +98,7 @@ private:
 		event.participant = participant()->id();
 		event.data.keyevent = e.data;
 
-		if(proto::curv::KeyMapper::Inst().isKeycode(e.data.key))
+		if(!proto::curv::KeyMapper::Inst().isKeycode(e.data.key))
 		{
 			BOOST_THROW_EXCEPTION(excp::ProtocolException() << excp::BadArgument(L"keyevent.key") << excp::SVFactor(0.3f) << excp::InfoWhat(L"Unknown key!"));
 		}
