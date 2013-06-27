@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <fstream>
 #include "tilenet.h"
 
 
@@ -228,7 +229,16 @@ void do_event(TNEVENT& e)
 			tilenet_keycode(L"enter", &enter_code);
 			if(enter_code == key)
 			{
-				tilenet_kick(e.participant, L"@!!!link:localhost:2165");
+				std::wifstream file("ip.txt");
+
+				if(file.is_open())
+				{
+					std::wstring str;
+					file >> std::noskipws;
+					std::getline(file, str);
+					str = L"@!!!link:" + str;
+					tilenet_kick(e.participant, str.c_str());
+				}
 			}
 
 
