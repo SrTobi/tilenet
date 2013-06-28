@@ -248,7 +248,7 @@ void MainComHandler::handleKick_Reason( proto::v1_0::to_client::Kick_Reason& msg
 		}
 
 	}else{
-		mApp.messenger()->add(L"Kick reason: " + msg.reason);
+		mApp.messenger()->add(L"Kick reason: " + reason);
 	}
 }
 

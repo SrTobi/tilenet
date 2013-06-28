@@ -2,6 +2,10 @@
 #ifndef _LEXICAL_CONVERT_HPP
 #define _LEXICAL_CONVERT_HPP
 
+#ifdef WIN32
+#include <codecvt>
+#endif
+
 /// @cond DEV
 #include <SFML/System/String.hpp>
 #include <boost/lexical_cast.hpp>
@@ -45,6 +49,29 @@ template<typename Both>
 inline Both lexical_convert(const Both& from)
 {
 	return from;
+}
+
+
+template<typename Char>
+inline std::string to_utf8_string(const std::basic_string<Char>& str)
+{
+#ifdef WIN32
+	std::wstring_convert<std::codecvt_utf8<Char> > converter;
+	return converter.to_bytes(str);
+#else
+	return std::string(str.begin(), str.end());
+#endif
+}
+
+template<typename Char>
+inline std::basic_string<Char> from_utf8_string(const std::string& str)
+{
+#ifdef WIN32
+	std::wstring_convert<std::codecvt_utf8<Char> > converter;
+	return converter.from_bytes(str);
+#else
+	return std::basic_string<Char>(str.begin(), str.end());
+#endif
 }
 
 

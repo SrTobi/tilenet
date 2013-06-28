@@ -15,6 +15,7 @@
 #include "key_mapping_v1_0.hpp"
 #include "protocol_view_v1_0.hpp"
 #include "utils/boost_unique_ptr_serialization.hpp"
+#include "utils/utf8_string.hpp"
 
 #define PROTOCOL_THIS_VERSION					v1_0
 #define PROTOCOL_MESSAGE(_name, _target)		namespace PROTOCOL_THIS_VERSION { namespace _target{ typedef MsgFormat<PROTOCOL_THIS_VERSION::ids::_target::_name, ::proto::versions::PROTOCOL_THIS_VERSION> _name; }} template<> struct MsgFormat<PROTOCOL_THIS_VERSION::ids::_target::_name, ::proto::versions::PROTOCOL_THIS_VERSION>
@@ -115,10 +116,10 @@ PROTOCOL_MESSAGE(Control_KeyEvent, to_srv)
 
 PROTOCOL_MESSAGE(Handshake_P2_ServerInformation, to_client)
 {
-	string server_name;
-	string server_info;
-	string package_name;
-	string package_interface;
+	utf8_string server_name;
+	utf8_string server_info;
+	utf8_string package_name;
+	utf8_string package_interface;
 
 	PROTOCOL_SERIALIZER(ar)
 	{
@@ -139,7 +140,7 @@ PROTOCOL_MESSAGE(Handshake_P4_AcceptesGranted, to_client)
 
 PROTOCOL_MESSAGE(Kick_Reason, to_client)
 {
-	string reason;
+	utf8_string reason;
 
 	PROTOCOL_SERIALIZER(ar)
 	{
@@ -207,7 +208,7 @@ PROTOCOL_MESSAGE(LayerControl_SendFrame, to_client)
 PROTOCOL_MESSAGE(Answer_StdTileNameRequest, to_client)
 {
 	TNID tileId;
-	string tileName;
+	utf8_string tileName;
 
 	PROTOCOL_SERIALIZER(ar)
 	{
