@@ -54,6 +54,7 @@ private:
 	std::vector<boost::asio::mutable_buffer> mCombinedBuffer;
 
 	ReceiveStatus mStatus;
+	std::ofstream mDebugFile;
 
 	boost::asio::io_service& mService;
 	socket_ptr mSocket;
