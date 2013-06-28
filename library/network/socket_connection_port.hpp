@@ -17,6 +17,13 @@ class Message;
 class SocketConnectionPort
 	: public ConnectionPort
 {
+	enum ReceiveStatus
+	{
+		Idle,
+		AwaitHeader,
+		AwaitExtendedHeader,
+		AwaitBody
+	};
 public:
 	typedef boost::system::error_code error_code;
 	typedef shared_ptr<boost::asio::ip::tcp::socket> socket_ptr;
@@ -39,11 +46,14 @@ private:
 
 	SocketConnectionPort(boost::asio::io_service& service, const socket_ptr& socket);
 private:
+	std::mutex mMutex;
 	uint8	mDataSizeByte;
 	uint32	mDataSize;
 	msgid_type mMsgId;
 	std::vector<byte> mDataBuffer;
 	std::vector<boost::asio::mutable_buffer> mCombinedBuffer;
+
+	ReceiveStatus mStatus;
 
 	boost::asio::io_service& mService;
 	socket_ptr mSocket;

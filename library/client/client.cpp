@@ -147,10 +147,11 @@ void ClientApp::connectTo( const string& addr, const string& service )
 	while(error && endpoint_iterator != end)
 	{
 		socket->close();
-		socket->connect(*endpoint_iterator++, error);
+		socket->connect(*endpoint_iterator, error);
 
 		if(error)
 		{
+			++endpoint_iterator;
 			messenger()->add(L"Failed to connect " + lexical_convert<string>(endpoint_iterator->host_name()) + L"!", sf::Color::Yellow);
 		}
 	}
