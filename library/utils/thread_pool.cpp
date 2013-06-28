@@ -20,6 +20,7 @@ ThreadPool::~ThreadPool()
 		// std::lock_guard<std::mutex> lock(mMutex);
 		mDestroy = true;
 		mWork.reset();
+		mService.stop();
 	}
 
 	for(auto& p : mThreads)
