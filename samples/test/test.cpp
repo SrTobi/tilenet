@@ -286,7 +286,7 @@ int main()
 		std::cout << L"Acceptor could not be created!\n";
 	}
 
-	size_t timeout = 100;
+	size_t timeout = 2000;
 	while(true)
 	{
 		TNEVENT events[EVENT_BUF_LENGTH];
@@ -302,7 +302,7 @@ int main()
 				do_event(events[i]);
 			}
 		}else{
-			timeout = 100;
+			timeout = 2000;
 			update_layer();
 		}
 
