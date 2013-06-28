@@ -30,6 +30,7 @@ public:
 	void identifyStdTile(const string& tile_name, TNID tile_id);
 	void setPackage(const shared_ptr<Package>& p);
 private:
+	mutable std::unordered_set<TNID>				mAlreadyAskedIds;
 	std::unordered_map<TNID, string>				mIdToNameMapping;
 	std::unordered_map<TNID, shared_ptr<StdTile>>	mIdToStdTileMapping;
 	shared_ptr<net::ConnectionPort> mPort;

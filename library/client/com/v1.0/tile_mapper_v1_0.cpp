@@ -31,13 +31,21 @@ shared_ptr<StdTile> TileMapper::getStdTile(TNID tile_id ) const
 	{
 		// Check if we can find a name
 		auto name_it = mIdToNameMapping.find(tile_id);
+
 		if(name_it == mIdToNameMapping.end())
 		{
-			// We haven't even a name
-			// Ask the server for a name to resolve the id
-			proto::v1_0::to_srv::Request_StdTileName req;
-			req.tileId = tile_id;
-			mPort->send(net::make_message(req));
+			// check if we already asked the server
+			if(!mAlreadyAskedIds.count(tile_id))
+			{
+				// We haven't even a name
+				// Ask the server for a name to resolve the id
+				proto::v1_0::to_srv::Request_StdTileName req;
+				req.tileId = tile_id;
+				mPort->send(net::make_message(req));
+
+				// make sure to not ask the server twice
+				mAlreadyAskedIds.insert(tile_id);
+			}
 		}else{
 			// If a package is loaded, we can ask the package
 			if(mPackage)
