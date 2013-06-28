@@ -23,6 +23,12 @@ const shared_ptr<Server>& Acceptor::server() const
 	return mServer;
 }
 
+OVERRIDE void Acceptor::init()
+{
+	TilenetObject::init();
+}
+
+
 
 
 
@@ -41,6 +47,13 @@ Server::~Server()
 {
 
 }
+
+
+OVERRIDE void Server::init()
+{
+	TilenetObject::init();
+}
+
 
 void Server::destroy()
 {

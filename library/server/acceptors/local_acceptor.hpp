@@ -31,6 +31,9 @@ public:
 
 	static void WaitForExit();
 	static bool WaitForClientExit(std::chrono::milliseconds& timeout);
+protected:
+	virtual OVERRIDE void init();
+
 private:
 	static LocalAcceptor* Singleton;
 

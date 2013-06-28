@@ -26,6 +26,7 @@ public:
 	TilenetObject();
 	virtual ~TilenetObject();
 
+	TNOBJ initialize();
 	virtual void destroy() = 0;
 
 	template<typename Result>
@@ -41,6 +42,10 @@ public:
 	}
 
 	static void Destroy(TilenetObject* obj);
+
+protected:
+	virtual void init();
+
 private:
 	std::shared_ptr<TilenetObject> mSelf;
 };

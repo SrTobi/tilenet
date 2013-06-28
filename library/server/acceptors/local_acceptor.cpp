@@ -26,6 +26,12 @@ LocalAcceptor::~LocalAcceptor()
 	Singleton = nullptr;
 }
 
+OVERRIDE void LocalAcceptor::init()
+{
+	Acceptor::init();
+}
+
+
 OVERRIDE void LocalAcceptor::start()
 {
 	shared_ptr<client::ClientApp> cl = std::make_shared<client::ClientApp>(true);

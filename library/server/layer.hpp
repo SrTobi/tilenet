@@ -26,7 +26,7 @@ public:
 	virtual Commit getDelta(TNID nr) = 0;
 
 protected:
-	void init();
+	virtual void OVERRIDE init();
 	TNID newCommit();
 private:
 	std::atomic<TNID> mCommit;

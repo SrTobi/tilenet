@@ -379,7 +379,7 @@ TNAPI TNERROR tilenet_get_last_error()
  *	@brief Destroys an object
  *
  *	This function tries to clean up object related data first.
- *	If the clean up was successfull, the user claim to use object expires. 
+ *	If the clean up was successfully, the user claim to use object expires. 
  *
  *	\param obj The object which should be destroyed
  *	\return TNOK if cleanup was successful and user claim expired 
@@ -404,7 +404,7 @@ TNAPI TNERROR tilenet_destroy(TNOBJ obj)
 /**
  *	@brief Sets the amount of internal service threads.
  *
- *	Service threads are used to execute internal managment tasks.
+ *	Service threads are used to execute internal management tasks.
  *	These tasks can mainly be executed independently, so the more threads
  *	are used the more tasks can be executed simultaneously.
  *
@@ -434,7 +434,8 @@ TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init)
 	CHECK_NULL(init->pkgi, L"init::pkgi");
 
 	try {
-		*server = new ::srv::Server(init);
+		auto server_ptr = std::make_shared<::srv::Server>(init);
+		*server = server_ptr->initialize();
 		return TNOK;
 
 	} AUTO_CATCH;
@@ -449,10 +450,12 @@ TNAPI TNERROR tilenet_add_listen_acceptor(TNACCEPTOR* acceptor, TNSERVER server,
 	CHECK_OBJ(_server, server, srv::Server, L"server");
 
 	try {
-		auto* _acceptor = new srv::ListenAcceptor(_server->self<srv::Server>(), port, maxc);
-		_acceptor->start();
+		auto acceptor_ptr = std::make_shared<srv::ListenAcceptor>(_server->self<srv::Server>(), port, maxc);
 
-		*acceptor = _acceptor;
+		*acceptor = acceptor_ptr->initialize();
+
+		acceptor_ptr->start();
+
 
 		return TNOK;
 	} AUTO_CATCH;
@@ -465,15 +468,17 @@ TNAPI TNERROR tilenet_add_local_acceptor(TNACCEPTOR* acceptor, TNSERVER server)
 	CHECK_OBJ(_server, server, srv::Server, L"server");
 
 	try {
-		auto* _acceptor = new srv::LocalAcceptor(_server->self<srv::Server>());
-		_acceptor->start();
+		auto acceptor_ptr = std::make_shared<srv::LocalAcceptor>(_server->self<srv::Server>());
+		acceptor_ptr->start();
+
+		acceptor_ptr->initialize();
 
 		if(acceptor)
 		{
-			*acceptor = _acceptor;
+			*acceptor = acceptor_ptr.get();
 		}else{
-			_acceptor->uncouple();
-			tilenet_destroy(_acceptor);
+			acceptor_ptr->uncouple();
+			tilenet_destroy(acceptor_ptr.get());
 		}
 
 		return TNOK;
@@ -573,10 +578,10 @@ TNAPI TNERROR tilenet_create_frame( TNLAYER* frame, TNFLAG flags )
 	SET_SAVE_ERROR(true);
 	CHECK_NULL(frame, L"frame");
 	try {
-		auto* _frame = new srv::FrameLayer(flags);
-		srv::FrameLayer::Register(_frame->self<srv::FrameLayer>());
-		_frame->init();
-		*frame = _frame;
+		auto frame_ptr = std::make_shared<srv::FrameLayer>(flags);
+		srv::FrameLayer::Register(frame_ptr);
+
+		*frame = frame_ptr->initialize();
 
 		return TNOK;
 
@@ -604,10 +609,10 @@ TNAPI TNERROR tilenet_create_tilelayer( TNLAYER* layer, unsigned int width, unsi
 	CHECK_NULL(layer, L"layer");
 
 	try {
-		auto* l = new srv::TileLayer(Rect(width, height), Ratio(xr, yr), flags);
-		srv::TileLayer::Register(l->self<srv::TileLayer>());
-		l->init();
-		*layer = l;
+		auto tileLayer_ptr = std::make_shared<srv::TileLayer>(Rect(width, height), Ratio(xr, yr), flags);
+		srv::TileLayer::Register(tileLayer_ptr);
+
+		*layer = tileLayer_ptr->initialize();
 		return TNOK;
 	} AUTO_CATCH;
 }

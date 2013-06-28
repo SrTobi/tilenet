@@ -26,6 +26,8 @@ public:
 	virtual OVERRIDE void destroy();
 
 private:
+	virtual OVERRIDE void init();
+
 	void startAsyncAccept();
 	void handleAsyncAccept(const socket_ptr& socket, const boost::system::error_code& err);
 

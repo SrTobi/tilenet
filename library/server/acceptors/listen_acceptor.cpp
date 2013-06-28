@@ -13,6 +13,16 @@ srv::ListenAcceptor::ListenAcceptor(const shared_ptr<Server>& server, port_type 
 	, mMaxConnections(maxConnections)
 	, mAcceptor(Service::Inst())
 {
+}
+
+srv::ListenAcceptor::~ListenAcceptor()
+{
+}
+
+OVERRIDE void ListenAcceptor::init()
+{
+	Acceptor::init();
+
 	using namespace boost::asio::ip;
 
 	tcp::endpoint endpoint(tcp::v6(), mPort);
@@ -34,9 +44,7 @@ srv::ListenAcceptor::ListenAcceptor(const shared_ptr<Server>& server, port_type 
 	}
 }
 
-srv::ListenAcceptor::~ListenAcceptor()
-{
-}
+
 
 OVERRIDE void srv::ListenAcceptor::start()
 {

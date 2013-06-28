@@ -34,13 +34,13 @@ public:
 	FrameLayer(TNFLAG flags);
 	~FrameLayer();
 
-	void init();
 	void update(TNLAYER* layer_list, TNVIEW** view_list, size_t size);
 
 
 	OVERRIDE void destroy();
 
 private:
+	virtual void OVERRIDE init();
 	Commit update(std::unordered_map<shared_ptr<Layer>, std::pair<PView, unsigned short>>&& sublayers);
 	Commit makeFullSnapshotCommit(bool asNewCommit);
 	void makeInitialCommit();

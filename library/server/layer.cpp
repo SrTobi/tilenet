@@ -29,6 +29,7 @@ TNID Layer::newCommit()
 
 void Layer::init()
 {
+	TilenetObject::init();
 	LayerLinkManager::Inst().registerLayer(self<Layer>());
 }
 

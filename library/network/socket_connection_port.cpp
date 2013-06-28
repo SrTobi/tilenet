@@ -12,6 +12,7 @@ SocketConnectionPort::SocketConnectionPort(boost::asio::io_service& service, con
 	: mService(service)
 	, mSocket(socket)
 {
+	tnAssert(mSocket);
 }
 
 SocketConnectionPort::~SocketConnectionPort()
@@ -23,6 +24,8 @@ OVERRIDE void SocketConnectionPort::onMakeDisconnect()
 {
 	if(isConnected())
 	{
+		mSocket->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+		mSocket->close();
 		mSocket.reset();
 		mService.post(std::bind(&SocketConnectionPort::handleDisconnect, shared_from_this()));
 	}
@@ -31,6 +34,9 @@ OVERRIDE void SocketConnectionPort::onMakeDisconnect()
 
 OVERRIDE void SocketConnectionPort::send( const std::shared_ptr<Message>& msg )
 {
+	if(!mSocket)
+		return;
+
 	namespace asio = boost::asio;
 
 	msgid_type msgid = msg->id();
@@ -58,7 +64,7 @@ OVERRIDE void SocketConnectionPort::send( const std::shared_ptr<Message>& msg )
 
 	boost::system::error_code err;
 
-	mSocket->send(buffers, 0, err);
+	asio::write(*mSocket, buffers, err);
 
 	if(err)
 	{
@@ -78,7 +84,9 @@ void SocketConnectionPort::startReceive()
 	using namespace std::placeholders;
 
 
-	assert(mSocket.get());
+	if(!mSocket)
+		return;
+
 	mDataSize = 0;
 	mDataSizeByte = 0;
 
@@ -90,6 +98,9 @@ void SocketConnectionPort::startReceive()
 
 void SocketConnectionPort::startBodyReceive()
 {
+	if(!mSocket)
+		return;
+
 	namespace asio = boost::asio;
 	using namespace std::placeholders;
 

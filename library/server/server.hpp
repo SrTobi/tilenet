@@ -35,6 +35,9 @@ public:
 	virtual void stop() = 0;
 
 	const shared_ptr<Server>& server() const;
+protected:
+	virtual OVERRIDE void init();
+
 public:
 	shared_ptr<Server> mServer;
 };
@@ -61,6 +64,10 @@ public:
 	const string& serverInfo() const;
 	const string& packageName() const;
 	const string& packageInterface() const;
+
+protected:
+	virtual OVERRIDE void init();
+
 private:
 	const string mServerName;
 	const string mServerInfo;
