@@ -4,7 +4,10 @@
 
 #include <atomic>
 #include "settings.hpp"
-#include "network/sendable.hpp"
+
+namespace net {
+	class Message;
+}
 
 namespace srv {
 
