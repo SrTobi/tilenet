@@ -4,7 +4,6 @@
 
 
 
-#include "serialization.hpp"
 
 namespace serialization {
 
@@ -22,9 +21,9 @@ void save(S& s, const std::vector<E>& v)
 template<typename S, typename E>
 void load(S& s, std::vector<E>& v)
 {
-	std::vector<E>::size_type size;
+	typename std::vector<E>::size_type size;
 	s >> size;
-	for(std::vector<E>::size_type i = 0; i < size; ++i)
+	for(typename std::vector<E>::size_type i = 0; i < size; ++i)
 	{
 		v.emplace_back();
 		s >> v.back();

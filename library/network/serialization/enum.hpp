@@ -3,7 +3,6 @@
 #define _TN_SERIALIZATION_ENUM_HPP
 
 #include <type_traits>
-#include "serialization.hpp"
 
 namespace serialization {
 

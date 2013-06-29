@@ -3,17 +3,30 @@
 #define _TN_SERIALIZATION_WCHAR_HPP
 
 
-#include "serialization.hpp"
 
 namespace serialization {
 
 
 template<typename S>
+void save(S& s, wchar_t wch)
+{
+	s << uint32(wch);
+}
+
+template<typename S>
+void load(S& s, wchar_t& wch)
+{
+	uint32 v;
+	s >> v;
+	wch = (wchar_t)v;
+}
+
+
+
+template<typename S>
 void serialize(S& s, wchar_t& wch)
 {
-	uint32 v = wch;
-	s & v;
-	wch = v;
+	split(s, wch);
 }
 
 

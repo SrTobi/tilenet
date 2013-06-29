@@ -3,7 +3,6 @@
 #define _TN_SERIALIZATION_PAIR_HPP
 
 
-#include "serialization.hpp"
 
 namespace serialization {
 

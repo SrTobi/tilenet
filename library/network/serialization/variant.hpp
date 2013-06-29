@@ -14,8 +14,6 @@
 #include <boost/variant.hpp>
 
 
-#include "serialization.hpp"
-
 namespace serialization {
 
 namespace detail {

@@ -3,11 +3,11 @@
 #define _MESSAGE_HPP
 
 #include <sstream>
-#include "serialization/serialization.hpp"
 #include "settings.hpp"
 
 #include "protocol.hpp"
 
+#include "serialization/serialization.hpp"
 
 namespace net {
 

@@ -8,6 +8,12 @@
 #include "settings.hpp"
 #include "access.hpp"
 
+#include "wchar_t.hpp"
+#include "enum.hpp"
+#include "string.hpp"
+#include "vector.hpp"
+#include "variant.hpp"
+#include "pair.hpp"
 
 namespace serialization {
 
@@ -262,9 +268,6 @@ static void split(Ty* v, Deserializer<Impl, Stream>& s)
 }
 
 
-#include "string.hpp"
-#include "enum.hpp"
-#include "wchar_t.hpp"
 
 
 

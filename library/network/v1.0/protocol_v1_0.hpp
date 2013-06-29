@@ -5,7 +5,6 @@
 
 #include <vector>
 
-#include "network/serialization/serialization.hpp"
 #include "network/serialization/vector.hpp"
 #include "network/serialization/pair.hpp"
 

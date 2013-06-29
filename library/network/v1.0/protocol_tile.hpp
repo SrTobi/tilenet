@@ -6,8 +6,7 @@
 
 #include "settings.hpp"
 
-#include "network/serialization/serialization.hpp"
-#include "network/serialization/variant.hpp"
+#include "network/serialization/access.hpp"
 
 
 #include "utils/additional_comparison.hpp"

@@ -3,7 +3,7 @@
 #define _PROTOCOL_VIEW_HPP
 
 
-#include "network/serialization/serialization.hpp"
+#include "network/serialization/access.hpp"
 #include "settings.hpp"
 
 namespace proto {
