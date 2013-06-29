@@ -101,11 +101,22 @@ void StdTilePool::loadTextureFromSource( const sf::Uint8* src, unsigned int leng
 	}
 }
 
-void StdTilePool::addStdTile( unsigned int col, unsigned int row, const string& name )
+void StdTilePool::addStdTile( unsigned int col, unsigned int row, const string& names )
 {
 	auto sprite = sf::Sprite(mTileImage, sf::IntRect(col * TILE_WIDTH, row * TILE_HEIGHT, /*(col+1) **/ TILE_WIDTH, /*(row+1) **/ TILE_HEIGHT));
 	sprite.setScale(1.0f / 8.0f, 1.0f / 12.0f);
-	mTilesAssociation.insert(std::make_pair(name, std::make_shared<StdTile>(sprite)));
+	auto tile = std::make_shared<StdTile>(sprite);
+
+	std::wistringstream iss(names);
+	string name;
+	bool first = true;
+
+	while(std::getline(iss, name, L'|'))
+	{
+		bool newInserted;
+		std::tie(std::ignore, newInserted) = mTilesAssociation.insert(std::make_pair(name, tile));
+		tnAssert(newInserted);
+	}
 }
 
 
@@ -113,16 +124,16 @@ void StdTilePool::init()
 {
 	loadTextureFromSource(StdTileImageSource, StdTileImageSourceLegth);
 	// numbers
-	addStdTile(6, 1, L"0");
-	addStdTile(7, 1, L"1");
-	addStdTile(8, 1, L"2");
-	addStdTile(9, 1, L"3");
-	addStdTile(10, 1, L"4");
-	addStdTile(11, 1, L"5");
-	addStdTile(12, 1, L"6");
-	addStdTile(13, 1, L"7");
-	addStdTile(14, 1, L"8");
-	addStdTile(15, 1, L"9");
+	addStdTile(6, 1, L"0|zero");
+	addStdTile(7, 1, L"1|one");
+	addStdTile(8, 1, L"2|two");
+	addStdTile(9, 1, L"3|three");
+	addStdTile(10, 1, L"4|four");
+	addStdTile(11, 1, L"5|five");
+	addStdTile(12, 1, L"6|six");
+	addStdTile(13, 1, L"7|seven");
+	addStdTile(14, 1, L"8|eight");
+	addStdTile(15, 1, L"9|nine");
 
 	// upper case
 	addStdTile(23, 1, L"A");
@@ -179,6 +190,26 @@ void StdTilePool::init()
 	addStdTile(14, 3, L"x");
 	addStdTile(15, 3, L"y");
 	addStdTile(16, 3, L"z");
+
+	// smiley
+	addStdTile(0, 0, L"smiley|smiley1|dark-smiley");
+	addStdTile(0, 1, L"smiley2|light-smiley");
+	
+	// punctuations
+	addStdTile(4, 1, L".|fullstop|point|dot");
+	addStdTile(2, 1, L",|comma");
+	addStdTile(16, 1, L":|colon");
+	addStdTile(17, 1, L";|semicolon");
+	addStdTile(21, 1, L"?|question|questionmark");
+
+	// math
+	addStdTile(3, 1, L"-|dash|minus");
+	addStdTile(1, 1, L"+|plus|add");
+	addStdTile(0, 1, L"*|mul|mult|asterisk");
+	addStdTile(5, 1, L"/|slash|divide|div");
+	addStdTile(19, 1, L"=|equals");
+	addStdTile(18, 1, L"<|less-than");
+	addStdTile(20, 1, L">|greater-than");
 }
 
 const sf::Texture& StdTilePool::getTexture() const
