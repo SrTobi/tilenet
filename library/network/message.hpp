@@ -3,9 +3,7 @@
 #define _MESSAGE_HPP
 
 #include <sstream>
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/noncopyable.hpp>
+#include "serialization/serialization.hpp"
 #include "settings.hpp"
 
 #include "protocol.hpp"
@@ -37,9 +35,9 @@ template<msgid_type Id, proto::versions::Version V>
 shared_ptr<Message> make_message(const proto::MsgFormat<Id, V>& msg)
 {
 	std::stringstream ss;
-	boost::archive::text_oarchive archive(ss);
+	serialization::TextSerializer<> archive(ss);
 
-	archive << msg;
+	archive << std::hex << msg;
 
 	std::string buf = ss.str();
 
@@ -54,9 +52,9 @@ template<msgid_type Id, proto::versions::Version V>
 void extract_message(const shared_ptr<Message>& msg, proto::MsgFormat<Id, V>& dest)
 {
 	std::stringstream ss(std::string(msg->buffer().begin(), msg->buffer().end()));
-	boost::archive::text_iarchive archive(ss);
+	serialization::TextDeserializer<> archive(ss);
 
-	archive >> dest;
+	archive >> std::hex >> dest;
 }
 
 

@@ -2,7 +2,7 @@
 #ifndef _VECTOR_HPP
 #define _VECTOR_HPP
 
-#include <boost/serialization/access.hpp>
+#include "network/serialization/access.hpp"
 #include <vector>
 #include <sstream>
 
@@ -13,9 +13,9 @@ template<typename T>
 class basic_vector2
 {
 private:
-	friend class boost::serialization::access;
+	friend class serialization::access;
 	template<typename Archive>
-	void serialize(Archive &ar, const unsigned int version){
+	void serialize(Archive &ar){
 		ar & x;
 		ar & y;
 	}

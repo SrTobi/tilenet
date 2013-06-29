@@ -2,24 +2,22 @@
 #ifndef _PROTOCOL_1_0_HPP
 #define _PROTOCOL_1_0_HPP
 
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/list.hpp>
-#include <boost/serialization/vector.hpp>
-#include <boost/serialization/utility.hpp>
 
 #include <vector>
+
+#include "network/serialization/serialization.hpp"
+#include "network/serialization/vector.hpp"
+#include "network/serialization/pair.hpp"
 
 #include "settings.hpp"
 #include "../protocol.hpp"
 #include "protocol_tile.hpp"
 #include "key_mapping_v1_0.hpp"
 #include "protocol_view_v1_0.hpp"
-#include "utils/boost_unique_ptr_serialization.hpp"
-#include "utils/utf8_string.hpp"
 
 #define PROTOCOL_THIS_VERSION					v1_0
 #define PROTOCOL_MESSAGE(_name, _target)		namespace PROTOCOL_THIS_VERSION { namespace _target{ typedef MsgFormat<PROTOCOL_THIS_VERSION::ids::_target::_name, ::proto::versions::PROTOCOL_THIS_VERSION> _name; }} template<> struct MsgFormat<PROTOCOL_THIS_VERSION::ids::_target::_name, ::proto::versions::PROTOCOL_THIS_VERSION>
-#define PROTOCOL_SERIALIZER(_ar)				friend class boost::serialization::access; template<class Archive> void serialize(Archive& _ar, const unsigned int archive_version)
+#define PROTOCOL_SERIALIZER(_ar)				friend class serialization::access; template<class S> void serialize(S& _ar)
 
 namespace proto {
 namespace v1_0 {
@@ -116,10 +114,10 @@ PROTOCOL_MESSAGE(Control_KeyEvent, to_srv)
 
 PROTOCOL_MESSAGE(Handshake_P2_ServerInformation, to_client)
 {
-	utf8_string server_name;
-	utf8_string server_info;
-	utf8_string package_name;
-	utf8_string package_interface;
+	string server_name;
+	string server_info;
+	string package_name;
+	string package_interface;
 
 	PROTOCOL_SERIALIZER(ar)
 	{
@@ -140,7 +138,7 @@ PROTOCOL_MESSAGE(Handshake_P4_AcceptesGranted, to_client)
 
 PROTOCOL_MESSAGE(Kick_Reason, to_client)
 {
-	utf8_string reason;
+	string reason;
 
 	PROTOCOL_SERIALIZER(ar)
 	{
@@ -208,7 +206,7 @@ PROTOCOL_MESSAGE(LayerControl_SendFrame, to_client)
 PROTOCOL_MESSAGE(Answer_StdTileNameRequest, to_client)
 {
 	TNID tileId;
-	utf8_string tileName;
+	string tileName;
 
 	PROTOCOL_SERIALIZER(ar)
 	{

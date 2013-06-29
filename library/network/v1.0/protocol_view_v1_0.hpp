@@ -3,7 +3,7 @@
 #define _PROTOCOL_VIEW_HPP
 
 
-#include <boost/serialization/access.hpp>
+#include "network/serialization/serialization.hpp"
 #include "settings.hpp"
 
 namespace proto {
@@ -12,7 +12,7 @@ namespace v1_0 {
 
 class PView
 {
-	friend class boost::serialization::access;
+	friend class serialization::access;
 public:
 	PView();
 	PView(const TNVIEW& view);
@@ -36,7 +36,7 @@ public:
 private:
 
 	template<typename Archive>
-	void serialize(Archive &ar, const unsigned int version){
+	void serialize(Archive &ar){
 		ar & mOutterPosRatio;
 		ar & mOutterSizeRatio;
 		ar & mOutterPos;

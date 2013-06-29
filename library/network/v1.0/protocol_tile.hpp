@@ -2,12 +2,13 @@
 #ifndef _PROTOCOL_TILE
 #define _PROTOCOL_TILE
 
+#include <boost/variant.hpp>
 
-#include <boost/variant/variant.hpp>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/base_object.hpp>
-#include <boost/serialization/variant.hpp>
 #include "settings.hpp"
+
+#include "network/serialization/serialization.hpp"
+#include "network/serialization/variant.hpp"
+
 
 #include "utils/additional_comparison.hpp"
 
@@ -17,7 +18,7 @@ namespace net {
 
 class PTile
 {
-	friend class boost::serialization::access;
+	friend class serialization::access;
 public:
 	enum TileType
 	{
@@ -59,7 +60,7 @@ public:
 
 private:
 	template<typename Archive>
-	void serialize(Archive& ar, unsigned int version)
+	void serialize(Archive& ar)
 	{
 		ar & mData;
 	}
@@ -71,16 +72,15 @@ private:
 }
 
 
-namespace boost {
 namespace serialization {
 
 template<class Archive>
-void serialize(Archive & ar, TNTILE::nullset_type& data, const unsigned int version)
+void serialize(Archive & ar, TNTILE::nullset_type& data)
 {
 }
 
 template<class Archive>
-void serialize(Archive & ar, TNTILE::stddata_type& data, const unsigned int version)
+void serialize(Archive & ar, TNTILE::stddata_type& data)
 {
 	ar	& data.id
 		& data.color
@@ -88,7 +88,7 @@ void serialize(Archive & ar, TNTILE::stddata_type& data, const unsigned int vers
 }
 
 template<class Archive>
-void serialize(Archive & ar, TNTILE::chardata_type& data, const unsigned int version)
+void serialize(Archive & ar, TNTILE::chardata_type& data)
 {
 	ar	& data.ch
 		& data.color
@@ -98,7 +98,6 @@ void serialize(Archive & ar, TNTILE::chardata_type& data, const unsigned int ver
 
 
 } // namespace serialization
-} // namespace boost
 
 
 

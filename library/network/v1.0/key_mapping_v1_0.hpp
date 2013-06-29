@@ -41,11 +41,10 @@ private:
 
 }}
 
-namespace boost {
 namespace serialization {
 
-template<class Archive>
-void serialize(Archive & ar, TNEVENT::keyevent_type& data, const unsigned int version)
+template<class S>
+void serialize(S & ar, TNEVENT::keyevent_type& data)
 {
 	ar & data.key & data.modifier;
 }
@@ -53,7 +52,6 @@ void serialize(Archive & ar, TNEVENT::keyevent_type& data, const unsigned int ve
 
 
 } // namespace serialization
-} // namespace boost
 
 
 
