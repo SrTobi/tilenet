@@ -61,7 +61,7 @@ void load(S& s, string& str)
 {
 	std::string utf8str;
 	s >> utf8str;
-	str = from_utf8_string(utf8str);
+	str = from_utf8_string<wchar_t>(utf8str);
 }
 
 
