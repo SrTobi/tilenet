@@ -88,7 +88,7 @@ private:
 			}
 		}catch(const excp::BadIdException& e)
 		{
-			BOOST_RETHROW(e << excp::SVFactor(4.0f));
+			throw (e << excp::SVFactor(4.0f));
 		}
 	}
 
