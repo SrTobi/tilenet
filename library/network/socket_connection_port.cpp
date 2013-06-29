@@ -16,10 +16,6 @@ SocketConnectionPort::SocketConnectionPort(boost::asio::io_service& service, con
 	, mStatus(Idle)
 {
 	tnAssert(mSocket);
-
-	
-	std::string name = "socket_" + boost::lexical_cast<std::string>(debug_file_index++) + ".txt";
-	mDebugFile.open(name.c_str());
 }
 
 SocketConnectionPort::~SocketConnectionPort()
@@ -149,7 +145,6 @@ void SocketConnectionPort::handlePackageHeader( const error_code& err )
 
 	}else if(mDataSizeByte)
 	{
-		mDebugFile << "byte-size(" << (int)mDataSizeByte << "):";
 
 		// the message is small enough to fit into a byte
 		// set the byte as length
@@ -182,8 +177,6 @@ void SocketConnectionPort::handleExtendedPackageHeader( const error_code& err )
 	// convert byte
 	mDataSize = ntohl(mDataSize);
 
-	mDebugFile << "size(" << mDataSize << "):";
-
 	if(mDataSize == 0)
 	{
 		IMPLEMENTATION_TODO(L"implement better handling");
@@ -209,10 +202,6 @@ void SocketConnectionPort::handlePackageBody( const error_code& err )
 	auto msg = std::make_shared<Message>(mMsgId, std::move(mDataBuffer));
 
 	mStatus = Idle;
-
-	mDebugFile << "[" << (int)mMsgId << "]";
-	std::copy(msg->buffer().begin(), msg->buffer().end(), std::ostream_iterator<char>(mDebugFile));
-	mDebugFile << std::endl;
 
 	handleReceive(msg);
 	startReceive();
