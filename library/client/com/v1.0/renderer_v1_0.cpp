@@ -11,6 +11,7 @@
 #include "client/package/package.hpp"
 #include "client/package/package_manager.hpp"
 #include "client/package/components/std_tile.hpp"
+#include "client/package/std_tile_pool.hpp"
 
 
 sf::Color to_sf_color(TNCOLOR c)
@@ -85,6 +86,44 @@ private:
 		sf::Color mColor;
 		std::weak_ptr<StdTile> mTile;
 		shared_ptr<TileMapper> mTileMapper;
+	};
+
+
+	class CharTile
+		: public Tile
+	{
+	public:
+		CharTile(wchar_t ch, const sf::Color& color)
+			: mCh(ch)
+			, mColor(color)
+		{
+		}
+
+		virtual OVERRIDE void render(sf::RenderTarget& target, const Point& pos, const sf::Color& color)
+		{
+			std::shared_ptr<StdTile> tile = mTile.lock();
+
+			if(!tile)
+			{
+				mTile = tile = StdTilePool::Inst().getStdTile(string(1, mCh));
+			}
+
+			if(!tile)
+			{
+				mTile = tile = StdTilePool::Inst().getStdTile(string(1, L'?'));
+			}
+
+			if(tile)
+			{
+				tile->render(target, pos, mColor * color);
+			}
+		}
+
+
+	private:
+		TNID mCh;
+		sf::Color mColor;
+		std::weak_ptr<StdTile> mTile;
 	};
 public:
 	RenderLayer(const Rect& size, const Ratio& ratio, const shared_ptr<TileMapper>& manager)
@@ -165,6 +204,12 @@ private:
 				return std::unique_ptr<Tile>(new StdIdTile(data.id, to_sf_color(data.color), mTileManager));
 			}
 			break;
+		case net::PTile::CharTileType:
+			{
+				auto& data = ptile.data<TNTILE::chardata_type>();
+				return std::unique_ptr<Tile>(new CharTile(data.ch, to_sf_color(data.color)));
+			}
+
 		default:
 
 			BOOST_THROW_EXCEPTION(excp::ProtocolException() << excp::BadId(ptile.type()) << excp::BadArgument(L"tile::type") << excp::SVFactor(0.5f) << excp::InfoWhat(L"Unknown tile type!"));

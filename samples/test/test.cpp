@@ -54,6 +54,32 @@ public:
 		tilenet_destroy(m_handle);
 	}
 
+	void print(unsigned int x, unsigned int y, const std::wstring& txt, TNCOLOR color = COL_WHITE)
+	{
+		unsigned int start_x = x;
+		for(auto c : txt)
+		{
+			if(c == L'\n')
+			{
+				x = start_x;
+				++y;
+
+				if(y >= m_height)
+					return;
+
+			}else if(x < m_width)
+			{
+				TNTILE t;
+				t.type = TN_CHAR_TILE;
+				t.data.charset.ch = c;
+				t.data.charset.color = color;
+				t.data.charset.modifier = 0;
+				tile(x,y) = t;
+				++x;
+			}
+		}
+	}
+
 	const TNTILE& tile(unsigned int x, unsigned int y) const
 	{
 		return tile(y * m_width + x);
@@ -169,7 +195,6 @@ TNTILE* layerContent;
 
 TNACCEPTOR listenAcceptor;
 
-
 void init_testlayer()
 {
 	layer1 = new Layer(10, 10);
@@ -178,6 +203,7 @@ void init_testlayer()
 	layer1->tile(0,0) = a_tile();
 	layer1->tile(1,0) = a_tile(TNMAKE_COLOR(0xff, 0, 0xff, 0));
 	layer1->tile(9,9) = a_tile(TNMAKE_COLOR(0xff, 0xff, 0, 0));
+	layer1->print(2, 5, L"Hello\nwie\ngehts?");
 	layer1->flush();
 
 
