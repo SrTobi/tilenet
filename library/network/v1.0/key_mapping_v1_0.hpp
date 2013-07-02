@@ -49,6 +49,11 @@ void serialize(S & ar, TilenetKeyEvent& data)
 	ar & data.key & data.modifier;
 }
 
+template<class S>
+void serialize(S& ar, TilenetTxtEvent& data)
+{
+	ar & data.ch & data.modifier;
+}
 
 
 } // namespace serialization

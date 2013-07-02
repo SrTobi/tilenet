@@ -223,6 +223,24 @@ void MainComHandler::notifyKeyevent( const sf::Event& event )
 	mPort->send(net::make_message(ke));
 }
 
+
+OVERRIDE void MainComHandler::notifyTxtEvent( wchar_t wch )
+{
+	proto::v1_0::to_srv::Control_TxtEvent txtEvt;
+
+	txtEvt.data.ch = wch;
+
+	IMPLEMENTATION_TODO(L"Save modifier states and replace key polling!");
+	txtEvt.data.modifier =	  (sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt)? TNKM_ALT : 0)
+							| (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)? TNKM_CONTROL : 0)
+							| (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)? TNKM_SHIFT : 0)
+							| (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)? TNKM_ALTGR : 0);
+
+	mPort->send(net::make_message(txtEvt));
+}
+
+
+
 void MainComHandler::handleKick_Reason( proto::v1_0::to_client::Kick_Reason& msg )
 {
 	string reason = msg.reason;

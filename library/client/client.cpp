@@ -277,6 +277,16 @@ void ClientApp::processEvents( const sf::Event& evt )
 			ci->notifyKeyevent(evt);
 		}
 		break;
+
+	case sf::Event::TextEntered:
+		if(ci && WCHAR_MIN <= evt.text.unicode && evt.text.unicode <= WCHAR_MAX)
+		{
+			ci->notifyTxtEvent(wchar_t(evt.text.unicode));
+		}
+		break;
+
+	default:
+		break;
 	}
 }
 

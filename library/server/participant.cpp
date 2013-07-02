@@ -49,6 +49,7 @@ public:
 	{
 		mDispatcher.add(&MainStatusHandler::handleRequestStdTileName, this);
 		mDispatcher.add(&MainStatusHandler::handleKeyEvent, this);
+		mDispatcher.add(&MainStatusHandler::handleTxtEvent, this);
 	}
 
 
@@ -115,6 +116,16 @@ private:
 		default:
 			BOOST_THROW_EXCEPTION(excp::ProtocolException() << excp::BadArgument(L"keyevent.type") << excp::SVFactor(0.3f) << excp::InfoWhat(L"Unknown key action!"));
 		}
+
+		equeue()->push(event);
+	}
+
+	void handleTxtEvent(proto::curv::to_srv::Control_TxtEvent& e)
+	{
+		TNEVENT event;
+		event.type = TNEV_TXT;
+		event.participant = participant()->id();
+		event.data.txtevent = e.data;
 
 		equeue()->push(event);
 	}

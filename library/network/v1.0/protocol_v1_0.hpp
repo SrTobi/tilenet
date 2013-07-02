@@ -31,7 +31,8 @@ namespace to_srv {
 
 		Request_StdTileName			= 0x30,
 
-		Control_KeyEvent			= 0x50
+		Control_KeyEvent			= 0x50,
+		Control_TxtEvent			= 0x51
 	};
 
 }
@@ -103,6 +104,20 @@ PROTOCOL_MESSAGE(Control_KeyEvent, to_srv)
 		ar & type & data;
 	}
 };
+
+
+/////////////// key control ///////////////
+
+PROTOCOL_MESSAGE(Control_TxtEvent, to_srv)
+{
+	TilenetTxtEvent data;
+
+	PROTOCOL_SERIALIZER(ar)
+	{
+		ar & data;
+	}
+};
+
 
 
 // ####################################################################### to client #######################################################################

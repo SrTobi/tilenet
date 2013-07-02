@@ -63,6 +63,7 @@ private:
 
 	virtual OVERRIDE void notifyRender( sf::RenderTarget& target );
 	virtual OVERRIDE void notifyKeyevent( const sf::Event& event );
+	virtual OVERRIDE void notifyTxtEvent(wchar_t wch);
 
 
 

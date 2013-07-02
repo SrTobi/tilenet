@@ -17,6 +17,7 @@ class ComInterface
 public:
 	virtual void notifyRender(sf::RenderTarget& target) = 0;
 	virtual void notifyKeyevent(const sf::Event& event) = 0;
+	virtual void notifyTxtEvent(wchar_t wch) = 0;
 };
 
 

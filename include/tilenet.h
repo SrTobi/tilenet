@@ -92,6 +92,7 @@ extern "C" {
 
 #define TNEV_KEYDOWN		((TNEVTYPE)100)	//!< Key was pressed
 #define TNEV_KEYUP			((TNEVTYPE)101)	//!< Key was released
+#define TNEV_TXT			((TNEVTYPE)102) //!< Text was entered
 
 /**** tileset flags ****/
 #define TNTS_GRAPHIC	0x000000
@@ -181,6 +182,13 @@ typedef struct
 	TNFLAG		modifier;	//!	A key modifier
 } TilenetKeyEvent;
 
+
+typedef struct
+{
+	wchar_t		ch;			//! A character entered by a participant
+	TNFLAG		modifier;	//!	A key modifier
+} TilenetTxtEvent;
+
 //! Contains information about an event
 typedef struct TilenetEvent
 {
@@ -192,6 +200,9 @@ typedef struct TilenetEvent
 	{
 		//! In case of an keyevent this will contain information
 		TilenetKeyEvent keyevent;
+
+		//! In case of a text event this will contain related information
+		TilenetTxtEvent txtevent;
 	} data;
 
 } TNEVENT;
