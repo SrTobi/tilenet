@@ -243,6 +243,12 @@ void do_event(TNEVENT& e)
 	case TNEV_DISCONNECT:
 		std::cout << "Player disconnected!\n";
 		break;
+	case TNEV_TXT:
+		std::wcout << L"Text event[" << e.data.txtevent.ch << "]";
+		layer1->print(3, 0, std::wstring(1, e.data.txtevent.ch));
+		layer1->flush();
+		break;
+
 	case TNEV_KEYDOWN:
 		{
 			TNKEYCODE key = e.data.keyevent.key;
