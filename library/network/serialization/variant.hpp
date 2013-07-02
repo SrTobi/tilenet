@@ -110,7 +110,7 @@ void load(S& ar,boost::variant<BOOST_VARIANT_ENUM_PARAMS(T)>& v)
 		if(which >=  boost::mpl::size<types>::value)
 			// this might happen if a type was removed from the list of variant types
 		{
-			NOT_IMPLEMENTED();
+			BOOST_THROW_EXCEPTION(excp::SerializationException() << excp::InfoWhat(L"Unknown variant type detected!"));
 		}
 
 		detail::variant_impl<types>::load(ar, which, v);
