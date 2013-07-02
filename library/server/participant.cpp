@@ -279,6 +279,8 @@ void Participant::onReceive( const shared_ptr<net::Message>& msg )
 	} catch(...)
 	{
 		log.error() << lexical_convert<string>(boost::current_exception_diagnostic_information());
+		log.error() << L"Unknown error disconnect participant[" << id() <<  L"]!";
+		kick(L"Heavy security violation!!!");
 	}
 }
 
