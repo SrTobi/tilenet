@@ -123,6 +123,11 @@ void StdTilePool::addStdTile( unsigned int col, unsigned int row, const string& 
 void StdTilePool::init()
 {
 	loadTextureFromSource(StdTileImageSource, StdTileImageSourceLegth);
+
+	// space tile
+	addStdTile(0, 8, L" |space");
+
+
 	// numbers
 	addStdTile(6, 1, L"0|zero");
 	addStdTile(7, 1, L"1|one");
