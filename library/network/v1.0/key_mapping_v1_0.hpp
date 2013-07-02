@@ -44,7 +44,7 @@ private:
 namespace serialization {
 
 template<class S>
-void serialize(S & ar, TNEVENT::keyevent_type& data)
+void serialize(S & ar, TilenetKeyEvent& data)
 {
 	ar & data.key & data.modifier;
 }

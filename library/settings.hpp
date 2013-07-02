@@ -56,6 +56,10 @@ typedef uint8 msgid_type;
 typedef uint32 version_type;
 
 
+typedef struct {
+
+} TilenetNullData;
+
 
 
 #include "utils/exceptions.hpp"

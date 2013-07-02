@@ -151,7 +151,7 @@ typedef unsigned int	TNKEYCODE;
 
 /**** objects ****/
 struct TilenetObject;
-typedef TilenetObject*	TNOBJ;
+typedef struct TilenetObject*	TNOBJ;
 
 
 typedef TNOBJ TNSERVER;
@@ -173,22 +173,25 @@ typedef struct TilenetServerConfig
 	TNFLAG			options;	//!< Further options
 } TNSVRCONFIG;
 
+
+
+typedef struct
+{
+	TNKEYCODE	key;		//! An associated keycode
+	TNFLAG		modifier;	//!	A key modifier
+} TilenetKeyEvent;
+
 //! Contains information about an event
 typedef struct TilenetEvent
 {
 	TNEVTYPE		type;			//! Type of an event
 	TNPARTICIPANT	participant;	//! Participant the event coming from
 
-	typedef struct
-	{
-		TNKEYCODE	key;		//! An associated keycode
-		TNFLAG		modifier;	//!	A key modifier
-	} keyevent_type;
 
 	union
 	{
 		//! In case of an keyevent this will contain information
-		keyevent_type keyevent;
+		TilenetKeyEvent keyevent;
 	} data;
 
 } TNEVENT;
@@ -200,30 +203,27 @@ typedef enum TileTypes
 	TN_CHAR_TILE = 2
 } TNTILIETYPE;
 
+typedef struct {
+	TNID	id;
+	TNFLAG	modifier;
+	TNCOLOR color;
+} TilenetStdTilesetData;
+
+typedef struct {
+	wchar_t ch;
+	TNFLAG	modifier;
+	TNCOLOR color;
+} TilenetCharTilesetData;
+
+
 typedef struct TilenetTile
 {
 	TNTILIETYPE type;
 
-	typedef struct {
-
-	} nullset_type;
-
-	typedef struct {
-		TNID	id;
-		TNFLAG	modifier;
-		TNCOLOR color;
-	} stddata_type;
-
-	typedef struct {
-		wchar_t ch;
-		TNFLAG	modifier;
-		TNCOLOR color;
-	} chardata_type;
-
 	union
 	{
-		stddata_type stdset;
-		chardata_type charset;
+		TilenetStdTilesetData stdset;
+		TilenetCharTilesetData charset;
 	} data;
 
 } TNTILE;

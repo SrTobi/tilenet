@@ -27,9 +27,9 @@ public:
 	};
 
 private:
-	typedef boost::variant<	TNTILE::nullset_type,
-							TNTILE::stddata_type,
-							TNTILE::chardata_type> value_type;
+	typedef boost::variant<	TilenetNullData,
+							TilenetStdTilesetData,
+							TilenetCharTilesetData> value_type;
 
 public:
 	PTile();
@@ -74,12 +74,12 @@ private:
 namespace serialization {
 
 template<class Archive>
-void serialize(Archive & ar, TNTILE::nullset_type& data)
+void serialize(Archive & ar, TilenetNullData& data)
 {
 }
 
 template<class Archive>
-void serialize(Archive & ar, TNTILE::stddata_type& data)
+void serialize(Archive & ar, TilenetStdTilesetData& data)
 {
 	ar	& data.id
 		& data.color
@@ -87,7 +87,7 @@ void serialize(Archive & ar, TNTILE::stddata_type& data)
 }
 
 template<class Archive>
-void serialize(Archive & ar, TNTILE::chardata_type& data)
+void serialize(Archive & ar, TilenetCharTilesetData& data)
 {
 	ar	& data.ch
 		& data.color

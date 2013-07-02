@@ -200,13 +200,13 @@ private:
 			break;
 		case net::PTile::StdTileType:
 			{
-				auto& data = ptile.data<TNTILE::stddata_type>();
+				auto& data = ptile.data<TilenetStdTilesetData>();
 				return std::unique_ptr<Tile>(new StdIdTile(data.id, to_sf_color(data.color), mTileManager));
 			}
 			break;
 		case net::PTile::CharTileType:
 			{
-				auto& data = ptile.data<TNTILE::chardata_type>();
+				auto& data = ptile.data<TilenetCharTilesetData>();
 				return std::unique_ptr<Tile>(new CharTile(data.ch, to_sf_color(data.color)));
 			}
 

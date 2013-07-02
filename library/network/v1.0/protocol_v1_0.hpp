@@ -96,7 +96,7 @@ PROTOCOL_MESSAGE(Control_KeyEvent, to_srv)
 	};
 
 	EvtType type;
-	TNEVENT::keyevent_type data;
+	TilenetKeyEvent data;
 
 	PROTOCOL_SERIALIZER(ar)
 	{

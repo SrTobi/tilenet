@@ -7,12 +7,12 @@ namespace net {
 
 
 PTile::PTile()
-	: mData(TNTILE::nullset_type())
+	: mData(TilenetNullData())
 {
 }
 
 PTile::PTile(const TNTILE& tile)
-	: mData(TNTILE::nullset_type())
+	: mData(TilenetNullData())
 {
 	assign(tile);
 }
@@ -71,7 +71,7 @@ void PTile::assign(const TNTILE& tile)
 	switch(tile.type)
 	{
 	case TN_NULL_TILE:
-		mData = TNTILE::nullset_type();
+		mData = TilenetNullData();
 		break;
 	case TN_STD_TILE:
 		mData = tile.data.stdset;
