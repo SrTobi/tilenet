@@ -53,6 +53,7 @@ private:
 	void disconnect();
 	void handleNewConnection(const shared_ptr<net::ConnectionPort>& port);
 	void processWindow();
+	void processEvents(const sf::Event& evt);
 
 	OVERRIDE void onReceive(const shared_ptr<net::Message>& msg);
 	OVERRIDE void onDisconnect();

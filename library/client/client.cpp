@@ -224,12 +224,7 @@ void ClientApp::processWindow()
 		sf::Event event;
 		while (mWindow.pollEvent(event))
 		{
-			if (event.type == sf::Event::Closed)
-				mWindow.close();
-			if(ci && (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) && event.key.code != sf::Keyboard::Unknown)
-			{
-				ci->notifyKeyevent(event);
-			}
+			processEvents(event);
 		}
 
 		mWindow.clear();
@@ -264,6 +259,27 @@ void ClientApp::processWindow()
 		mWindowProcessTimer.async_wait(std::move(callBinding));
 	}
 }
+
+void ClientApp::processEvents( const sf::Event& evt )
+{
+	auto ci = mComInterface.lock();
+
+	switch(evt.type)
+	{
+	case sf::Event::Closed:
+		mWindow.close();
+		break;
+
+	case sf::Event::KeyReleased:
+	case sf::Event::KeyPressed:
+		if(ci && evt.key.code != sf::Keyboard::Unknown)
+		{
+			ci->notifyKeyevent(evt);
+		}
+		break;
+	}
+}
+
 
 
 void ClientApp::onReceive( const shared_ptr<net::Message>& msg )
