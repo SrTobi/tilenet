@@ -110,6 +110,14 @@ struct ProtocolException: public NetworkException
 	}
 };
 
+struct SerializationException: public ProtocolException
+{
+	virtual OVERRIDE const char* what() const throw()
+	{
+		return "Failed to perform serialization!";
+	}
+};
+
 struct DispatchException: public NetworkException
 {
 	virtual OVERRIDE const char* what() const throw()

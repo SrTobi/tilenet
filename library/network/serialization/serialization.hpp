@@ -60,7 +60,6 @@ namespace detail {
 
 }
 
-
 template<typename Impl, typename Stream>
 class Serializer
 {
@@ -81,7 +80,7 @@ public:
 
 		if(mImpl.bad())
 		{
-			NOT_IMPLEMENTED();
+			BOOST_THROW_EXCEPTION(excp::SerializationException() << excp::InfoWhat(L"Failed to serialize '" + lexical_convert<string>(typeid(Ty).name()) + L"'!"));
 		}
 
 		return *this;
@@ -136,7 +135,7 @@ public:
 
 		if(mImpl.bad())
 		{
-			NOT_IMPLEMENTED();
+			BOOST_THROW_EXCEPTION(excp::SerializationException() << excp::SVFactor(5.0f) << excp::InfoWhat(L"Failed to deserialize '" + lexical_convert<string>(typeid(Ty).name()) + L"'!"));
 		}
 
 		return *this;
