@@ -1,5 +1,6 @@
 #include "4con.h"
 #include "player.h"
+#include "name_input_dialog.h"
 
 TNSERVER GServer;
 TNACCEPTOR GLocalAcceptor;
@@ -61,6 +62,12 @@ int start_server()
 	return 1;
 }
 
+void add_new_player(TNID p)
+{
+	register_player(p);
+	attach_name_input_dialog(p);
+}
+
 
 void run_server(TNID localPlayer)
 {
@@ -69,7 +76,7 @@ void run_server(TNID localPlayer)
 	TNEVENT evt;
 
 	if(localPlayer)
-		register_player(localPlayer);
+		add_new_player(localPlayer);
 
 	while(1)
 	{
@@ -79,7 +86,7 @@ void run_server(TNID localPlayer)
 		switch (evt.type)
 		{
 		case TNEV_CONNECT:
-			register_player(evt.participant);
+			add_new_player(evt.participant);
 			break;
 
 		case TNEV_DISCONNECT:
