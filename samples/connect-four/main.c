@@ -1,5 +1,5 @@
 #include "4con.h"
-
+#include "player.h"
 
 TNSERVER GServer;
 TNACCEPTOR GLocalAcceptor;
@@ -56,6 +56,8 @@ int start_server()
 		return 0;
 	}
 
+	init_player_managment(maxPlayer);
+
 	return 1;
 }
 
@@ -66,6 +68,9 @@ void run_server(TNID localPlayer)
 	size_t fetched = 0;
 	TNEVENT evt;
 
+	if(localPlayer)
+		register_player(localPlayer);
+
 	while(1)
 	{
 		tilenet_fetch_events(GServer, &evt, 1, &fetched, 0);
@@ -73,8 +78,16 @@ void run_server(TNID localPlayer)
 
 		switch (evt.type)
 		{
-		default:
+		case TNEV_CONNECT:
+			register_player(evt.participant);
 			break;
+
+		case TNEV_DISCONNECT:
+			unregister_player(evt.participant);
+			break;
+
+		default:
+			notify_player_event(evt.participant, &evt);
 		}
 	}
 }
