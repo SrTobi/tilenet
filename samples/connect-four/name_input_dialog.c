@@ -1,8 +1,8 @@
 #include "name_input_dialog.h"
 #include "player.h"
 
-#define MAX_NAME_LEN 12
-#define NAME_BUF_SIZE 16
+
+#define ALLOWED_NAME_CHARS L"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_"
 
 typedef struct
 {
@@ -26,6 +26,8 @@ void handle_event(NameInputDialog* nip, TNEVENT* evt)
 		if(evt->data.keyevent.key == enterkey && nip->len >= 2)
 		{
 			// Done
+			wcscpy(get_player(evt->participant)->name, nip->input);
+
 			return;
 		}else if(evt->data.keyevent.key == backkey && nip->len > 0)
 		{
@@ -40,7 +42,7 @@ void handle_event(NameInputDialog* nip, TNEVENT* evt)
 	{
 		wchar_t ch = evt->data.txtevent.ch;
 
-		if(wcsrchr(L"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_", ch))
+		if(wcsrchr(ALLOWED_NAME_CHARS, ch))
 		{
 			nip->input[nip->len] = ch;
 			nip->len++;

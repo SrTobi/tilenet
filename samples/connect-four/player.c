@@ -1,12 +1,6 @@
 #include "player.h"
 
 
-typedef struct
-{
-	TNID id;
-	void* context;
-	EvtHandler handler;
-} Player;
 
 typedef struct
 {
