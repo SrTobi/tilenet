@@ -1,7 +1,7 @@
 #include "name_input_dialog.h"
 #include "player.h"
 
-#define MAX_NAME_LEN 8
+#define MAX_NAME_LEN 12
 #define NAME_BUF_SIZE 16
 
 typedef struct
