@@ -19,6 +19,24 @@ int move_sel(Layer* layer, int sel, int dt)
 	return newsel;
 }
 
+int kick_to_ip(TNID player)
+{
+#define IP_BUF_SIZE 128
+	wchar_t reason[IP_BUF_SIZE*2];
+	wchar_t buf[IP_BUF_SIZE];
+	FILE* file = fopen("ip.txt", "r");
+
+	if(file && fgetws(buf, IP_BUF_SIZE, file) != NULL)
+	{
+		wcscpy(reason, L"@!!!link:");
+		wcscat(reason, buf);
+		tilenet_kick(player, reason);
+		return 1;
+	}
+
+	return 0;
+}
+
 // Return 0 if we want to stop
 // or the player id if the player wants to create a server
 TNID doLocalMainMenu()
@@ -54,7 +72,6 @@ TNID doLocalMainMenu()
 
 		case TNEV_DISCONNECT:
 			assert(player == evt.participant);
-			tilenet_exit(0);
 			return 0;
 
 		case TNEV_KEYDOWN:
@@ -71,6 +88,12 @@ TNID doLocalMainMenu()
 				switch(sel)
 				{
 				case 0: // connect to ip
+					if(kick_to_ip(player))
+					{
+						return 0;
+					}else{
+						// no ip.txt
+					}
 					break;
 				case 1: // open server
 					return player;
@@ -95,6 +118,7 @@ int main(int argc, const char** args)
 {
 	TNSVRCONFIG config;
 	int serverOnly = 0;
+	TNID localPlayer;
 	int idx;
 
 	for(idx = 0; idx < argc; ++idx)
@@ -128,10 +152,14 @@ int main(int argc, const char** args)
 			return 2;
 		}
 
-		doLocalMainMenu();
-
+		localPlayer = doLocalMainMenu();
 	}
 
+	if(localPlayer || serverOnly)
+	{
+		// start server
+	}
 
+	tilenet_exit(0);
 	return 0;
 }
