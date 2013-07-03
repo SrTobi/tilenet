@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 	<package>
-		<information name="test-pack">
+		<information name="connect-4-sample-package">
 			Some information about the package !
 		
 			<author name="tobias" />
-			<interface value="tn.org.samples.test" />
+			<interface value="tn.org.samples.4con" />
 		</information>
 	</package>
