@@ -5,25 +5,24 @@ TNSERVER GServer;
 TNACCEPTOR GLocalAcceptor;
 
 
-int move_sel(Layer* layer, int sel, int dt)
-{
-	int newsel = sel + dt;
 
-	if(newsel < 0 || 3 <= newsel)
-		return sel;
+#define MENU_CONNECT_TO_IP 0
+#define MENU_CREATE_SERVER 1
+#define MENU_EXIT 2
 
-	print_chars(layer, 0, 2 + sel, 0, L"  ");
-	print_chars(layer, 0, 2 + newsel, COLOR_LGREY, L"->");
-	flush_layer(layer);
+#define MENU_MIN 0
+#define MENU_MAX 2
 
-	return newsel;
-}
+#define MENU_HEAD_COLOR		COLOR_WHITE
+#define MENU_COLOR			COLOR_LGREY
+#define MENU_WARN_COLOR		COLOR_RED
 
 int kick_to_ip(TNID player)
 {
 #define IP_BUF_SIZE 128
 	wchar_t reason[IP_BUF_SIZE*2];
 	wchar_t buf[IP_BUF_SIZE];
+#pragma warning(disable: 4996)
 	FILE* file = fopen("ip.txt", "r");
 
 	if(file && fgetws(buf, IP_BUF_SIZE, file) != NULL)
@@ -37,6 +36,47 @@ int kick_to_ip(TNID player)
 	return 0;
 }
 
+void displayInfo(Layer* layer, const wchar_t* info, TNCOLOR color)
+{
+	print_chars(layer, 0, 6, color, L"%-20s", info);
+}
+
+void print_sel_info(Layer* layer, int sel)
+{
+	switch (sel)
+	{
+	case MENU_CONNECT_TO_IP:
+		displayInfo(layer, L"Reads ip from ip.txt", MENU_COLOR);
+		break;
+	case MENU_CREATE_SERVER:
+		displayInfo(layer, L"Open a tcp server", MENU_COLOR);
+		break;
+
+	case MENU_EXIT:
+		displayInfo(layer, L"Exit to OS", MENU_COLOR);
+		break;
+
+	default:
+		break;
+	}
+}
+
+int move_sel(Layer* layer, int sel, int dt)
+{
+	int newsel = sel + dt;
+
+	if(newsel < MENU_MIN || MENU_MAX < newsel)
+		return sel;
+
+	print_chars(layer, 0, 2 + sel, MENU_COLOR, L"  ");
+	print_chars(layer, 0, 2 + newsel, MENU_COLOR, L"->");
+	print_sel_info(layer, newsel);
+	flush_layer(layer);
+
+	return newsel;
+}
+
+
 // Return 0 if we want to stop
 // or the player id if the player wants to create a server
 TNID doLocalMainMenu()
@@ -47,12 +87,12 @@ TNID doLocalMainMenu()
 	size_t fetched = 0;
 	TNID player  = 0;
 	int sel = 0;
-	Layer* menuLayer = create_layer(20, 5);
-	print_chars(menuLayer, 5, 0, COLOR_WHITE, L"Connect 4");
-	print_chars(menuLayer, 0, 2, COLOR_LGREY, L"->Connect to ip");
-	print_chars(menuLayer, 2, 3, COLOR_LGREY, L"Open server");
-	print_chars(menuLayer, 2, 4, COLOR_LGREY, L"Exit");
-	flush_layer(menuLayer);
+	Layer* menuLayer = create_layer(20, 7);
+	print_chars(menuLayer, 5, 0, MENU_HEAD_COLOR, L"Connect 4");
+	print_chars(menuLayer, 2, 2, MENU_COLOR, L"Connect to ip");
+	print_chars(menuLayer, 2, 3, MENU_COLOR, L"Open server");
+	print_chars(menuLayer, 2, 4, MENU_COLOR, L"Exit");
+	move_sel(menuLayer, sel , 0);
 
 	tilenet_keycode(L"up", &upkey);
 	tilenet_keycode(L"down", &downkey);
@@ -87,17 +127,19 @@ TNID doLocalMainMenu()
 			{
 				switch(sel)
 				{
-				case 0: // connect to ip
+				case MENU_CONNECT_TO_IP: // connect to ip
 					if(kick_to_ip(player))
 					{
 						return 0;
 					}else{
-						// no ip.txt
+						//print_chars(menuLayer, )
+						displayInfo(menuLayer, L"Failed to load ip.txt", MENU_WARN_COLOR);
+						flush_layer(menuLayer);
 					}
 					break;
-				case 1: // open server
+				case MENU_CREATE_SERVER: // open server
 					return player;
-				case 2: // exit
+				case MENU_EXIT: // exit
 					tilenet_destroy(GLocalAcceptor);
 					break;
 				default:

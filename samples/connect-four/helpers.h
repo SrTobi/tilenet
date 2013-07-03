@@ -18,6 +18,7 @@ typedef struct {
 
 #define COLOR_WHITE (0xFFFFFFFF)
 #define COLOR_LGREY (0xBBBBBBBB)
+#define COLOR_RED	(0xFFFF0000)
 
 
 Layer* create_layer(unsigned int w, unsigned int h);
