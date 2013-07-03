@@ -151,8 +151,8 @@ void ClientApp::connectTo( const string& addr, const string& service )
 
 		if(error)
 		{
-			++endpoint_iterator;
 			messenger()->add(L"Failed to connect " + lexical_convert<string>(endpoint_iterator->host_name()) + L"!", sf::Color::Yellow);
+			++endpoint_iterator;
 		}
 	}
 
