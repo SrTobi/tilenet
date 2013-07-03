@@ -112,6 +112,7 @@ TNID doLocalMainMenu()
 
 		case TNEV_DISCONNECT:
 			assert(player == evt.participant);
+			destroy_layer(menuLayer);
 			return 0;
 
 		case TNEV_KEYDOWN:
@@ -128,16 +129,15 @@ TNID doLocalMainMenu()
 				switch(sel)
 				{
 				case MENU_CONNECT_TO_IP: // connect to ip
-					if(kick_to_ip(player))
+					if(!kick_to_ip(player))
 					{
-						return 0;
-					}else{
 						//print_chars(menuLayer, )
 						displayInfo(menuLayer, L"Failed to load ip.txt", MENU_WARN_COLOR);
 						flush_layer(menuLayer);
 					}
 					break;
 				case MENU_CREATE_SERVER: // open server
+					destroy_layer(menuLayer);
 					return player;
 				case MENU_EXIT: // exit
 					tilenet_destroy(GLocalAcceptor);
