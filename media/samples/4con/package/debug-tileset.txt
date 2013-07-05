@@ -1,2 +1,6 @@
-
-test-a a
+board-cursor v
+board-side |
+board-bottom -
+board-left-corner *
+board-right-corner *
+board-token X
