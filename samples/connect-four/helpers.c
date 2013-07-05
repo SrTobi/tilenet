@@ -54,6 +54,14 @@ void set_tile( Layer* layer, unsigned int x, unsigned int y, TNTILE* tile )
 	}
 }
 
+void set_nulltile( Layer* layer, unsigned int x, unsigned int y )
+{
+	TNTILE tile;
+	memset(&tile, 0, sizeof(tile));
+	set_tile(layer, x, y, &tile);
+}
+
+
 void set_stdtile( Layer* layer, unsigned int x, unsigned int y, TNID tileid, TNCOLOR color )
 {
 	TNTILE tile;
@@ -124,4 +132,13 @@ void print_chars( Layer* layer, unsigned int x, unsigned int y, TNCOLOR color, c
 void flush_layer( Layer* layer )
 {
 	tilenet_update_tilelayer(layer->handle, layer->content, layer->changes);
+}
+
+TNID get_tileid( const wchar_t* name )
+{
+	TNID id;
+
+	tilenet_stdtile(name, &id);
+
+	return id;
 }
