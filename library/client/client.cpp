@@ -141,14 +141,50 @@ void ClientApp::connectTo( const string& addr, const string& service )
 	// try to reach host
 	tcp::resolver resolver(mService);
 	tcp::resolver::query query(lexical_convert<std::string>(addr), lexical_convert<std::string>(service));
-	tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-	tcp::resolver::iterator end;
+	tcp::resolver::iterator endpoint_iterator;
+	boost::system::error_code error;
 
-	boost::system::error_code error = boost::asio::error::host_not_found;
+	endpoint_iterator = resolver.resolve(query, error);
+
+	unsigned short port = 0;
+	bool service_found = true;
+
+	if(error)
+	{
+		log.error() << L"Failed to find a service called '" << service << L"'";
+
+		try {
+			port = boost::lexical_cast<unsigned short>(service);
+
+		}catch(std::bad_cast&)
+		{
+			log.warn() << L"Failed to cast '" << service << "' into a port number!";
+			return;
+		}
+
+		endpoint_iterator = resolver.resolve(tcp::resolver::query(lexical_convert<std::string>(addr), ""), error);
+
+		service_found = false;
+
+		if(error)
+		{
+			log.error() << L"Failed to resolve '" << addr << L"'!";
+			return;
+		}
+	}
+
+
+	tcp::resolver::iterator end;
+	error = boost::asio::error::host_not_found;
 	while(error && endpoint_iterator != end)
 	{
+		tcp::endpoint  endpoint(*endpoint_iterator);
+
+		if(!service_found)
+			endpoint.port(port);
+
 		socket->close();
-		socket->connect(*endpoint_iterator, error);
+		socket->connect(endpoint, error);
 
 		if(error)
 		{
@@ -280,7 +316,7 @@ void ClientApp::processEvents( const sf::Event& evt )
 		break;
 
 	case sf::Event::TextEntered:
-		if(ci && WCHAR_MIN <= evt.text.unicode && evt.text.unicode <= WCHAR_MAX)
+		if(ci)
 		{
 			ci->notifyTxtEvent(wchar_t(evt.text.unicode));
 		}
