@@ -1,5 +1,6 @@
 #include "game.h"
 #include "player.h"
+#include "lobby.h"
 
 #include <stdarg.h>
 
@@ -18,6 +19,7 @@ TNKEYCODE escape_key = 0;
 TNKEYCODE use_key = 0;
 TNKEYCODE left_key = 0;
 TNKEYCODE right_key = 0;
+TNKEYCODE enter_key = 0;
 
 void init_tiles()
 {
@@ -34,7 +36,7 @@ void init_tiles()
 		tilenet_keycode(L"space", &use_key);
 		tilenet_keycode(L"left", &left_key);
 		tilenet_keycode(L"right", &right_key);
-
+		tilenet_keycode(L"enter", &enter_key);
 	}
 }
 
@@ -92,18 +94,6 @@ void set_status_line(Layer* layer, TNCOLOR color, const wchar_t* txt, ...)
 	flush_layer(layer);
 }
 
-void move_cursor(GameView* gv, int dt)
-{
-	int new_cursor = gv->cursor + dt;
-	if(new_cursor < 0 || new_cursor >= BOARD_W)
-		return;
-
-	set_nulltile(gv->board_layer, 1 + gv->cursor, 0);
-	set_stdtile(gv->board_layer, 1 + new_cursor, 0, cursor_tile, COLOR_BLUE);
-	flush_layer(gv->board_layer);
-
-	gv->cursor = new_cursor;
-}
 
 void print_player_turn(GameView* gv, TNID turn)
 {
@@ -119,6 +109,43 @@ void print_turn(Game* g)
 {
 	print_player_turn(g->p1, g->turn);
 	print_player_turn(g->p2, g->turn);
+}
+
+void move_cursor(GameView* gv, int dt)
+{
+	int new_cursor = gv->cursor + dt;
+	if(new_cursor < 0 || new_cursor >= BOARD_W)
+		return;
+
+	set_nulltile(gv->board_layer, 1 + gv->cursor, 0);
+	set_stdtile(gv->board_layer, 1 + new_cursor, 0, cursor_tile, COLOR_BLUE);
+	flush_layer(gv->board_layer);
+
+	gv->cursor = new_cursor;
+}
+
+void start_game(Game* g)
+{
+	int x,y;
+
+	// clear board
+	for(x = 0; x < BOARD_W + 2; ++x)
+		for(y = 0; y < BOARD_H + 2; ++y)
+		{
+			g->board[x][y] = 0;
+			if(x < BOARD_W && y < BOARD_H)
+			{
+				set_nulltile(g->p1->board_layer, 1 + x, 1 + y);
+				set_nulltile(g->p2->board_layer, 1 + x, 1 + y);
+			}
+		}
+
+	// clear layer
+
+
+	g->turn = (rand() % 2? g->p1->pid : g->p2->pid);
+
+	print_turn(g);
 }
 
 
@@ -234,21 +261,24 @@ void handle_game_event(GameView* gv, TNEVENT* evt)
 
 		if(key == escape_key)
 		{
-
+			add_player_to_lobby(evt->participant);
 		}else if (key == left_key || key == right_key)
 		{
 			move_cursor(gv, key == left_key? -1 : 1);
 		}else if(key == use_key)
 		{
 			do_turn(gv);
+		}else if(key == enter_key && gv->game->turn == 0)
+		{
+			start_game(gv->game);
 		}
 	}
 }
 
+
 void game_control(PlayerControl c, void* context, TNID p, TNEVENT* evt)
 {
 	GameView* gv = (GameView*)context;
-
 
 	switch(c)
 	{
@@ -256,6 +286,22 @@ void game_control(PlayerControl c, void* context, TNID p, TNEVENT* evt)
 		break;
 
 	case PlayerDetach:
+		if(gv->game)
+		{
+			free(gv->game);
+		}
+
+		if(gv->other)
+		{
+			assert(gv->other->game != NULL);
+			gv->other->other = NULL;
+			gv->other->game = NULL;
+
+			add_player_to_lobby(gv->other->pid);
+		}
+
+		destroy_layer(gv->board_layer);
+		free(gv);
 		break;
 
 	case PlayerEvent:
@@ -307,15 +353,7 @@ void create_game( TNID p1, TNID p2 )
 {
 	GameView* gv1;
 	GameView* gv2;
-	int x,y;
 	Game* g = (Game*)malloc(sizeof(Game));
-
-	g->turn = (rand() % 2? p1 : p2);
-
-	// clear
-	for(x = 0; x < BOARD_W + 2; ++x)
-		for(y = 0; y < BOARD_H + 2; ++y)
-			g->board[x][y] = 0;
 
 	init_tiles();
 
@@ -325,7 +363,7 @@ void create_game( TNID p1, TNID p2 )
 	gv1->other = gv2;
 	gv2->other = gv1;
 
-	print_turn(g);
+	start_game(g);
 
 	set_player_event_handler(p1, gv1, &game_control);
 	set_player_event_handler(p2, gv2, &game_control);
