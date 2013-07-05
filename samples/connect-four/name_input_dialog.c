@@ -1,6 +1,8 @@
 #include "name_input_dialog.h"
 #include "player.h"
 
+#include "lobby.h"
+
 
 #define ALLOWED_NAME_CHARS L"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_"
 
@@ -14,7 +16,7 @@ typedef struct
 
 
 
-void handle_event(NameInputDialog* nip, TNEVENT* evt)
+void handle_nip_event(NameInputDialog* nip, TNEVENT* evt)
 {
 	TNBOOL redraw = 0;
 	TNKEYCODE enterkey, backkey;
@@ -27,6 +29,7 @@ void handle_event(NameInputDialog* nip, TNEVENT* evt)
 		{
 			// Done
 			wcscpy(get_player(evt->participant)->name, nip->input);
+			add_player_to_lobby(evt->participant);
 
 			return;
 		}else if(evt->data.keyevent.key == backkey && nip->len > 0)
@@ -75,7 +78,7 @@ void nip_control(PlayerControl c, void* context, TNEVENT* evt)
 		break;
 
 	case PlayerEvent:
-		handle_event(nip, evt);
+		handle_nip_event(nip, evt);
 		break;
 
 	default:
