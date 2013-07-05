@@ -66,6 +66,7 @@ void ClientApp::start()
 
 void ClientApp::stop( bool now /*= false*/ )
 {
+	disconnect();
 	mBusyWork.reset();
 	if(now)
 		mService.stop();
