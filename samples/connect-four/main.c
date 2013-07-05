@@ -12,9 +12,14 @@ int read_from_file(const char* filename, wchar_t* buf, size_t buflen)
 {
 #pragma warning(disable: 4996)
 	FILE* file = fopen(filename, "r");
+	size_t len;
 
 	if(file && fgetws(buf, buflen, file) != NULL)
 	{
+		len = wcslen(buf);
+		if(buf[len-1] == L'\n')
+			buf[len-1] = L'\0';
+		
 		return 1;
 	}
 	return 0;
