@@ -136,7 +136,7 @@ int kick_to_ip(TNID player)
 
 void displayInfo(Layer* layer, const wchar_t* info, TNCOLOR color)
 {
-	print_chars(layer, 0, 6, color, L"%-20s", info);
+	print_chars(layer, 0, 6, color, L"%-20ls", info);
 }
 
 void print_sel_info(Layer* layer, int sel)

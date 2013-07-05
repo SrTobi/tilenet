@@ -54,7 +54,7 @@ void handle_event(NameInputDialog* nip, TNEVENT* evt)
 
 	if(redraw)
 	{
-		print_chars(nip->layer, 0, 1, COLOR_LGREY, L"%-15s", nip->input);
+		print_chars(nip->layer, 0, 1, COLOR_LGREY, L"%-15ls", nip->input);
 		flush_layer(nip->layer);
 	}
 }
