@@ -1,5 +1,6 @@
 #include "lobby.h"
 #include "player.h"
+#include "game.h"
 
 TNID gameslots[10];
 Layer* lobby_layer = NULL;
@@ -30,7 +31,9 @@ void process_slot(int slot, TNID p)
 			return;
 
 		// found two players... create a game
+		create_game(p, gameslots[slot]);
 		free_slot(slot);
+		flush_layer(lobby_layer);
 	}else{
 		free_player_slot(p);
 
@@ -62,7 +65,7 @@ void handle_lobby_event(TNEVENT* evt)
 
 		} else if (ch == L'r')
 		{
-			int slot = rand() % 10;
+			int slot = rand() % 10 + 1;
 
 			for(idx = 0, count = 0; count < slot || gameslots[idx % 10] == 0; idx++)
 			{
@@ -70,14 +73,14 @@ void handle_lobby_event(TNEVENT* evt)
 				{
 					// No games... open a new one
 					process_slot(0, evt->participant);
-					break;
+					return;
 				}
 
 				if(gameslots[idx % 10])
 					++count;
 			}
 
-
+			process_slot(idx % 10, evt->participant);
 		}
 
 	}else if(evt->type == TNEV_KEYDOWN)
@@ -96,7 +99,7 @@ void handle_lobby_event(TNEVENT* evt)
 
 
 
-void lobby_control(PlayerControl c, void* context, TNEVENT* evt)
+void lobby_control(PlayerControl c, void* context, TNID p, TNEVENT* evt)
 {
 	switch(c)
 	{
@@ -104,7 +107,7 @@ void lobby_control(PlayerControl c, void* context, TNEVENT* evt)
 		break;
 
 	case PlayerDetach:
-		free_player_slot(evt->participant);
+		free_player_slot(p);
 		flush_layer(lobby_layer);
 		break;
 

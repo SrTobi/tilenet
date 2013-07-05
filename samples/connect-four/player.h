@@ -15,7 +15,7 @@ typedef enum
 } PlayerControl;
 
 
-typedef void (*EvtHandler)(PlayerControl e, void* context, TNEVENT* evt);
+typedef void (*EvtHandler)(PlayerControl e, void* context, TNID player, TNEVENT* evt);
 
 typedef struct
 {

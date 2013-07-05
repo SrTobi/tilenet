@@ -46,7 +46,7 @@ void unregister_player( TNID id )
 	Player* p = get_player(id);
 
 	assert(p->handler);
-	p->handler(PlayerDetach, p->context, 0);
+	p->handler(PlayerDetach, p->context, id, 0);
 	p->id = 0;
 	p->handler = 0;
 	p->context = 0;
@@ -57,11 +57,11 @@ void set_player_event_handler( TNID id, void* context, EvtHandler handler )
 	Player* p = get_player(id);
 
 	if(p->handler)
-		p->handler(PlayerDetach, p->context, 0);
+		p->handler(PlayerDetach, p->context, id, 0);
 
 	p->handler = handler;
 	p->context = context;
-	p->handler(PlayerAttach, p->context, 0);
+	p->handler(PlayerAttach, p->context, id, 0);
 }
 
 void notify_player_event(TNID id, TNEVENT* evt )
@@ -69,7 +69,7 @@ void notify_player_event(TNID id, TNEVENT* evt )
 	Player* p = get_player(id);
 
 	assert(p->handler);
-	p->handler(PlayerEvent, p->context, evt);
+	p->handler(PlayerEvent, p->context, id, evt);
 
 }
 

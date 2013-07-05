@@ -63,7 +63,7 @@ void handle_nip_event(NameInputDialog* nip, TNEVENT* evt)
 }
 
 
-void nip_control(PlayerControl c, void* context, TNEVENT* evt)
+void nip_control(PlayerControl c, void* context, TNID p, TNEVENT* evt)
 {
 	NameInputDialog* nip = (NameInputDialog*)context;
 
