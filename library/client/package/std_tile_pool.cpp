@@ -113,6 +113,8 @@ void StdTilePool::addStdTile( unsigned int col, unsigned int row, const string& 
 
 	while(std::getline(iss, name, L'|'))
 	{
+		if(name.empty())
+			name = L"|";
 		bool newInserted;
 		std::tie(std::ignore, newInserted) = mTilesAssociation.insert(std::make_pair(name, tile));
 		tnAssert(newInserted);
@@ -215,6 +217,9 @@ void StdTilePool::init()
 	addStdTile(19, 1, L"=|equals");
 	addStdTile(18, 1, L"<|less-than");
 	addStdTile(20, 1, L">|greater-than");
+
+	// stuff
+	addStdTile(18, 3, L"|vbar|vertical-bar");
 }
 
 const sf::Texture& StdTilePool::getTexture() const
