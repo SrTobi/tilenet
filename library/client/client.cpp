@@ -60,7 +60,7 @@ void ClientApp::start()
 	tnAssert(!mBusyWork);
 
 	mBusyWork.reset(new boost::asio::io_service::work(mService));
-	std::thread clientThread(&ClientApp::run, shared_from_this());
+	std::thread clientThread(std::bind(&ClientApp::run, shared_from_this()));
 	clientThread.detach();
 }
 
