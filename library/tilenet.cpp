@@ -434,7 +434,7 @@ TNAPI TNERROR tilenet_create_server(TNSERVER* server, const TNSVRCONFIG* init)
 	CHECK_NULL(init->pkgi, L"init::pkgi");
 
 	try {
-		auto server_ptr = std::make_shared<::srv::Server>(init);
+		auto server_ptr = std::make_shared< ::srv::Server>(init);
 		*server = server_ptr->initialize();
 		return TNOK;
 
