@@ -21,7 +21,7 @@ void CommitQueue::commit(TNID key, const commit_type& val)
 	if(key == mNextKey)
 	{
 		mCommits.clear();
-		mCommits.emplace(key, commit_slot(nullptr, val));
+		TILENET_EMPLACE(mCommits, key, commit_slot(nullptr, val));
 		mLastNonDelta = mCommits.begin();
 		mSizeSinceNonDelta = 0;
 		++mNextKey;
@@ -62,7 +62,7 @@ void CommitQueue::commitDelta(TNID key, const commit_type& val)
 	assert(mNextKey == key);
 	++mNextKey;
 
-	mCommits.emplace_hint(mCommits.end(), key, commit_slot(val, nullptr));
+	TILENET_EMPLACE_HINT(mCommits, mCommits.end(), key, commit_slot(val, nullptr));
 	mSizeSinceNonDelta += val->size();
 
 	_check_size();

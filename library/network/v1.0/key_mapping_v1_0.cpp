@@ -171,7 +171,7 @@ void KeyMapper::addCode( const string& names, sf::Keyboard::Key sfmlKey )
 
 		while(std::getline(iss, name, L'|'))
 		{
-			auto res = mNameToCodeMapping.emplace(name, code);
+			auto res = TILENET_EMPLACE(mNameToCodeMapping, name, code);
 			assert(res.second);
 
 			if(first)
@@ -186,7 +186,7 @@ void KeyMapper::addCode( const string& names, sf::Keyboard::Key sfmlKey )
 	}
 
 	{
-		auto res = mSfmlToCodeMapping.emplace(static_cast<unsigned int>(sfmlKey), code);
+		auto res = TILENET_EMPLACE(mSfmlToCodeMapping, static_cast<unsigned int>(sfmlKey), code);
 		assert(res.second);
 	}
 }

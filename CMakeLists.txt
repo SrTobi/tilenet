@@ -34,10 +34,30 @@ else(Tilenet_USE_PRE_COMPILED_HEADER)
 
 endif(Tilenet_USE_PRE_COMPILED_HEADER)
 
+			
 ################### add c++11 support ###################
 if(NOT MSVC)
 	add_definitions("-std=c++0x")
 endif(NOT MSVC)
+
+
+################### check std::unordered_map::emplace ###################
+
+if(DEFINED Tilenet_USE_ASSOZIATIVE_EMPLACE)
+	set(has_emplace ON)
+else()
+	try_compile(has_emplace
+				${PROJECT_SOURCE_DIR}/extras/cmake/
+				${PROJECT_SOURCE_DIR}/extras/cmake/check_emplace.cpp)
+
+endif()
+
+
+option(Tilenet_USE_ASSOZIATIVE_EMPLACE	"Copies the media files for samples and tests into the target directories" ${has_emplace})
+
+if(${Tilenet_USE_ASSOZIATIVE_EMPLACE})
+	add_definitions("-DTILENET_USE_ASSOZIATIVE_EMPLACE")
+endif()
 
 
 ################### set definitions ###################

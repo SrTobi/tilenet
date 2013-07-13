@@ -38,6 +38,18 @@ using std::weak_ptr;
 									}
 
 
+#ifdef TILENET_USE_ASSOZIATIVE_EMPLACE
+#	define TILENET_EMPLACE_PAIR(_c, _p)					(_c).emplace(_p)
+#	define TILENET_EMPLACE(_c, _key, ...)				(_c).emplace(_key, __VA_ARGS__)
+#	define TILENET_EMPLACE_HINT(_c, _hint, _key, ...)	(_c).emplace_hint(_hint, _key, __VA_ARGS__)
+#else
+#	define TILENET_EMPLACE_PAIR(_c, _p)					(_c).insert(_p)
+#	define TILENET_EMPLACE(_c, _key, ...)				(_c).insert(std::make_pair(_key, std::tuple_element<1, std::remove_reference<decltype(_c)>::type::value_type>::type(__VA_ARGS__)))
+#	define TILENET_EMPLACE_HINT(_c, _hint, _key, ...)	(_c).insert(_hint, std::make_pair(_key, std::tuple_element<1, std::remove_reference<decltype(_c)>::type::value_type>::type(__VA_ARGS__)))
+#endif
+
+
+
 #define tnAssert(_expr)		assert(_expr)
 #define tilenet_vcast		dynamic_cast
 

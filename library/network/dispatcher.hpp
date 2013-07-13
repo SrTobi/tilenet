@@ -44,7 +44,7 @@ public:
 
 		//add(std::bind(func, context, _1));
 		shared_ptr<DispatchHandler<Id, V>> handler = std::make_shared<DispatchHandler<Id, V>>(std::bind(func, context, _1));
-		mHandlers.emplace(Id, std::bind(&DispatchHandler<Id, V>::handle, handler, _1));
+		TILENET_EMPLACE(mHandlers, Id, std::bind(&DispatchHandler<Id, V>::handle, handler, _1));
 	}
 
 	/*template<msgid_type Id>
@@ -52,7 +52,7 @@ public:
 	{
 		using namespace std::placeholders;
 		shared_ptr<DispatchHandler<Id>> handler(new DispatchHandler<Id>(func));
-		mHandlers.emplace(Id, std::bind(&DispatchHandler<Id>::handle, handler, _1));
+		TILENET_EMPLACE(mHandlers, Id, std::bind(&DispatchHandler<Id>::handle, handler, _1));
 	}*/
 
 	void dispatch(const shared_ptr<Message>& msg) const;

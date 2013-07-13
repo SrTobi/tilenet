@@ -114,7 +114,7 @@ void LayerLinkManager::registerParticipant( const shared_ptr<Participant> partic
 {
 	std::lock_guard<std::mutex> guard(mMutex);
 	bool newe = false;
-	std::tie(std::ignore, newe) = mParticipantToNodeMapping.emplace(participant, nullptr);
+	std::tie(std::ignore, newe) = TILENET_EMPLACE(mParticipantToNodeMapping, participant, nullptr);
 
 	tnAssert(newe);
 }
@@ -136,7 +136,7 @@ void LayerLinkManager::registerLayer( const shared_ptr<Layer> layer )
 {
 	std::lock_guard<std::mutex> guard(mMutex);
 	bool newe = false;
-	std::tie(std::ignore, newe) = mLayerToNodeMapping.emplace(layer, new Node(layer));
+	std::tie(std::ignore, newe) = TILENET_EMPLACE(mLayerToNodeMapping, layer, new Node(layer));
 
 	tnAssert(newe);
 }

@@ -48,7 +48,7 @@ private:
 	template<typename Handler>
 	void add(version_type version)
 	{
-		mFactories.emplace(version, std::unique_ptr<ComHandlerFactory>(new ComHandlerFactorySpecialization<Handler>()));
+		TILENET_EMPLACE(mFactories, version, std::unique_ptr<ComHandlerFactory>(new ComHandlerFactorySpecialization<Handler>()));
 	}
 
 	void handleHandshake(proto::ComInitializing_ProtocolVersion& p);

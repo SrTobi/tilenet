@@ -102,9 +102,9 @@ void FrameLayer::update( TNLAYER* layer_list, TNVIEW** view_list, size_t size )
 		IMPLEMENTATION_TODO("Check view values")
 
 		if(update_views && *view_list)
-			sublayers.emplace(layer->self<Layer>(), std::make_pair(PView(**view_list), z));
+			TILENET_EMPLACE(sublayers, layer->self<Layer>(), std::make_pair(PView(**view_list), z));
 		else
-			sublayers.emplace(layer->self<Layer>(), std::make_pair(PView(), z));
+			TILENET_EMPLACE(sublayers, layer->self<Layer>(), std::make_pair(PView(), z));
 	}
 
 	IMPLEMENTATION_TODO("Detect circular dependencies???")
@@ -188,7 +188,7 @@ FrameLayer::Commit FrameLayer::update(std::unordered_map<shared_ptr<Layer>, std:
 
 		// insert it to mSubLayers and check if it is really new to mSubLayers
 		bool newInserted;
-		std::tie(std::ignore, newInserted) = mSubLayers.emplace(std::move(p));
+		std::tie(std::ignore, newInserted) = TILENET_EMPLACE_PAIR(mSubLayers, std::move(p));
 		tnAssert(newInserted);
 
 		// add it to z-order list
