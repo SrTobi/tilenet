@@ -14,7 +14,7 @@ namespace pload {
 
 
 shared_ptr<Package> loadPackage(const fs::path& ppath);
-
+PackageInfo loadPackageInfo(const fs::path& ppath);
 
 }}
 

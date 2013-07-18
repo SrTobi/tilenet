@@ -48,7 +48,7 @@ private:
 class Package
 {
 public:
-	Package(const PackageInfo& pi);
+	Package(const PackageInfo& pi, std::unordered_map<string, shared_ptr<StdTile>>&& tiles);
 	~Package();
 
 	const Rect& getTileSize() const;

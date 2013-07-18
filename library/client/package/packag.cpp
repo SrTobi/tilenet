@@ -59,56 +59,11 @@ bool PackageInfo::hasInterface( const string& interf) const
 
 
 
-Package::Package(const PackageInfo& pi)
+Package::Package(const PackageInfo& pi, std::unordered_map<string, shared_ptr<StdTile>>&& tiles)
 	: mInfo(pi)
 	, mPackageTileSize(8, 12)
+	, mNameToStdTileMapping(std::move(tiles))
 {
-	auto filename = pi.path() / "debug-tileset.txt";
-
-	Log loadLog(L"tile-load");
-
-	loadLog.debug() << L"Load debug tileset from \"" << filename << "\"";
-
-	std::wifstream file(filename.string());
-
-	if(!file.is_open())
-	{
-		loadLog.error() << "Failed to load tile source!";
-		return;
-	}
-
-	const auto& pool = StdTilePool::Inst();
-
-
-	string line;
-	int lineNum = 1;
-
-	while(std::getline(file, line))
-	{
-		std::wistringstream iss(line);
-
-		// skip comments
-		if(line.size() && line.find(L"//") == string::npos)
-		{
-			string name;
-			string std_tile_name;
-			iss >> name >> std_tile_name;
-
-			if(iss.fail() || !iss.eof())
-			{
-				loadLog.error() << L"Failed to parse line " << lineNum;
-				return;
-			}
-
-			auto sprite = pool.getStdTile(std_tile_name);
-
-			mNameToStdTileMapping[name] = sprite;
-		}
-
-		++lineNum;
-	}
-
-	loadLog.debug() << mNameToStdTileMapping.size() << " tiles loaded";
 }
 
 Package::~Package()
