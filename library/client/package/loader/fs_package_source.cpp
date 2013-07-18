@@ -50,7 +50,8 @@ OVERRIDE std::vector<wchar_t> FsPackageSource::loadText( const string& path )
 {
 	fs::path p = buildPath(path);
 
-	std::wifstream stream(p.string());
+	std::wifstream stream(p.native());
+	stream >> std::noskipws;
 
 	if(!stream)
 	{
@@ -61,8 +62,9 @@ OVERRIDE std::vector<wchar_t> FsPackageSource::loadText( const string& path )
 	std::copy(	std::istream_iterator<wchar_t, wchar_t>(stream),
 				std::istream_iterator<wchar_t, wchar_t>(),
 				std::back_inserter(buffer));
+	buffer.push_back(0);
 
-	if(!stream)
+	if(stream.bad())
 	{
 		NOT_IMPLEMENTED();
 	}
@@ -88,6 +90,7 @@ OVERRIDE std::vector<byte> FsPackageSource::loadRaw( const string& path )
 	buffer.resize(size);
 
 	stream.read((char*)buffer.data(), size);
+	buffer.push_back(0);
 
 	if(!stream)
 	{
@@ -133,6 +136,11 @@ fs::path FsPackageSource::buildPath( const string& path )
 	assert(result.is_absolute());
 
 	return result;
+}
+
+OVERRIDE string FsPackageSource::srcname()
+{
+	return mPath.wstring();
 }
 
 }

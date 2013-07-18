@@ -21,7 +21,7 @@ shared_ptr<VirtualPackageSource> LoadVPSFromSF( const fs::path& path )
 	}
 
 
-
+	NOT_IMPLEMENTED();
 }
 
 }

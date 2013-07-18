@@ -23,6 +23,7 @@ public:
 
 	virtual bool isRoot() = 0;
 	virtual bool isValidPath(const string& path) = 0;
+	virtual string srcname() = 0;
 };
 
 

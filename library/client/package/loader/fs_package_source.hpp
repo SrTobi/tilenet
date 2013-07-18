@@ -26,6 +26,7 @@ public:
 
 	virtual OVERRIDE bool isRoot();
 	virtual OVERRIDE bool isValidPath(const string& path);
+	virtual OVERRIDE string srcname();
 
 private:
 	fs::path buildPath(const string& path);
