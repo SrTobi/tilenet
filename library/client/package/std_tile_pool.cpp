@@ -14,6 +14,7 @@ const unsigned int TILE_HEIGHT = 12;
 
 StdTilePool::StdTilePool()
 {
+	mTileImage = std::make_shared<sf::Texture>();
 	init();
 }
 
@@ -75,7 +76,7 @@ void StdTilePool::loadTextureFromSource( const sf::Uint8* src, unsigned int leng
 		{
 			if(tilesExtracted >= length)
 			{
-				mTileImage.loadFromImage(img);
+				mTileImage->loadFromImage(img);
 				return;
 			}
 
@@ -103,9 +104,9 @@ void StdTilePool::loadTextureFromSource( const sf::Uint8* src, unsigned int leng
 
 void StdTilePool::addStdTile( unsigned int col, unsigned int row, const string& names )
 {
-	auto sprite = sf::Sprite(mTileImage, sf::IntRect(col * TILE_WIDTH, row * TILE_HEIGHT, /*(col+1) **/ TILE_WIDTH, /*(row+1) **/ TILE_HEIGHT));
+	auto sprite = sf::Sprite(*mTileImage, sf::IntRect(col * TILE_WIDTH, row * TILE_HEIGHT, /*(col+1) **/ TILE_WIDTH, /*(row+1) **/ TILE_HEIGHT));
 	sprite.setScale(1.0f / 8.0f, 1.0f / 12.0f);
-	auto tile = std::make_shared<StdTile>(sprite);
+	auto tile = std::make_shared<StdTile>(sprite, mTileImage);
 
 	std::wistringstream iss(names);
 	string name;
@@ -222,7 +223,7 @@ void StdTilePool::init()
 	addStdTile(18, 3, L"|vbar|vertical-bar");
 }
 
-const sf::Texture& StdTilePool::getTexture() const
+const std::shared_ptr<sf::Texture>& StdTilePool::getTexture() const
 {
 	return mTileImage;
 }

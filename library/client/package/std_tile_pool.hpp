@@ -23,7 +23,7 @@ public:
 	shared_ptr<StdTile> getStdTile(const string& name) const;
 	bool isStdTileName(const string& name);
 
-	const sf::Texture& getTexture() const;
+	const shared_ptr<sf::Texture>& getTexture() const;
 
 	static const StdTilePool& Inst();
 private:
@@ -32,7 +32,7 @@ private:
 	void init();
 
 	std::unordered_map<string, shared_ptr<StdTile> > mTilesAssociation;
-	sf::Texture mTileImage;
+	std::shared_ptr<sf::Texture> mTileImage;
 
 
 	static const unsigned int	StdTileImageSourceLegth;

@@ -10,8 +10,9 @@ namespace client {
 
 
 
-StdTile::StdTile( const sf::Sprite& sprite )
+StdTile::StdTile( const sf::Sprite& sprite, const Texture& tex)
 	: mSprite(sprite)
+	, mTex(tex)
 {
 }
 

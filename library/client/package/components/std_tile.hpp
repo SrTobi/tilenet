@@ -13,13 +13,16 @@ namespace client {
 class StdTile
 {
 public:
-	StdTile(const sf::Sprite& sprite);
+	typedef shared_ptr<sf::Texture> Texture;
+
+	StdTile(const sf::Sprite& sprite, const Texture& tex);
 	~StdTile();
 
 	void render(sf::RenderTarget& target, Point pos, const sf::Color& color);
 
 private:
 	sf::Sprite mSprite;
+	Texture mTex;
 };
 
 
