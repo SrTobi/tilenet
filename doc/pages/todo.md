@@ -7,6 +7,9 @@ ToDo
 - write tests :) (of course)
 - write a proper package manager
 - start tiley
+- add licence
+- add gui
+- write an example which moves a lot
 
 old todos
 =========
