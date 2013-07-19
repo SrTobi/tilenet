@@ -19,41 +19,144 @@ class PackageLoader
 	typedef shared_ptr<sf::Sprite> Sprite;
 	typedef shared_ptr<vps::VirtualPackageSource> vpsp;
 	typedef shared_ptr<StdTile> Tile;
+	typedef rapidxml::xml_node<wchar_t> xml_node;
 
-
-	void defineString(std::vector<string>& scope, vpsp src, rapidxml::xml_node<wchar_t>& node)
+	class Scope
 	{
-		const string name = rxml::value(node, L":name");
-		string value = rxml::valuefb(node, L":name", node.value());
-		
-		bool insterted;
-		std::tie(std::ignore, insterted) = TILENET_EMPLACE(mStringResources, name, value);
-
-		if(!insterted)
-			log.warn() << L"Redefinition of string '" << name << L"' in " << rxml::locate(node);
-	}
-	
-
-	void doScope(std::vector<string>& scope, vpsp src, rapidxml::xml_node<wchar_t>& node)
-	{
-		const string scope_name = rxml::valuefb(node, L":scopename", L"");
-		if(scope_name.size())
-			scope.push_back(scope_name);
-
-		for(auto& child : rxml::children(node))
+	public:
+		Scope(PackageLoader& pl, const string& scope_name, std::vector<string>& scopes, vpsp src, xml_node& node)
+			: pl(pl)
+			, mScopes(scopes)
+			, mSource(src)
+			, mScopeNode(node)
+			, log(pl.log)
+			, mIsNewScope(scope_name.size())
 		{
-			auto name = rxml::name(child);
-			auto it = mNodeOperators.find(name);
+			addFunction(L"string", &Scope::defineString);
+			addFunction(L"tile", &Scope::defineTile);
+			addFunction(L"scope", &Scope::enterScopes);
 
-			if(it != mNodeOperators.end())
-				it->second(std::ref(scope), src, child);
-			else
-				log.warn() << L"Unknown xml node [" << name << "] in " << rxml::locate(child);
+			if(mIsNewScope)
+				mScopes.push_back(scope_name);
 		}
 
-		if(scope_name.size())
-			scope.pop_back();
-	}
+		~Scope()
+		{
+			if(mIsNewScope)
+				mScopes.pop_back();
+		}
+
+
+		void process()
+		{
+			for(auto& child : rxml::children(mScopeNode))
+			{
+				auto name = rxml::name(child);
+				auto it = mNodeOperators.find(name);
+
+				if(it != mNodeOperators.end())
+					it->second(child);
+				else
+					log.warn() << L"Unknown xml node [" << name << "] in " << rxml::locate(child);
+			}
+		}
+
+	private:
+		void defineString(xml_node& node)
+		{
+			const string name = rxml::value(node, L":name");
+			string value = rxml::valuefb(node, L":name", node.value());
+
+			bool insterted;
+			std::tie(std::ignore, insterted) = TILENET_EMPLACE(pl.mStringResources, name, resolveString(std::move(value)));
+
+			if(!insterted)
+				log.warn() << L"Redefinition of string '" << name << L"' in " << rxml::locate(node);
+		}
+
+		void defineTile(xml_node& node)
+		{
+
+		}
+
+		void enterScopes(xml_node& node)
+		{
+			if(rxml::valuefb(node, L":ignore", L"") == L"true")
+				return;
+
+			Scope scope(pl, rxml::valuefb(node, L":name", L""), mScopes, mSource, node);
+			scope.process();
+		}
+
+		string resolveString(string&& str)
+		{
+			if(str.size() && str.front() == L'@')
+			{
+				unsigned int sccount = mScopes.size();
+
+				if(str.find(L"::") == 1)
+				{
+					sccount = 0;
+					str = str.substr(3);
+				}else{
+					str = str.substr(1);
+				}
+
+				do {
+					string ref = buildScopeName(str, sccount);
+
+					auto it = pl.mStringResources.find(str);
+
+					if(it != pl.mStringResources.end())
+						return it->second;
+
+				}while(sccount--);
+
+				NOT_IMPLEMENTED(/* failed to resolve ref */)
+
+			}else{
+				return str;
+			}
+		}
+
+		string buildScopeName(const string& name, unsigned int deep = MAXUINT)
+		{
+			if(name.find(L"::") == 0)
+				return name.substr(2);
+
+			if(deep > mScopes.size())
+				deep = mScopes.size();
+
+			string result;
+			for(unsigned int idx = 0; idx < deep; ++idx)
+			{
+				if(idx > 0)
+					result += L"::";
+				result += mScopes[idx];
+			}
+
+			return result;
+		}
+
+		template<typename F>
+		void addFunction(const string& name , F func)
+		{
+			using namespace std::placeholders;
+
+			bool inserted;
+			std::tie(std::ignore, inserted) = TILENET_EMPLACE(mNodeOperators, name, std::bind(func, this, _1));
+		}
+
+	private:
+		Log& log;
+		PackageLoader& pl;
+		const bool mIsNewScope;
+		std::vector<string>& mScopes;
+		vpsp mSource;
+		xml_node& mScopeNode;
+
+		std::unordered_map<string, std::function<void (xml_node&)>> mNodeOperators;
+	};
 
 
 	void extractPackageInfo(const rapidxml::xml_document<wchar_t>& doc)
@@ -78,7 +181,7 @@ class PackageLoader
 
 	void open(vpsp src, const string& path, bool isRoot = false)
 	{
-		std::vector<string> root_scope;
+		std::vector<string> scope_names;
 		std::vector<wchar_t> txt = src->loadText(path);
 
 		rapidxml::xml_document<wchar_t> doc;
@@ -89,17 +192,10 @@ class PackageLoader
 
 		auto& package_root = rxml::getnode(doc, L"package");
 
-		doScope(root_scope, src, package_root);
+		Scope scope(*this, rxml::valuefb(package_root, L":scopename", L""), scope_names, src, package_root);
+		scope.process();
 	}
 
-	template<typename F>
-	void addFunction(const string& name , F func)
-	{
-		using namespace std::placeholders;
-
-		bool inserted;
-		std::tie(std::ignore, inserted) = TILENET_EMPLACE(mNodeOperators, name, std::bind(func, this, _1, _2, _3));
-	}
 
 public:
 	PackageLoader(const vpsp& rootSource)
@@ -107,8 +203,6 @@ public:
 		, log(L"ploader")
 		, mPInfo(L"Dummy Package", L"no version", L"no version", L"no author", L"---", std::vector<string>())
 	{
-
-		addFunction(L"string", &PackageLoader::defineString);
 	}
 
 
@@ -142,7 +236,6 @@ private:
 
 	std::unordered_set<string> mAlreadyOpened;
 
-	std::unordered_map<string, std::function<void (std::vector<string>&, vpsp, rapidxml::xml_node<wchar_t>&)>> mNodeOperators;
 
 	Log log;
 };
