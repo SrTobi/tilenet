@@ -124,7 +124,7 @@ class PackageLoader
 				do {
 					string ref = buildScopeName(str, sccount);
 
-					auto it = pl.mStringResources.find(str);
+					auto it = pl.mStringResources.find(ref);
 
 					if(it != pl.mStringResources.end())
 						return it->second;
@@ -143,15 +143,16 @@ class PackageLoader
 			if(name.find(L"::") == 0)
 				return name.substr(2);
 
+			if(!deep)
+				return name;
+
 			if(deep > mScopes.size())
 				deep = mScopes.size();
 
 			string result;
 			for(unsigned int idx = 0; idx < deep; ++idx)
 			{
-				if(idx > 0)
-					result += L"::";
-				result += mScopes[idx];
+				result += mScopes[idx] + L"::";
 			}
 
 			return result + name;
