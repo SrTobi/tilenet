@@ -7,4 +7,14 @@
 			<author name="tobias" />
 			<interface value="tn.org.samples.4con" />
 		</information>
+		
+		<string name="corner" value="*" />
+		
+		<tile name="board-cursor"		std="v" />
+		<tile name="board-side"			std="|" />
+		<tile name="board-bottom"		std="-" />
+		<tile name="board-left-corner"	std="@corner" />
+		<tile name="board-right-corner" std="@corner" />
+		<tile name="board-token"		std="X" />
+		
 	</package>

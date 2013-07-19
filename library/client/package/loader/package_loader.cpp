@@ -1,6 +1,7 @@
 #include "includes.hpp"
 #include "package_loader.hpp"
 
+#include "client/package/std_tile_pool.hpp"
 #include "client/package/components/std_tile.hpp"
 #include "virtual_package_source.hpp"
 
@@ -32,6 +33,7 @@ class PackageLoader
 			, log(pl.log)
 			, mIsNewScope(scope_name.size())
 		{
+			addFunction(L"information", &Scope::informationDummy);
 			addFunction(L"string", &Scope::defineString);
 			addFunction(L"tile", &Scope::defineTile);
 			addFunction(L"scope", &Scope::enterScopes);
@@ -57,26 +59,43 @@ class PackageLoader
 				if(it != mNodeOperators.end())
 					it->second(child);
 				else
-					log.warn() << L"Unknown xml node [" << name << "] in " << rxml::locate(child);
+					log.warn() << L"Unknown xml node [" << name << "] in " << rxml::locate(mScopeNode);
 			}
 		}
 
 	private:
+		void informationDummy(xml_node&)
+		{
+
+		}
+
 		void defineString(xml_node& node)
 		{
 			const string name = rxml::value(node, L":name");
-			string value = rxml::valuefb(node, L":name", node.value());
+			string value = rxml::valuefb(node, L":value", node.value());
 
-			bool insterted;
-			std::tie(std::ignore, insterted) = TILENET_EMPLACE(pl.mStringResources, name, resolveString(std::move(value)));
-
-			if(!insterted)
-				log.warn() << L"Redefinition of string '" << name << L"' in " << rxml::locate(node);
+			addResource(pl.mStringResources, name, resolveString(std::move(value)), L"string", node);
 		}
 
 		void defineTile(xml_node& node)
 		{
+			const string name = rxml::value(node, L":name");
+			shared_ptr<StdTile> tile;
 
+			for(auto& attr : rxml::attributes(node))
+			{
+				const string def = rxml::name(attr);
+
+				if(def == L"std")
+				{
+					tile = StdTilePool::Inst().getStdTile(resolveString(rxml::value(attr)));
+				}
+			}
+
+			if(tile)
+				addResource(pl.mTiles, name, tile, L"tile", node);
+			else
+				log.warn() << "Failed to load tile '" << name << L"' in " << rxml::locate(node);
 		}
 
 		void enterScopes(xml_node& node)
@@ -135,7 +154,17 @@ class PackageLoader
 				result += mScopes[idx];
 			}
 
-			return result;
+			return result + name;
+		}
+
+		template<typename T>
+		void addResource(std::unordered_map<string, T>& target, const string& name, const T& res, const string& res_name, const rapidxml::xml_base<wchar_t>& entity)
+		{
+			bool insterted;
+			std::tie(std::ignore, insterted) = target.insert(std::make_pair(buildScopeName(name), res));
+
+			if(!insterted)
+				log.warn() << L"Redefinition of " << res_name << " '" << name << L"' in " << rxml::locate(entity);
 		}
 
 		template<typename F>
@@ -208,6 +237,7 @@ public:
 
 	shared_ptr<Package> loadPackage()
 	{
+		log.info() << L"Loading package in " << mRootSource->srcname();
 		open(mRootSource, L"package.xml", true);
 
 		return std::make_shared<Package>(mPInfo, std::move(mTiles));

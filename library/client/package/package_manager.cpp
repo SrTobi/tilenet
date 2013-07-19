@@ -7,10 +7,6 @@
 #include "package_manager.hpp"
 #include "loader/package_loader.hpp"
 
-#include "rapidxml.hpp"
-#include "utils/xml_helpers.hpp"
-#include <rxml/value.hpp>
-
 namespace client {
 
 
