@@ -10,11 +10,12 @@
 		
 		<string name="corner" value="*" />
 		
-		<tile name="board-cursor"		std="v" />
-		<tile name="board-side"			std="|" />
-		<tile name="board-bottom"		std="-" />
-		<tile name="board-left-corner"	std="@corner" />
-		<tile name="board-right-corner" std="@corner" />
-		<tile name="board-token"		std="X" />
-		
+		<scope name="board">
+			<tile name="cursor"			std="v" />
+			<tile name="side"			std="|" />
+			<tile name="bottom"			std="-" />
+			<tile name="left-corner"	std="@corner" />
+			<tile name="right-corner"	std="@corner" />
+			<tile name="token"			std="X" />
+		</scope>
 	</package>

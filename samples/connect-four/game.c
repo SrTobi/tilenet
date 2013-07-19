@@ -25,12 +25,12 @@ void init_tiles()
 {
 	if(cursor_tile == 0)
 	{
-		token_tile = get_tileid(L"board-token");
-		side_tile = get_tileid(L"board-side");
-		bottom_tile = get_tileid(L"board-bottom");
-		lcorner_tile = get_tileid(L"board-left-corner");
-		rcorner_tile = get_tileid(L"board-right-corner");
-		cursor_tile = get_tileid(L"board-cursor");
+		token_tile = get_tileid(L"board::token");
+		side_tile = get_tileid(L"board::side");
+		bottom_tile = get_tileid(L"board::bottom");
+		lcorner_tile = get_tileid(L"board::left-corner");
+		rcorner_tile = get_tileid(L"board::right-corner");
+		cursor_tile = get_tileid(L"board::cursor");
 
 		tilenet_keycode(L"escape", &escape_key);
 		tilenet_keycode(L"space", &use_key);
