@@ -76,7 +76,7 @@ OVERRIDE std::vector<byte> FsPackageSource::loadRaw( const string& path )
 {
 	fs::path p = buildPath(path);
 
-	std::ifstream stream(p.string());
+	std::ifstream stream(p.string(), std::ios::in | std::ios::binary);
 
 	boost::system::error_code ec;
 	auto size = fs::file_size(p, ec);
@@ -88,11 +88,10 @@ OVERRIDE std::vector<byte> FsPackageSource::loadRaw( const string& path )
 
 	std::vector<byte> buffer;
 	buffer.resize(size);
-
 	stream.read((char*)buffer.data(), size);
 	buffer.push_back(0);
 
-	if(!stream)
+	if(stream.bad())
 	{
 		NOT_IMPLEMENTED();
 	}

@@ -14,6 +14,8 @@ StdTile::StdTile( const sf::Sprite& sprite, const Texture& tex)
 	: mSprite(sprite)
 	, mTex(tex)
 {
+	// Do scaling
+	mSprite.setScale(1.0f / float(sprite.getTextureRect().width), 1.0f / float(sprite.getTextureRect().height));
 }
 
 StdTile::~StdTile()
