@@ -10,8 +10,23 @@
 #include <rxml/iterators.hpp>
 #include <rxml/value.hpp>
 
+#include <boost/regex.hpp>
+
+#include <algorithm>
+
 namespace client {
 namespace pload {
+
+template<typename T>
+T cast_default(const string& source, const T& def)
+{
+	try {
+		return boost::lexical_cast<T>(source);
+	} catch(boost::bad_lexical_cast&)
+	{
+		return def;
+	}
+}
 
 
 class PackageLoader
@@ -21,6 +36,31 @@ class PackageLoader
 	typedef shared_ptr<vps::VirtualPackageSource> vpsp;
 	typedef shared_ptr<StdTile> Tile;
 	typedef rapidxml::xml_node<wchar_t> xml_node;
+
+	class Raster
+	{
+	public:
+		Raster(Texture tex, unsigned int x, unsigned int y, unsigned int w, unsigned int h)
+			: mPosition(x, y)
+			, mSize(w, h)
+			, mTex(tex)
+		{
+		}
+
+		Tile makeSprite(unsigned int x, unsigned int y, unsigned int w, unsigned int h)
+		{
+			Point p = mPosition + Point(x, y) * mSize;
+			Rect s = mSize * Point(std::max<unsigned int>(1, w), std::max<unsigned int>(1, h));
+			auto sp = std::make_shared<StdTile>(sf::Sprite(*mTex, sf::IntRect(p.x, p.y, s.x, s.y)), mTex);
+
+			return sp;
+		}
+
+	private:
+		Texture mTex;
+		Point mPosition;
+		Rect mSize;
+	};
 
 	class Scope
 	{
@@ -37,6 +77,8 @@ class PackageLoader
 			addFunction(L"string", &Scope::defineString);
 			addFunction(L"tile", &Scope::defineTile);
 			addFunction(L"scope", &Scope::enterScopes);
+			addFunction(L"image", &Scope::defineImage);
+			addFunction(L"raster", &Scope::defineRaster);
 
 			if(mIsNewScope)
 				mScopes.push_back(scope_name);
@@ -71,31 +113,94 @@ class PackageLoader
 
 		void defineString(xml_node& node)
 		{
-			const string name = rxml::value(node, L":name");
-			string value = rxml::valuefb(node, L":value", node.value());
+			string name = resolveString(rxml::value(node, L":name"));
+			string value = resolveString(rxml::valuefb(node, L":value", node.value()));
 
-			addResource(pl.mStringResources, name, resolveString(std::move(value)), L"string", node);
+			addResource(pl.mStringResources, name, value, L"string", node);
+		}
+
+		void defineImage(xml_node& node)
+		{
+			string name = resolveString(rxml::value(node, L":name"));
+			string src = resolveString(rxml::value(node, L":src"));
+
+			std::vector<byte> rawimg = mSource->loadRaw(src);
+			Texture tex = std::make_shared<sf::Texture>();
+			tex->loadFromMemory(rawimg.data(), rawimg.size());
+
+			addResource(pl.mImages, name, tex, L"image", node);
+		}
+
+		void defineRaster(xml_node& node)
+		{
+			string name = resolveString(rxml::value(node, L":name"));
+			auto tex = resolveReference(pl.mImages, resolveString(rxml::value(node, L":img")));
+
+			unsigned int x = cast_default<unsigned int>(resolveString(rxml::valuefb(node, L":x", L"0")), 0);
+			unsigned int y = cast_default<unsigned int>(resolveString(rxml::valuefb(node, L":y", L"0")), 0);
+			unsigned int w = boost::lexical_cast<unsigned int>(resolveString(rxml::valuefb(node, L":w", L"0")));
+			unsigned int h = boost::lexical_cast<unsigned int>(resolveString(rxml::valuefb(node, L":h", L"0")));
+
+			Raster r(tex, x, y, w, h);
+			addResource(pl.mRasters, name, r, L"raster", node);
 		}
 
 		void defineTile(xml_node& node)
 		{
-			const string name = rxml::value(node, L":name");
+			using boost::lexical_cast;
+			const string name = resolveString(rxml::value(node, L":name"));
 			shared_ptr<StdTile> tile;
+			rapidxml::xml_attribute<wchar_t>* attr;
 
-			for(auto& attr : rxml::attributes(node))
+			if(attr = node.first_attribute(L"img"))
 			{
-				const string def = rxml::name(attr);
+				auto tex = resolveReference(pl.mImages, resolveString(rxml::value(attr)));
 
-				if(def == L"std")
-				{
-					tile = StdTilePool::Inst().getStdTile(resolveString(rxml::value(attr)));
-				}
+				unsigned int x = cast_default<unsigned int>(resolveString(rxml::valuefb(node, L":x", L"0")), 0);
+				unsigned int y = cast_default<unsigned int>(resolveString(rxml::valuefb(node, L":y", L"0")), 0);
+				unsigned int w = cast_default<unsigned int>(resolveString(rxml::valuefb(node, L":w", L"0")), UINT_MAX);
+				unsigned int h = cast_default<unsigned int>(resolveString(rxml::valuefb(node, L":h", L"0")), UINT_MAX);
+
+				unsigned int texw = tex->getSize().x;
+				unsigned int texh = tex->getSize().y;
+
+				if(texw <= x)
+					x = 0;
+
+				if(texh <= y)
+					y = 0;
+
+				if(w + x >= texw)
+					w = texw - x;
+
+				if(h + y >= texh)
+					h = texh - y;
+
+				auto sprite = sf::Sprite(*tex, sf::IntRect(x, y, w, h));
+				tile = std::make_shared<StdTile>(std::ref(sprite), tex);
+
+			}else if(attr = node.first_attribute(L"raster"))
+			{
+				auto raster = resolveReference(pl.mRasters, resolveString(rxml::value(attr)));
+
+				unsigned int x = cast_default<unsigned int>(resolveString(rxml::valuefb(node, L":x", L"0")), 0);
+				unsigned int y = cast_default<unsigned int>(resolveString(rxml::valuefb(node, L":y", L"0")), 0);
+				unsigned int w = cast_default<unsigned int>(resolveString(rxml::valuefb(node, L":w", L"0")), 1);
+				unsigned int h = cast_default<unsigned int>(resolveString(rxml::valuefb(node, L":h", L"0")), 1);
+
+				tile = raster.makeSprite(x, y, w, h);
+
+
+			}else if(attr = node.first_attribute(L"std"))
+			{
+				tile = StdTilePool::Inst().getStdTile(resolveString(rxml::value(attr)));
 			}
+
 
 			if(tile)
 				addResource(pl.mTiles, name, tile, L"tile", node);
 			else
-				log.warn() << "Failed to load tile '" << name << L"' in " << rxml::locate(node);
+				log.error() << L"Failed to create tile '" << name << L"' in " << rxml::locate(node);
 		}
 
 		void enterScopes(xml_node& node)
@@ -111,31 +216,37 @@ class PackageLoader
 		{
 			if(str.size() && str.front() == L'@')
 			{
-				unsigned int sccount = mScopes.size();
-
-				if(str.find(L"::") == 1)
-				{
-					sccount = 0;
-					str = str.substr(3);
-				}else{
-					str = str.substr(1);
-				}
-
-				do {
-					string ref = buildScopeName(str, sccount);
-
-					auto it = pl.mStringResources.find(ref);
-
-					if(it != pl.mStringResources.end())
-						return it->second;
-
-				}while(sccount--);
-
-				NOT_IMPLEMENTED(/* failed to resolve ref */)
-
-			}else{
-				return str;
+				return resolveReference(pl.mStringResources, str.substr(1));
 			}
+
+			return str;
+		}
+
+		template<typename T>
+		T resolveReference(const std::unordered_map<string, T>& storage, const string& fullref)
+		{
+			unsigned int sccount = mScopes.size();
+
+			string relref;
+			if(fullref.find(L"::") == 0)
+			{
+				sccount = 0;
+				relref = fullref.substr(2);
+			}else{
+				relref = fullref;
+			}
+
+			do {
+				string ref = buildScopeName(relref, sccount);
+
+				auto it = storage.find(ref);
+
+				if(it != storage.end())
+					return it->second;
+
+			}while(sccount--);
+
+			NOT_IMPLEMENTED(/* failed to resolve ref */)
 		}
 
 		string buildScopeName(const string& name, unsigned int deep = MAXUINT)
@@ -264,6 +375,7 @@ private:
 	std::unordered_map<string, string> mStringResources;
 	std::unordered_map<string, Texture> mImages;
 	std::unordered_map<string, Tile> mTiles;
+	std::unordered_map<string, Raster> mRasters;
 
 	std::unordered_set<string> mAlreadyOpened;
 
