@@ -352,7 +352,7 @@ public:
 		log.info() << L"Loading package in " << mRootSource->srcname();
 		open(mRootSource, L"package.xml", true);
 
-		return std::make_shared<Package>(mPInfo, std::move(mTiles));
+		return std::make_shared<Package>(mPInfo, std::move(mTiles), std::move(mAspects));
 	}
 
 	PackageInfo loadPackageInfo()
@@ -376,6 +376,7 @@ private:
 	std::unordered_map<string, Texture> mImages;
 	std::unordered_map<string, Tile> mTiles;
 	std::unordered_map<string, Raster> mRasters;
+	std::unordered_map<string, Rect> mAspects;
 
 	std::unordered_set<string> mAlreadyOpened;
 

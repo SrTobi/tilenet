@@ -59,11 +59,13 @@ bool PackageInfo::hasInterface( const string& interf) const
 
 
 
-Package::Package(const PackageInfo& pi, std::unordered_map<string, shared_ptr<StdTile>>&& tiles)
+Package::Package(const PackageInfo& pi, std::unordered_map<string, shared_ptr<StdTile>>&& tiles, std::unordered_map<string, Rect>&& tilesizes)
 	: mInfo(pi)
-	, mPackageTileSize(8, 12)
+	, mTileSizes(std::move(tilesizes))
 	, mNameToStdTileMapping(std::move(tiles))
 {
+	auto it = mTileSizes.find(L"std");
+	mStdTileSize = (it == mTileSizes.end())? StdTilePool::GetTileSize() : it->second;
 }
 
 Package::~Package()
@@ -80,9 +82,18 @@ shared_ptr<StdTile> Package::getStdTileByName( const string& name )
 	return it->second;
 }
 
+
 const Rect& Package::getTileSize() const
 {
-	return mPackageTileSize;
+	return mStdTileSize;
+}
+
+
+const Rect& Package::getTileSize(const string& name) const
+{
+	auto it = mTileSizes.find(name);
+
+	return (it == mTileSizes.end())? getTileSize() : it->second;
 }
 
 const PackageInfo& Package::info()

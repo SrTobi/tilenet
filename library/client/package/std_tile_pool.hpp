@@ -25,6 +25,7 @@ public:
 
 	const shared_ptr<sf::Texture>& getTexture() const;
 
+	static Rect GetTileSize();
 	static const StdTilePool& Inst();
 private:
 	void loadTextureFromSource(const sf::Uint8* src, unsigned int length);

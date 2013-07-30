@@ -227,6 +227,12 @@ const std::shared_ptr<sf::Texture>& StdTilePool::getTexture() const
 	return mTileImage;
 }
 
+Rect StdTilePool::GetTileSize()
+{
+	return Rect(TILE_WIDTH, TILE_HEIGHT);
+}
+
+
 
 
 

@@ -48,19 +48,22 @@ private:
 class Package
 {
 public:
-	Package(const PackageInfo& pi, std::unordered_map<string, shared_ptr<StdTile>>&& tiles);
+	Package(const PackageInfo& pi, std::unordered_map<string, shared_ptr<StdTile>>&& tiles, std::unordered_map<string, Rect>&& tilesizes);
 	~Package();
 
+
 	const Rect& getTileSize() const;
+	const Rect& getTileSize(const string& name) const;
 	shared_ptr<StdTile> getStdTileByName(const string& name);
 
 
 	const PackageInfo& info();
 
 private:
+	Rect mStdTileSize;
+	std::unordered_map<string, Rect> mTileSizes;
 	std::unordered_map<string, shared_ptr<StdTile>> mNameToStdTileMapping;
 	PackageInfo mInfo;
-	Rect mPackageTileSize;
 };
 
 
