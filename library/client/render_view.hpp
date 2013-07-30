@@ -17,6 +17,9 @@ public:
 	Bounds(const Vector& pos, const Vector& size);
 	~Bounds();
 
+	Bounds applyAspect(const Aspect& aspect) const;
+	Bounds removeAspect(const Aspect& aspect) const;
+
 	static Bounds center(const Bounds& outter, const Vector& rect);
 
 	Vector	position;
@@ -29,9 +32,9 @@ public:
 class RenderView
 {
 public:
-	RenderView(sf::RenderTarget& target, const Rect& tileSize);
-	RenderView(RenderView& view, const Bounds& outter_bounds);
-	RenderView(RenderView& view, const Bounds& outter_bounds, const Bounds& inner_bounds, const sf::Color& color);
+	RenderView(sf::RenderTarget& target);
+	RenderView(RenderView& view, const Bounds& outter_bounds, const Aspect& aspect);
+	RenderView(RenderView& view, const Bounds& outter_bounds, const Aspect& outter_aspect, const Bounds& inner_bounds, const Aspect& inner_aspect, const sf::Color& color);
 	~RenderView();
 
 	sf::RenderTarget& target();

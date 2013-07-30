@@ -86,6 +86,7 @@ typedef basic_vector2<unsigned int> Point;
 typedef basic_vector2<unsigned int> Rect;
 typedef basic_vector2<TNRATIO>		Ratio;
 typedef basic_vector2<float>		Vector;
+typedef Ratio						Aspect;
 
 
 /// @endcond

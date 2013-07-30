@@ -92,7 +92,7 @@ void attach_name_input_dialog( TNID player )
 {
 	NameInputDialog* nip = (NameInputDialog*)malloc(sizeof(NameInputDialog));
 
-	nip->layer = create_layer(20, 2);
+	nip->layer = create_layer(20, 2, L"namedlg");
 	nip->len = 0;
 	nip->input[0] = L'\0';
 

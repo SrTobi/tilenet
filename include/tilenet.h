@@ -292,11 +292,11 @@ TNAPI TNERROR tilenet_kick(TNPARTICIPANT participant, const wchar_t* reason);
 TNAPI TNERROR tilenet_attach_layer(TNPARTICIPANT participant, TNLAYER layer);
 
 /**** layer: frame ****/
-TNAPI TNERROR tilenet_create_frame(TNLAYER* frame, TNFLAG flags);
+TNAPI TNERROR tilenet_create_frame(TNLAYER* frame, const wchar_t* aspectName, TNFLAG flags);
 TNAPI TNERROR tilenet_update_frame(TNLAYER frame, TNLAYER* layer_list, TNVIEW** view_list, size_t size);
 
 /**** layer: tile-layer ****/
-TNAPI TNERROR tilenet_create_tilelayer(TNLAYER* layer, unsigned int width, unsigned int height, TNRATIO xr, TNRATIO yr, TNFLAG flags);
+TNAPI TNERROR tilenet_create_tilelayer(TNLAYER* layer, unsigned int width, unsigned int height, TNRATIO xr, TNRATIO yr, const wchar_t* aspect, TNFLAG flags);
 TNAPI TNERROR tilenet_update_tilelayer(TNLAYER layer, const TNTILE* tiles, const TNBOOL* toupdate);
 
 /**** tileset ****/

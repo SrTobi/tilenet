@@ -573,12 +573,12 @@ TNAPI TNERROR tilenet_attach_layer( TNPARTICIPANT participant, TNLAYER layer )
 }
 
 
-TNAPI TNERROR tilenet_create_frame( TNLAYER* frame, TNFLAG flags )
+TNAPI TNERROR tilenet_create_frame( TNLAYER* frame, const wchar_t* aspectName, TNFLAG flags )
 {
 	SET_SAVE_ERROR(true);
 	CHECK_NULL(frame, L"frame");
 	try {
-		auto frame_ptr = std::make_shared<srv::FrameLayer>(flags);
+		auto frame_ptr = std::make_shared<srv::FrameLayer>(flags, aspectName);
 		srv::FrameLayer::Register(frame_ptr);
 
 		*frame = frame_ptr->initialize();
@@ -603,13 +603,13 @@ TNAPI TNERROR tilenet_update_frame( TNLAYER frame, TNLAYER* layer_list, TNVIEW**
 
 
 
-TNAPI TNERROR tilenet_create_tilelayer( TNLAYER* layer, unsigned int width, unsigned int height, TNRATIO xr, TNRATIO yr, TNFLAG flags )
+TNAPI TNERROR tilenet_create_tilelayer( TNLAYER* layer, unsigned int width, unsigned int height, TNRATIO xr, TNRATIO yr, const wchar_t* aspect, TNFLAG flags )
 {
 	SET_SAVE_ERROR(true);
 	CHECK_NULL(layer, L"layer");
 
 	try {
-		auto tileLayer_ptr = std::make_shared<srv::TileLayer>(Rect(width, height), Ratio(xr, yr), flags);
+		auto tileLayer_ptr = std::make_shared<srv::TileLayer>(Rect(width, height), Ratio(xr, yr), aspect, flags);
 		srv::TileLayer::Register(tileLayer_ptr);
 
 		*layer = tileLayer_ptr->initialize();

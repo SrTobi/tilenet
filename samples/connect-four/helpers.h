@@ -23,7 +23,7 @@ typedef struct {
 #define COLOR_BLUE	(0xFF0000FF)
 
 
-Layer* create_layer(unsigned int w, unsigned int h);
+Layer* create_layer(unsigned int w, unsigned int h, const wchar_t* aspect);
 void destroy_layer(Layer* layer);
 
 size_t pos_index(unsigned int x, unsigned int y, unsigned int w, unsigned int h);

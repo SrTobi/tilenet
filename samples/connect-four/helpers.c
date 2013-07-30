@@ -3,7 +3,7 @@
 #include <stdarg.h>
 
 
-Layer* create_layer( unsigned int w, unsigned int h )
+Layer* create_layer( unsigned int w, unsigned int h, const wchar_t* aspect)
 {
 	Layer* layer = (Layer*)malloc(sizeof(Layer));
 
@@ -12,7 +12,7 @@ Layer* create_layer( unsigned int w, unsigned int h )
 	layer->w = w;
 	layer->h = h;
 
-	tilenet_create_tilelayer(&(layer->handle), w, h, TNSTDRATIO, TNSTDRATIO, 0);
+	tilenet_create_tilelayer(&(layer->handle), w, h, TNSTDRATIO, TNSTDRATIO, aspect, 0);
 	clear_layer(layer);
 
 	return layer;

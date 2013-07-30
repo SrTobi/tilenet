@@ -24,45 +24,57 @@ Bounds::~Bounds()
 {
 }
 
-Bounds Bounds::center( const Bounds& outter, const Vector& rect )
+Bounds Bounds::center( const Bounds& outter, const Vector& rect)
 {
 	return Bounds(outter.position + (outter.size / 2 - rect / 2), rect);
 }
 
+client::Bounds Bounds::applyAspect( const Aspect& aspect ) const
+{
+	return Bounds(position * aspect, size *aspect);
+}
+
+client::Bounds Bounds::removeAspect( const Aspect& aspect ) const
+{
+	return Bounds(position / aspect, size / aspect);
+}
 
 
 
 
 
 
-RenderView::RenderView( sf::RenderTarget& target, const Rect& tileSize )
+
+
+
+RenderView::RenderView( sf::RenderTarget& target)
 	: mTarget(target)
 	, mOldView(target.getView())
-	, mSize(target.getSize().x / float(tileSize.w), target.getSize().y / float(tileSize.h))
+	, mSize(target.getSize().x, target.getSize().y)
 	, mColor(sf::Color::White)
 {
 }
 
-RenderView::RenderView( RenderView& view, const Bounds& outter_bounds)
+RenderView::RenderView( RenderView& view, const Bounds& outter_bounds, const Aspect& aspect)
 	: mTarget(view.target())
-	, mSize(outter_bounds.size)
+	, mSize(outter_bounds.size * static_cast<Vector>(aspect))
 	, mOldView(mTarget.getView())
 	, mColor(view.color())
 {
 	sf::View newView(sf::FloatRect(0.0f, 0.0f, outter_bounds.size.w, outter_bounds.size.h));
-	newView.setViewport(_calcViewport(outter_bounds, view.mSize));
+	newView.setViewport(_calcViewport(outter_bounds.applyAspect(aspect), view.mSize));
 
 	mTarget.setView(newView);
 }
 
-RenderView::RenderView( RenderView& view, const Bounds& outter_bounds, const Bounds& inner_bounds, const sf::Color& color )
+RenderView::RenderView(RenderView& view, const Bounds& outter_bounds, const Aspect& outter_aspect, const Bounds& inner_bounds, const Aspect& inner_aspect, const sf::Color& color)
 	: mTarget(view.target())
-	, mSize(inner_bounds.size)
+	, mSize(inner_bounds.size * static_cast<Vector>(inner_aspect))
 	, mOldView(mTarget.getView())
 	, mColor(color * view.color())
 {
 	sf::View newView(sf::FloatRect(inner_bounds.position.x, inner_bounds.position.y, inner_bounds.size.w, inner_bounds.size.h));
-	newView.setViewport(_calcViewport(outter_bounds, view.mSize));
+	newView.setViewport(_calcViewport(outter_bounds.applyAspect(outter_aspect), view.mSize));
 
 	mTarget.setView(newView);
 }

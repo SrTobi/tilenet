@@ -12,11 +12,12 @@
 namespace srv {
 
 
-TileLayer::TileLayer(const Rect& size, const Ratio& ratio, TNFLAG flags)
+TileLayer::TileLayer(const Rect& size, const Ratio& ratio, const string& aspectName, TNFLAG flags)
 	: mTileField(size)
 	, mRatio(ratio)
 	, mUpdateStrand(Service::Inst())
 	, mCommits(1)
+	, mAspectName(aspectName)
 {
 	//makeFullSnapshotCommit(true); // <- falsche id!!!
 }
@@ -117,6 +118,7 @@ TileLayer::Commit TileLayer::makeFullSnapshotCommit(bool asNewCommit)
 	fullLayer.yratio = ratio().y;
 	fullLayer.width = size().w;
 	fullLayer.height = size().h;
+	fullLayer.aspectName = mAspectName;
 	fullLayer.commitNr = commitnr;
 
 	auto& storage = mTileField.storage();

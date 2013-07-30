@@ -14,9 +14,10 @@ namespace srv {
 
 
 
-FrameLayer::FrameLayer( TNFLAG flags )
+FrameLayer::FrameLayer( TNFLAG flags, const string& aspectName )
 	: mUpdateStrand(Service::Inst())
 	, mCommits(1)
+	, mAspectName(aspectName)
 {
 }
 
@@ -53,6 +54,7 @@ FrameLayer::Commit FrameLayer::makeFullSnapshotCommit( bool asNewCommit )
 	fullFrame.layerId = id();
 	fullFrame.commitNr = commitnr;
 	fullFrame.is_delta = false;
+	fullFrame.aspectName = mAspectName;
 
 	auto& zorder = fullFrame.sublayers_in_zorder;
 	auto& views = fullFrame.update_views;

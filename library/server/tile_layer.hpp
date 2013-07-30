@@ -29,7 +29,7 @@ class TileLayer
 {
 	friend class job::UpdateLayerJob;
 public:
-	TileLayer(const Rect& size, const Ratio& ratio, TNFLAG flags);
+	TileLayer(const Rect& size, const Ratio& ratio, const string& aspectName, TNFLAG flags);
 	~TileLayer();
 
 	void init();
@@ -55,6 +55,7 @@ private:
 	std::mutex			mMutex;
 	Field<net::PTile>	mTileField;
 	const Ratio			mRatio;
+	string				mAspectName;
 	CommitQueue			mCommits;
 };
 

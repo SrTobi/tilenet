@@ -148,7 +148,7 @@ void MainComHandler::handleLayerControl_sendFullLayer(proto::v1_0::to_client::La
 	Rect size(msg.width, msg.height);
 	Ratio ratio(msg.xratio, msg.yratio);
 
-	mRenderer->defineLayer(msg.layerId, size, ratio);
+	mRenderer->defineLayer(msg.layerId, size, ratio, msg.aspectName);
 
 	// Check content size
 	if(msg.layerContent.size() != size.area())

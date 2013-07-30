@@ -132,7 +132,7 @@ void add_player_to_lobby( TNID player )
 		// init lobby
 		memset(gameslots, 0, sizeof(gameslots));
 
-		lobby_layer = create_layer(35, 15);
+		lobby_layer = create_layer(35, 15, L"lobby");
 
 		print_chars(lobby_layer, 0,0, COLOR_WHITE, L"Select a game or open a new one\nby pressing 0-9.");
 

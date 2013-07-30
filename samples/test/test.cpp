@@ -46,7 +46,7 @@ public:
 		: m_width(w), m_height(h)
 		, m_content(w * h), m_updated(w * h, 0)
 	{
-		tilenet_create_tilelayer(&m_handle, w, h, TNSTDRATIO, TNSTDRATIO, 0);
+		tilenet_create_tilelayer(&m_handle, w, h, TNSTDRATIO, TNSTDRATIO, L"", 0);
 	}
 
 	~Layer()
@@ -129,7 +129,7 @@ class Frame
 public:
 	Frame()
 	{
-		tilenet_create_frame(&m_handle, 0);
+		tilenet_create_frame(&m_handle, L"", 0);
 	}
 
 	~Frame()

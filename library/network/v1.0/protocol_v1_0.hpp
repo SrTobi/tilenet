@@ -178,11 +178,12 @@ PROTOCOL_MESSAGE(LayerControl_SendFullLayer, to_client)
 	TNID commitNr;
 	float xratio, yratio;
 	uint16  width, height;
+	string aspectName;
 	std::vector<net::PTile> layerContent;
 
 	PROTOCOL_SERIALIZER(ar)
 	{
-		ar & layerId & commitNr & xratio & yratio & width & height & layerContent;
+		ar & layerId & commitNr & xratio & yratio & width & height & aspectName & layerContent;
 	}
 };
 
@@ -205,12 +206,13 @@ PROTOCOL_MESSAGE(LayerControl_SendFrame, to_client)
 	TNID layerId;
 	TNID commitNr;
 	bool is_delta;
+	string aspectName;
 	std::vector<TNID> sublayers_in_zorder;
 	std::vector<std::pair<TNID, proto::v1_0::PView>> update_views;
 
 	PROTOCOL_SERIALIZER(ar)
 	{
-		ar & layerId & commitNr & is_delta & sublayers_in_zorder & update_views;
+		ar & layerId & commitNr & is_delta & aspectName & sublayers_in_zorder & update_views;
 	}
 };
 

@@ -22,7 +22,7 @@ namespace v1_0 {
 
 class ServerInfo;
 class TileMapper;
-
+class AspectManager;
 
 class Renderer
 {
@@ -39,7 +39,7 @@ public:
 	virtual OVERRIDE void render(sf::RenderTarget& target);
 
 	void setTopLayer(TNID id);
-	void defineLayer(TNID id, Rect size, Ratio r);
+	void defineLayer(TNID id, Rect size, Ratio r, const string& aspectName);
 	void updateLayer(const LayerCommit& commit);
 	void applyDelta(const LayerDelta& delta);
 	void updateFrame(const FrameCommit& commit);
@@ -49,6 +49,7 @@ private:
 private:
 	shared_ptr<PackageManager> mPackManager;
 	shared_ptr<TileMapper> mTileMapper;
+	shared_ptr<AspectManager> mAspectManager;
 	shared_ptr<ServerInfo> mServerInfo;
 	shared_ptr<Package> mPackage;
 

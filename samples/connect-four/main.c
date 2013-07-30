@@ -191,7 +191,7 @@ TNID doLocalMainMenu()
 	size_t fetched = 0;
 	TNID player  = 0;
 	int sel = 0;
-	Layer* menuLayer = create_layer(20, 7);
+	Layer* menuLayer = create_layer(20, 7, L"localmenu");
 	print_chars(menuLayer, 5, 0, MENU_HEAD_COLOR, L"Connect 4");
 	print_chars(menuLayer, 2, 2, MENU_COLOR, L"Connect to ip");
 	print_chars(menuLayer, 2, 3, MENU_COLOR, L"Open server");

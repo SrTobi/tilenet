@@ -317,7 +317,7 @@ void game_control(PlayerControl c, void* context, TNID p, TNEVENT* evt)
 GameView* create_game_view(TNID pid, Game* g)
 {
 	int x,y;
-	Layer* layer = create_layer(BOARD_W + 10, BOARD_H + 3);
+	Layer* layer = create_layer(BOARD_W + 10, BOARD_H + 3, L"game");
 	GameView* gv = (GameView*)malloc(sizeof(GameView));
 
 	gv->pid = pid;

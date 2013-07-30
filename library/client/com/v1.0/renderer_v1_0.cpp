@@ -33,13 +33,63 @@ namespace client{
 namespace com {
 namespace v1_0 {
 
-class Renderer::Layer
+
+class AspectManager
 {
 public:
 
-	virtual void render(RenderView& view) = 0;
-	virtual Vector getBounds() const = 0;
+	std::pair<Ratio, bool> getAspectByName(const string& name)
+	{
+		if(mPackage)
+			return std::make_pair(mPackage->getAspect(name), true);
+
+		return std::make_pair(Ratio(1.0f, 1.0f), false);
+	}
+
+	void setPackage(const shared_ptr<Package>& package)
+	{
+		tnAssert(!mPackage);
+		mPackage = package;
+	}
+
 private:
+	shared_ptr<Package> mPackage;
+};
+
+class Renderer::Layer
+{
+public:
+	Layer(const Ratio& ratio, const string& aspectName, const shared_ptr<AspectManager>& am)
+		: mRatio(ratio)
+		, mAspectName(aspectName)
+		, mAspectManager(am)
+	{
+	}
+
+	virtual void render(RenderView& view) = 0;
+	virtual Vector getBounds() = 0;
+
+	virtual Aspect getAspect()
+	{
+		if(mAspect.x != 0)
+			return mAspect;
+
+		bool isFinal;
+		Aspect aspect;
+		std::tie(aspect, isFinal) = mAspectManager->getAspectByName(mAspectName);
+
+		aspect *= mRatio;
+
+		if(isFinal)
+			mAspect = aspect;
+
+		return aspect;
+	}
+private:
+	Ratio mRatio;
+	Aspect mAspect;
+	string mAspectName;
+	shared_ptr<AspectManager> mAspectManager;
 };
 
 
@@ -126,8 +176,8 @@ private:
 		std::weak_ptr<StdTile> mTile;
 	};
 public:
-	RenderLayer(const Rect& size, const Ratio& ratio, const shared_ptr<TileMapper>& manager)
-		: mRatio(ratio)
+	RenderLayer(const Rect& size, const Ratio& ratio, const string& aspectName, const shared_ptr<TileMapper>& manager, const shared_ptr<AspectManager>& am)
+		: Layer(ratio, aspectName, am)
 		, mTileManager(manager)
 		, mTileField(size)
 	{
@@ -148,9 +198,9 @@ public:
 		}
 	}
 
-	virtual OVERRIDE Vector getBounds() const
+	virtual OVERRIDE Vector getBounds()
 	{
-		return Vector(mTileField.size()) * mRatio;
+		return Vector(mTileField.size());
 	}
 
 	void update(const LayerDelta& delta)
@@ -220,7 +270,6 @@ private:
 
 private:
 	Field<std::unique_ptr<Tile>> mTileField;
-	Ratio mRatio;
 	shared_ptr<TileMapper> mTileManager;
 };
 
@@ -231,8 +280,9 @@ class Renderer::FrameLayer
 {
 	typedef proto::v1_0::PView PView;
 public:
-	FrameLayer(Renderer& renderer)
-		: mRenderer(renderer)
+	FrameLayer(Renderer& renderer, const string& aspectName, const shared_ptr<AspectManager>& am)
+		: Layer(Ratio(1.0f, 1.0f), aspectName, am)
+		, mRenderer(renderer)
 	{
 	}
 
@@ -258,13 +308,13 @@ public:
 				Bounds inner = Bounds(	Vector(subview.inner_pos()) * subview.inner_posratio(),
 										Vector(subview.inner_size()) * subview.inner_sizeratio());
 
-				RenderView newView(view, outter, inner, to_sf_color(subview.color()));
+				RenderView newView(view, outter, getAspect(), inner, layer->getAspect(), to_sf_color(subview.color()));
 				layer->render(newView);
 			}
 		}
 	}
 
-	virtual OVERRIDE Vector getBounds() const
+	virtual OVERRIDE Vector getBounds()
 	{
 		Vector size;
 
@@ -321,6 +371,7 @@ Renderer::Renderer(const shared_ptr<TileMapper>& mapper, const shared_ptr<Packag
 	, mTileMapper(mapper)
 	, mServerInfo(info)
 {
+	mAspectManager = std::make_shared<AspectManager>();
 }
 
 Renderer::~Renderer()
@@ -341,11 +392,12 @@ void Renderer::render(sf::RenderTarget& target)
 
 		if(topLayer)
 		{
-			RenderView view(target, mPackage->getAspect());
+			RenderView view(target);
 			
 			Vector size = topLayer->getBounds();
+			Aspect aspect = topLayer->getAspect();
 
-			RenderView newView(view, Bounds::center(view.bounds(), size));
+			RenderView newView(view, Bounds::center(view.bounds().removeAspect(aspect), size), topLayer->getAspect());
 			topLayer->render(newView);
 		}
 	}else{
@@ -367,7 +419,10 @@ void Renderer::render(sf::RenderTarget& target)
 			}
 
 			if(mPackage)
+			{
 				mTileMapper->setPackage(mPackage);
+				mAspectManager->setPackage(mPackage);
+			}
 		}
 	}
 }
@@ -390,9 +445,9 @@ shared_ptr<Renderer::Layer> Renderer::layer( TNID id ) const
 	return it->second;
 }
 
-void Renderer::defineLayer( TNID id, Rect size, Ratio r )
+void Renderer::defineLayer( TNID id, Rect size, Ratio r, const string& aspectName )
 {
-	mIdToLayerMapping[id] = std::make_shared<RenderLayer>(size, r, mTileMapper);
+	mIdToLayerMapping[id] = std::make_shared<RenderLayer>(size, r, aspectName, mTileMapper, mAspectManager);
 }
 
 void Renderer::updateLayer( const LayerCommit& commit )
@@ -417,7 +472,7 @@ void Renderer::updateFrame( const FrameCommit& commit )
 		}
 
 	}else{
-		layer_ptr = frame = std::make_shared<FrameLayer>(std::ref(*this));
+		layer_ptr = frame = std::make_shared<FrameLayer>(std::ref(*this), commit.aspectName, mAspectManager);
 	}
 
 	frame->update(commit);

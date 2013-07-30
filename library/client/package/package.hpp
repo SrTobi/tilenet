@@ -52,16 +52,15 @@ public:
 	~Package();
 
 
-	const Rect& getAspect() const;
-	const Rect& getAspect(const string& name) const;
+	const Ratio& getAspect(const string& name) const;
 	shared_ptr<StdTile> getStdTileByName(const string& name);
 
 
 	const PackageInfo& info();
 
 private:
-	Rect mStdAspect;
-	std::unordered_map<string, Rect> mAspects;
+	Ratio mStdAspect;
+	std::unordered_map<string, Ratio> mAspects;
 	std::unordered_map<string, shared_ptr<StdTile>> mNameToStdTileMapping;
 	PackageInfo mInfo;
 };

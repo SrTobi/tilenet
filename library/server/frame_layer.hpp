@@ -31,7 +31,7 @@ class FrameLayer
 	typedef proto::curv::PView PView;
 	friend class job::UpdateFrameJob;
 public:
-	FrameLayer(TNFLAG flags);
+	FrameLayer(TNFLAG flags, const string& aspectName);
 	~FrameLayer();
 
 	void update(TNLAYER* layer_list, TNVIEW** view_list, size_t size);
@@ -54,6 +54,7 @@ private:
 	boost::asio::strand mUpdateStrand;
 	std::mutex			mMutex;
 	CommitQueue			mCommits;
+	string				mAspectName;
 
 	std::unordered_map<shared_ptr<Layer>, std::pair<PView, unsigned short>> mSubLayers;
 };
