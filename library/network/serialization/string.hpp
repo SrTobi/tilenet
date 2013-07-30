@@ -24,6 +24,10 @@ void load(S& s, std::string& str)
 {
 	std::string::size_type size = 0;
 	s >> size;
+
+	if(size == 0)
+		return;
+
 	s >> std::noskipws;
 	char delmiter;
 	s >> delmiter;
