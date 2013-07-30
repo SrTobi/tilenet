@@ -61,11 +61,11 @@ bool PackageInfo::hasInterface( const string& interf) const
 
 Package::Package(const PackageInfo& pi, std::unordered_map<string, shared_ptr<StdTile>>&& tiles, std::unordered_map<string, Rect>&& tilesizes)
 	: mInfo(pi)
-	, mTileSizes(std::move(tilesizes))
+	, mAspects(std::move(tilesizes))
 	, mNameToStdTileMapping(std::move(tiles))
 {
-	auto it = mTileSizes.find(L"std");
-	mStdTileSize = (it == mTileSizes.end())? StdTilePool::GetTileSize() : it->second;
+	auto it = mAspects.find(L"std");
+	mStdAspect = (it == mAspects.end())? StdTilePool::GetTileSize() : it->second;
 }
 
 Package::~Package()
@@ -83,17 +83,17 @@ shared_ptr<StdTile> Package::getStdTileByName( const string& name )
 }
 
 
-const Rect& Package::getTileSize() const
+const Rect& Package::getAspect() const
 {
-	return mStdTileSize;
+	return mStdAspect;
 }
 
 
-const Rect& Package::getTileSize(const string& name) const
+const Rect& Package::getAspect(const string& name) const
 {
-	auto it = mTileSizes.find(name);
+	auto it = mAspects.find(name);
 
-	return (it == mTileSizes.end())? getTileSize() : it->second;
+	return (it == mAspects.end())? getAspect() : it->second;
 }
 
 const PackageInfo& Package::info()

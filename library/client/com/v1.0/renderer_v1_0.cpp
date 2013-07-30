@@ -341,7 +341,7 @@ void Renderer::render(sf::RenderTarget& target)
 
 		if(topLayer)
 		{
-			RenderView view(target, mPackage->getTileSize());
+			RenderView view(target, mPackage->getAspect());
 			
 			Vector size = topLayer->getBounds();
 
