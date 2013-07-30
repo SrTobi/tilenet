@@ -79,6 +79,7 @@ class PackageLoader
 			addFunction(L"scope", &Scope::enterScopes);
 			addFunction(L"image", &Scope::defineImage);
 			addFunction(L"raster", &Scope::defineRaster);
+			addFunction(L"aspect", &Scope::defineAspect);
 
 			if(mIsNewScope)
 				mScopes.push_back(scope_name);
@@ -117,6 +118,16 @@ class PackageLoader
 			string value = resolveString(rxml::valuefb(node, L":value", node.value()));
 
 			addResource(pl.mStringResources, name, value, L"string", node);
+		}
+
+		void defineAspect(xml_node& node)
+		{
+			string name = resolveString(rxml::valuefb(node, L":name", L"std"));
+
+			unsigned int w = boost::lexical_cast<unsigned int>(resolveString(rxml::value(node, L":w")));
+			unsigned int h = boost::lexical_cast<unsigned int>(resolveString(rxml::value(node, L":h")));
+			
+			addResource(pl.mAspects, name, Rect(w, h), L"aspect", node);
 		}
 
 		void defineImage(xml_node& node)
