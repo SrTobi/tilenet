@@ -33,6 +33,7 @@ void load(S& s, std::string& str)
 	s >> delmiter;
 
 	std::copy_n(std::istream_iterator<char>(s.stream()), size, std::back_inserter(str));
+	s >> std::skipws;
 }
 
 
