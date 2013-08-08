@@ -38,7 +38,7 @@ void process_slot(int slot, TNID p)
 		free_player_slot(p);
 
 		// open new slot
-		print_chars(lobby_layer, 3, 3 + slot, COLOR_LGREY, L"%s is waiting                    ", get_player(p)->name);
+		print_chars(lobby_layer, 3, 3 + slot, COLOR_LGREY, L"%ls is waiting                    ", get_player(p)->name);
 		gameslots[slot] = p;
 	}
 	flush_layer(lobby_layer);
