@@ -260,7 +260,7 @@ class PackageLoader
 			NOT_IMPLEMENTED(/* failed to resolve ref */)
 		}
 
-		string buildScopeName(const string& name, unsigned int deep = MAXUINT)
+		string buildScopeName(const string& name, unsigned int deep = UINT_MAX)
 		{
 			if(name.find(L"::") == 0)
 				return name.substr(2);
