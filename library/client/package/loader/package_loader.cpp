@@ -306,6 +306,10 @@ class PackageLoader
 			std::wistringstream portionStream(portionString);
 			std::copy(std::istream_iterator<int, wchar_t>(portionStream), std::istream_iterator<int, wchar_t>(), std::back_inserter(portions));
 			
+			if(!portionStream.eof())
+			{
+				log.warn() << L"Was not able to fully parse intp in " << rxml::locate(node);
+			}
 
 
 			const string random = resolveString(rxml::valuefb(node, L":rand", L"0"));
