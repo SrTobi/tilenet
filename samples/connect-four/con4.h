@@ -1,5 +1,5 @@
-#ifndef _4CON_H
-#define _4CON_H
+#ifndef _CON4_H
+#define _CON4_H
 
 #pragma warning(disable: 4996)
 

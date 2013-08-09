@@ -1,11 +1,11 @@
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin/samples/4con)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin/samples/con4)
 
-file(GLOB sample_four_connect_header *.h)
-file(GLOB sample_four_connect_source *.c)
+file(GLOB sample_connect_four_header *.h)
+file(GLOB sample_connect_four_source *.c)
 
-add_executable(4con ${sample_four_connect_source} ${sample_four_connect_header})
-target_link_libraries(4con tilenet ${tilenet_dependency_libs})
+add_executable(con4 ${sample_connect_four_source} ${sample_connect_four_header})
+target_link_libraries(con4 tilenet ${tilenet_dependency_libs})
 
-NEED_MEDIA(4con cour.ttf)
-NEED_MEDIA(4con samples/4con)
+NEED_MEDIA(con4 cour.ttf)
+NEED_MEDIA(con4 samples/con4)

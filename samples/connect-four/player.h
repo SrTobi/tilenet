@@ -1,7 +1,7 @@
 #ifndef _PLAYER_H
 #define _PLAYER_H
 
-#include "4con.h"
+#include "con4.h"
 
 #define MAX_NAME_LEN 12
 #define NAME_BUF_SIZE 16

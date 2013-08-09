@@ -5,7 +5,7 @@
 			This is a sample for tilenet.
 		
 			<author name="tobias" />
-			<interface value="tn.org.samples.4con" />
+			<interface value="tn.org.samples.con4" />
 		</information>
 		
 		<string name="corner" value="*" />

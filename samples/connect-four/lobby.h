@@ -2,7 +2,7 @@
 #define _LOBBY_H
 
 
-#include "4con.h"
+#include "con4.h"
 
 
 void add_player_to_lobby(TNID player);

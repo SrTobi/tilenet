@@ -1,4 +1,4 @@
-#include "4con.h"
+#include "con4.h"
 #include "player.h"
 #include "name_input_dialog.h"
 
@@ -293,7 +293,7 @@ int main(int argc, const char** args)
 	config.name = L"connect-4";
 	config.info = L"Play 'connect-4' with friends over network!";
 	config.pkg = L"connect-4-sample-package";
-	config.pkgi = L"tn.org.samples.4con";
+	config.pkgi = L"tn.org.samples.con4";
 	config.options = 0;
 
 	if(tilenet_create_server(&GServer, &config) != TNOK)
