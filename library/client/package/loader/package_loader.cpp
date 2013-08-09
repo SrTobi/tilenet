@@ -50,6 +50,9 @@ sf::Color parseColorString(string colstr)
 
 			tnAssert(!iss.fail() && !iss.bad());
 
+			if(colstr.size() == 7)
+				col |= TNMAKE_ALPHA(0xFF);
+
 			return sf::Color(TNGET_RED(col), TNGET_GREEN(col), TNGET_BLUE(col), TNGET_ALPHA(col));
 		}
 	}
