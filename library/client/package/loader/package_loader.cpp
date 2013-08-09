@@ -13,6 +13,7 @@
 #include <boost/regex.hpp>
 #include <boost/algorithm/string.hpp>
 
+#include <iterator>
 #include <algorithm>
 
 namespace client {
@@ -56,6 +57,10 @@ sf::Color parseColorString(string colstr)
 	return sf::Color::White;
 }
 
+bool is_truestring(const string& str)
+{
+	return str == L"1" || str == L"true" || str == L"yes";
+}
 
 class PackageLoader
 {
@@ -108,6 +113,7 @@ class PackageLoader
 			addFunction(L"image", &Scope::defineImage);
 			addFunction(L"raster", &Scope::defineRaster);
 			addFunction(L"aspect", &Scope::defineAspect);
+			addFunction(L"animation", &Scope::defineAnimation);
 
 			if(mIsNewScope)
 				mScopes.push_back(scope_name);
@@ -184,14 +190,20 @@ class PackageLoader
 			addResource(pl.mRasters, name, r, L"raster", node);
 		}
 
-		void defineTile(xml_node& node)
+		shared_ptr<StdTile> defineTileContent(xml_node& node, bool needname)
 		{
 			using boost::lexical_cast;
-			const string name = resolveString(rxml::value(node, L":name"));
+			const string name = resolveString(rxml::valuefb(node, L":name", L""));
+
+			if(needname && name.empty())
+			{
+				NOT_IMPLEMENTED();
+			}
+
 			shared_ptr<StdTile> tile;
 			rapidxml::xml_attribute<wchar_t>* attr;
 
-			sf::Color tileColor = parseColorString(rxml::valuefb(node, L":color", L""));
+			sf::Color tileColor = parseColorString(resolveString(rxml::valuefb(node, L":color", L"")));
 
 			if(attr = node.first_attribute(L"img"))
 			{
@@ -237,11 +249,54 @@ class PackageLoader
 				tile = std::make_shared<StdRefTile>(StdTilePool::Inst().getStdTile(resolveString(rxml::value(attr))), tileColor);
 			}
 
+			if(name.size())
+			{
+				if(tile)
+					addResource(pl.mTiles, name, tile, L"tile", node);
+				else
+					log.error() << L"Failed to create tile '" << name << L"' in " << rxml::locate(node);
+			}
 
-			if(tile)
-				addResource(pl.mTiles, name, tile, L"tile", node);
-			else
-				log.error() << L"Failed to create tile '" << name << L"' in " << rxml::locate(node);
+			return tile;
+		}
+
+		void defineTile(xml_node& node)
+		{
+			defineTileContent(node, true);
+		}
+
+
+		void defineAnimation(xml_node& node)
+		{
+			const string name = resolveString(rxml::value(node, L":name"));
+
+			std::vector<shared_ptr<StdTile>> tiles;
+
+			for(auto* tileNode = node.first_node(L"tile");
+				tileNode;
+				tileNode = tileNode->next_sibling())
+			{
+				auto tile = defineTileContent(*tileNode, false);
+				tiles.push_back(tile);
+			}
+
+			std::vector<unsigned int> portions;
+			string portionString = resolveString(rxml::valuefb(node, L":intp", L""));
+			std::replace(portionString.begin(), portionString.end(), L',', L' ');
+
+			std::wistringstream portionStream(portionString);
+			std::copy(std::istream_iterator<int, wchar_t>(portionStream), std::istream_iterator<int, wchar_t>(), std::back_inserter(portions));
+			
+
+
+			const string random = resolveString(rxml::valuefb(node, L":rand", L"0"));
+			unsigned int interval = boost::lexical_cast<unsigned int>(resolveString(rxml::value(node, L":int")));
+
+
+			shared_ptr<StdTile> anim = std::make_shared<StdAnimationTile>(interval, std::move(tiles), std::move(portions), is_truestring(random));
+
+
+			addResource(pl.mTiles, name, anim, L"animation", node);
 		}
 
 		void enterScopes(xml_node& node)

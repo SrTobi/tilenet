@@ -50,6 +50,22 @@ private:
 
 
 
+class StdAnimationTile : public StdTile
+{
+public:
+	StdAnimationTile(unsigned int interval, std::vector<shared_ptr<StdTile>>&& tiles, std::vector<unsigned int>&& portions, bool rand);
+	~StdAnimationTile();
+
+	OVERRIDE virtual void render(sf::RenderTarget& target, Point pos, const sf::Color& color);
+
+private:
+	long long mLastEpochTime;
+	unsigned int mInterval;
+	std::vector<shared_ptr<StdTile>> mTiles;
+	std::vector<float> mPortions;
+	bool mRand;
+};
+
 }
 
 
