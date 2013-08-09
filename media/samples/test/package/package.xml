@@ -6,4 +6,7 @@
 			<author name="tobias" />
 			<interface value="tn.org.samples.test" />
 		</information>
+		
+		
+		<tile name="test-a" std="a"/>
 	</package>
