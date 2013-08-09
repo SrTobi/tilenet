@@ -74,7 +74,7 @@ add_definitions( -DBOOST_ALL_NO_LIB )
 
 
 ################### find packages ###################
-find_package(Boost COMPONENTS system thread serialization unit_test_framework filesystem REQUIRED)
+find_package(Boost COMPONENTS system thread serialization regex unit_test_framework filesystem REQUIRED)
 find_package(SFML COMPONENTS system window graphics audio REQUIRED)
 
 
