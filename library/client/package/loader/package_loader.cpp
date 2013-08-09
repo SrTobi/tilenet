@@ -11,6 +11,7 @@
 #include <rxml/value.hpp>
 
 #include <boost/regex.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <algorithm>
 
@@ -26,6 +27,33 @@ T cast_default(const string& source, const T& def)
 	{
 		return def;
 	}
+}
+
+boost::wregex ColorFormat(L"#([a-f0-9]{2}){3,4}");
+
+
+sf::Color parseColorString(string colstr)
+{
+	boost::algorithm::trim(colstr);
+	boost::to_lower(colstr);
+
+	if(colstr.size())
+	{
+		if(boost::regex_match(colstr, ColorFormat))
+		{
+			std::wistringstream iss(colstr.substr(1));
+			iss >> std::hex;
+
+			uint32 col;
+			iss >> col;
+
+			tnAssert(!iss.fail() && !iss.bad());
+
+			return sf::Color(TNGET_RED(col), TNGET_GREEN(col), TNGET_BLUE(col), TNGET_ALPHA(col));
+		}
+	}
+
+	return sf::Color::White;
 }
 
 
@@ -47,11 +75,11 @@ class PackageLoader
 		{
 		}
 
-		Tile makeSprite(unsigned int x, unsigned int y, unsigned int w, unsigned int h)
+		Tile makeSprite(unsigned int x, unsigned int y, unsigned int w, unsigned int h, const sf::Color& color)
 		{
 			Point p = mPosition + Point(x, y) * mSize;
 			Rect s = mSize * Point(std::max<unsigned int>(1, w), std::max<unsigned int>(1, h));
-			auto sp = std::make_shared<StdTile>(sf::Sprite(*mTex, sf::IntRect(p.x, p.y, s.x, s.y)), mTex);
+			auto sp = std::make_shared<StdSpriteTile>(sf::Sprite(*mTex, sf::IntRect(p.x, p.y, s.x, s.y)), mTex, color);
 
 			return sp;
 		}
@@ -163,6 +191,8 @@ class PackageLoader
 			shared_ptr<StdTile> tile;
 			rapidxml::xml_attribute<wchar_t>* attr;
 
+			sf::Color tileColor = parseColorString(rxml::valuefb(node, L":color", L""));
+
 			if(attr = node.first_attribute(L"img"))
 			{
 				auto tex = resolveReference(pl.mImages, resolveString(rxml::value(attr)));
@@ -188,7 +218,7 @@ class PackageLoader
 					h = texh - y;
 
 				auto sprite = sf::Sprite(*tex, sf::IntRect(x, y, w, h));
-				tile = std::make_shared<StdTile>(std::ref(sprite), tex);
+				tile = std::make_shared<StdSpriteTile>(std::ref(sprite), tex, tileColor);
 
 			}else if(attr = node.first_attribute(L"raster"))
 			{
@@ -199,12 +229,12 @@ class PackageLoader
 				unsigned int w = cast_default<unsigned int>(resolveString(rxml::valuefb(node, L":w", L"0")), 1);
 				unsigned int h = cast_default<unsigned int>(resolveString(rxml::valuefb(node, L":h", L"0")), 1);
 
-				tile = raster.makeSprite(x, y, w, h);
+				tile = raster.makeSprite(x, y, w, h, tileColor);
 
 
 			}else if(attr = node.first_attribute(L"std"))
 			{
-				tile = StdTilePool::Inst().getStdTile(resolveString(rxml::value(attr)));
+				tile = std::make_shared<StdRefTile>(StdTilePool::Inst().getStdTile(resolveString(rxml::value(attr))), tileColor);
 			}
 
 

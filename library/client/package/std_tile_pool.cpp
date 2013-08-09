@@ -105,7 +105,7 @@ void StdTilePool::loadTextureFromSource( const sf::Uint8* src, unsigned int leng
 void StdTilePool::addStdTile( unsigned int col, unsigned int row, const string& names )
 {
 	auto sprite = sf::Sprite(*mTileImage, sf::IntRect(col * TILE_WIDTH, row * TILE_HEIGHT, /*(col+1) **/ TILE_WIDTH, /*(row+1) **/ TILE_HEIGHT));
-	auto tile = std::make_shared<StdTile>(sprite, mTileImage);
+	auto tile = std::make_shared<StdSpriteTile>(sprite, mTileImage, sf::Color::White);
 
 	std::wistringstream iss(names);
 	string name;
