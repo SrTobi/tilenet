@@ -27,7 +27,11 @@ public:
 	{
 		log.info() << L"Found package " << path.wstring();
 
-		mResult.push_back(pload::loadPackageInfo(path));
+		try {
+			mResult.push_back(pload::loadPackageInfo(path));
+		}catch(...)
+		{
+		}
 	}
 
 
@@ -59,6 +63,8 @@ public:
 			iterateDirectory(path, deep);
 		}
 
+		if(mResult.empty())
+			log.error() << "No packages found!";
 
 		return std::move(mResult);
 	}
@@ -113,7 +119,18 @@ shared_ptr<Package> PackageManager::loadPackageByInterface( const string& interf
 
 shared_ptr<Package> PackageManager::loadPackageByPath( const fs::path& path )
 {
-	return pload::loadPackage(path);
+	try {
+		return pload::loadPackage(path);
+
+	}catch(excp::ExceptionBase& e)
+	{
+		Log().error() << "Failed to load package[" << path.wstring() << "]: " << e.why();
+	}catch(...)
+	{
+		Log().error() << "Failed to load package[" << path.wstring() << "]";
+	}
+
+	return nullptr;
 }
 
 shared_ptr<Package> PackageManager::loadPackageByPackageInfo( const PackageInfo& info )

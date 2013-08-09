@@ -137,9 +137,25 @@ class PackageLoader
 				auto it = mNodeOperators.find(name);
 
 				if(it != mNodeOperators.end())
-					it->second(child);
-				else
+				{
+					try {
+						it->second(child);
+					}catch(excp::ExceptionBase& e)
+					{
+
+						log.error() << L"Node illformed: " << e.why();
+
+					}catch(boost::bad_lexical_cast&)
+					{
+						log.error() << L"Failed to parse numeric value in " << rxml::locate(child);
+					
+					}catch(...)
+					{
+						log.error() << L"Unknown error in " << rxml::locate(child);
+					}
+				}else{
 					log.warn() << L"Unknown xml node [" << name << "] in " << rxml::locate(mScopeNode);
+				}
 			}
 		}
 
@@ -200,7 +216,7 @@ class PackageLoader
 
 			if(needname && name.empty())
 			{
-				NOT_IMPLEMENTED();
+				BOOST_THROW_EXCEPTION(excp::FormatException() << excp::InfoWhat(L"Name attribute was empty in a tile definition"));
 			}
 
 			shared_ptr<StdTile> tile;
@@ -345,7 +361,7 @@ class PackageLoader
 
 			}while(sccount--);
 
-			NOT_IMPLEMENTED(/* failed to resolve ref */)
+			BOOST_THROW_EXCEPTION(excp::FormatException() << excp::InfoWhat(L"Failed to resolve reference[" + fullref + L"]"));
 		}
 
 		string buildScopeName(const string& name, unsigned int deep = UINT_MAX)
@@ -425,7 +441,14 @@ class PackageLoader
 		std::vector<wchar_t> txt = src->loadText(path);
 
 		rapidxml::xml_document<wchar_t> doc;
-		parseXml(txt, doc);
+
+		try {
+			parseXml(txt, doc);
+		}catch(rapidxml::parse_error& e)
+		{
+			log.error() << "Failed to parse " << path << "[" << e.what() << "]";
+			return;
+		}
 
 		if(isRoot)
 			extractPackageInfo(doc);
@@ -459,7 +482,14 @@ public:
 		std::vector<wchar_t> txt = mRootSource->loadText(L"package.xml");
 
 		rapidxml::xml_document<wchar_t> doc;
-		parseXml(txt, doc);
+
+		try {
+			parseXml(txt, doc);
+		}catch(rapidxml::parse_error& e)
+		{
+			log.error() << "Failed to parse package.xml[" << e.what() << "]";
+			BOOST_THROW_EXCEPTION(excp::XmlException() << excp::InfoWhat(L"Failed to load package.xml!"));
+		}
 
 		extractPackageInfo(doc);
 

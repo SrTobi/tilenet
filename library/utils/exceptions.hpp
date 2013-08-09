@@ -68,7 +68,13 @@ struct NotImplException: public ExceptionBase
 	}
 };
 
-
+struct VPSExpection: public ExceptionBase
+{
+	virtual OVERRIDE const char* what() const throw()
+	{
+		return "Failed to process virtual source!";
+	}
+};
 
 struct FormatException: public ExceptionBase
 {

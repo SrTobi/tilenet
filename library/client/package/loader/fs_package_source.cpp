@@ -32,9 +32,9 @@ OVERRIDE shared_ptr<VirtualPackageSource> FsPackageSource::dir( const string& pa
 {
 	fs::path p = buildPath(path);
 
-	if(fs::is_directory(p))
+	if(!fs::is_directory(p))
 	{
-		NOT_IMPLEMENTED();
+		BOOST_THROW_EXCEPTION(excp::VPSExpection() << excp::InfoWhat(L"Failed access directory[" + path + L"]"));
 		return nullptr;
 	}
 
@@ -55,7 +55,7 @@ OVERRIDE std::vector<wchar_t> FsPackageSource::loadText( const string& path )
 
 	if(!stream)
 	{
-		NOT_IMPLEMENTED();
+		BOOST_THROW_EXCEPTION(excp::VPSExpection() << excp::InfoWhat(L"Failed to access virtual source[" + path + L"]"));
 	}
 
 	std::vector<wchar_t> buffer;
@@ -66,7 +66,7 @@ OVERRIDE std::vector<wchar_t> FsPackageSource::loadText( const string& path )
 
 	if(stream.bad())
 	{
-		NOT_IMPLEMENTED();
+		BOOST_THROW_EXCEPTION(excp::VPSExpection() << excp::InfoWhat(L"Error occured while loading virtual source[" + path + L"]"));
 	}
 
 	return buffer;
@@ -83,7 +83,7 @@ OVERRIDE std::vector<byte> FsPackageSource::loadRaw( const string& path )
 
 	if(!stream || ec)
 	{
-		NOT_IMPLEMENTED();
+		BOOST_THROW_EXCEPTION(excp::VPSExpection() << excp::InfoWhat(L"Failed to access virtual source[" + path + L"]"));
 	}
 
 	std::vector<byte> buffer;
@@ -91,9 +91,9 @@ OVERRIDE std::vector<byte> FsPackageSource::loadRaw( const string& path )
 	stream.read((char*)buffer.data(), size);
 	buffer.push_back(0);
 
-	if(stream.bad())
+	if(stream.bad() || stream.gcount() != size)
 	{
-		NOT_IMPLEMENTED();
+		BOOST_THROW_EXCEPTION(excp::VPSExpection() << excp::InfoWhat(L"Error occured while loading virtual source[" + path + L"]"));
 	}
 
 
@@ -129,7 +129,7 @@ fs::path FsPackageSource::buildPath( const string& path )
 
 	if(ec || result.string().find(mPath.string()) == string::npos)
 	{
-		NOT_IMPLEMENTED();
+		BOOST_THROW_EXCEPTION(excp::VPSExpection() << excp::InfoWhat(L"Access denied[" + result.wstring() + L"]"));
 	}
 
 	assert(result.is_absolute());

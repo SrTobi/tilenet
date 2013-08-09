@@ -21,7 +21,7 @@ shared_ptr<VirtualPackageSource> LoadVPSFromSF( const fs::path& path )
 	}
 
 
-	NOT_IMPLEMENTED();
+	BOOST_THROW_EXCEPTION(excp::VPSExpection() << excp::InfoWhat(L"Can not open virtual source[" + path.wstring() + L"]"));
 }
 
 }
