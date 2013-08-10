@@ -27,7 +27,7 @@ set(library_source "${library_source};${library_current_source};${library_curren
 set(library_all_source ${library_source} PARENT_SCOPE)
 
 
-add_library(tilenet ${library_source} ${tilenet_include_file} ${tilenet_debug_include_file})
+add_library(tilenet ${library_source} ${tilenet_include_file} ${tilenet_debug_include_file} ${tiley_includes})
 target_link_libraries(tilenet ${tilenet_dependency_libs} )
 
 add_precompiled_header(tilenet	${tilenet_library_pch_file})
@@ -35,6 +35,7 @@ add_precompiled_header(tilenet	${tilenet_library_pch_file})
 
 source_group("include" FILES "${tilenet_include_file}")
 source_group("include" FILES "${tilenet_debug_include_file}")
+source_group("tiley" FILES "${tiley_includes}")
 
 # set source groups for the files
 foreach(f ${library_source})
