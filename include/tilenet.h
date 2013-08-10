@@ -135,11 +135,12 @@ typedef unsigned int	TNKEYCODE;
 #define TNSTDRATIO						(1.0f)
 #define TN_ID_BITLENGTH					28
 #define TN_TAG_BITLENGTH				((sizeof(TNID)*8) - TN_ID_BITLENGTH)
-#define TNEXTRACTTAG(_p)				(_p >> TN_ID_BITLENGTH)
-#define TNEXTRACTID(_p)					(_p & TNMAX_ID)
+#define TNEXTRACTTAG(_p)				((_p) >> TN_ID_BITLENGTH)
+#define TNEXTRACTID(_p)					((_p) & TNMAX_ID)
 #define TNMAX_ID						((1 << TN_ID_BITLENGTH) - 1)
 #define TNMAX_IDTAG						((1 << TN_TAG_BITLENGTH) - 1)
 #define TNMAX_PARTICIPANTS				(TNMAX_ID + 1);
+#define TNPOS_INDEX(_x, _y, _w)			(((_y) * (_w)) + (_x))
 #define TNGET_ALPHA(_color)				(((_color) >> 24) & 0xFF)
 #define TNGET_RED(_color)				(((_color) >> 16) & 0xFF)
 #define TNGET_GREEN(_color)				(((_color) >> 8) & 0xFF)

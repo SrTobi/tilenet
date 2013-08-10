@@ -60,7 +60,7 @@ public:
 private:
 	typename storage_type::size_type calcPosition(const size_type&  pos)
 	{
-		return mSize.w * pos.y + pos.x;
+		return TNPOS_INDEX(pos.x, pos.y, mSize.w);
 	}
 
 private:

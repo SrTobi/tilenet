@@ -82,12 +82,12 @@ public:
 
 	const TNTILE& tile(unsigned int x, unsigned int y) const
 	{
-		return tile(y * m_width + x);
+		return tile(TNPOS_INDEX(x, y, m_width));
 	}
 
 	TNTILE& tile(unsigned int x, unsigned int y)
 	{
-		return tile(y * m_width + x);
+		return tile(TNPOS_INDEX(x, y, m_width));
 	}
 
 	const TNTILE& tile(unsigned int pos) const

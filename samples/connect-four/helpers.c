@@ -37,7 +37,7 @@ size_t pos_index( unsigned int x, unsigned int y, unsigned int w, unsigned int h
 {
 	assert(	0 <= x && x < w &&
 			0 <= y && y < h);
-	return y * w + x;
+	return TNPOS_INDEX(x, y, w);
 }
 
 
