@@ -5,7 +5,11 @@
 
 #include <vector>
 #include <string>
+#include <cassert>
 #include "../error.hpp"
+#include "../vector.hpp"
+#include "../field2d.hpp"
+#include "char_cast.hpp"
 
 namespace tiley {
 namespace impl {
@@ -21,20 +25,20 @@ class TileyImpl
 		const CheckObj& operator %(TNERROR err) const
 		{
 			if(err > 0)
-				throw std::exception("not impl");
+				throw TileyException();
 			return  *this;
 		}
 	};
-	static CheckObj chk() const { return CheckObj(); }
+	static CheckObj chk() { return CheckObj(); }
 
 public:
-	static inline void destroy_object(TNOBJ obj)
+	static inline void DestroyObject(TNOBJ obj)
 	{
 		chk() %
 			impl->destroy(obj);
 	}
 
-	static inline size_t fetch_service(size_t timeout)
+	static inline size_t FetchService(size_t timeout)
 	{
 		chk() %
 			impl->fetch_service(&timeout);
@@ -42,13 +46,13 @@ public:
 		return timeout;
 	}
 
-	static inline void set_service_thread_count(size_t count)
+	static inline void SetServiceThreadCount(size_t count)
 	{
 		chk() %
 			impl->set_service_thread_count(count);
 	}
 
-	static inline TNSERVER create_server(const TNSVRCONFIG& init)
+	static inline TNSERVER CreateServer(const TNSVRCONFIG& init)
 	{
 		TNSERVER srv;
 
@@ -58,7 +62,7 @@ public:
 		return srv;
 	}
 
-	static inline TNACCEPTOR add_listen_acceptor(TNSERVER server, unsigned short port, unsigned int maxc)
+	static inline TNACCEPTOR AddListenAcceptor(TNSERVER server, unsigned short port, unsigned int maxc)
 	{
 		TNACCEPTOR acc;
 
@@ -68,7 +72,7 @@ public:
 		return acc;
 	}
 
-	static inline TNACCEPTOR add_local_acceptor(TNSERVER server)
+	static inline TNACCEPTOR AddLocalAcceptor(TNSERVER server)
 	{
 		TNACCEPTOR acc;
 
@@ -78,13 +82,13 @@ public:
 		return acc;
 	}
 
-	static inline void add_detached_local_acceptor(TNSERVER server)
+	static inline void AddDetachedLocalAcceptor(TNSERVER server)
 	{
 		chk() %
 			impl->add_local_acceptor(nullptr, server);
 	}
 
-	static inline std::vector<TNEVENT> fetch_events(TNSERVER , size_t* timeout = nullptr)
+	static inline std::vector<TNEVENT> FetchEvents(TNSERVER , size_t* timeout = nullptr)
 	{
 		std::vector<TNEVENT> evts(32);
 		size_t fetched;
@@ -95,7 +99,7 @@ public:
 		return evts;
 	}
 
-	static inline size_t exit(size_t timeout = 0)
+	static inline size_t Exit(size_t timeout = 0)
 	{
 		chk() %
 			impl->exit(&timeout);
@@ -104,7 +108,7 @@ public:
 	}
 
 	template<typename Ch>
-	static inline void kick_participant(TNPARTICIPANT participant, const std::basic_string<Ch>& reason)
+	static inline void KickParticipant(TNPARTICIPANT participant, const std::basic_string<Ch>& reason)
 	{
 		CharCaster caster;
 
@@ -112,14 +116,14 @@ public:
 			impl->kick(participant, caster.c_wstr(reason));
 	}
 
-	static inline void attach_layer(TNPARTICIPANT participant, TNLAYER layer)
+	static inline void AttachLayer(TNPARTICIPANT participant, TNLAYER layer)
 	{
 		chk() %
 			impl->kick(participant, layer);
 	}
 
 	template<typename Ch>
-	static inline TNLAYER create_frame(const std::basic_string<Ch>& aspectName, TNFLAG flags)
+	static inline TNLAYER CreateFrame(const std::basic_string<Ch>& aspectName, TNFLAG flags)
 	{
 		CharCaster caster;
 		TNLAYER frame;
@@ -131,33 +135,34 @@ public:
 		return frame;
 	}
 
-	static inline void tilenet_update_frame(TNLAYER frame, const std::vector<TNLAYER>& layer_list, TNVIEW** view_list)
+	static inline void UpdateFrame(TNLAYER frame, const std::vector<TNLAYER>& layer_list, const std::vector<TNVIEW*>& view_list)
 	{
+		assert(layer_list.size() == view_list.size());
 		chk() %
-			impl->update_frame(frame, layer_list.data(), view_list, layer_list.size());
+			impl->update_frame(frame, layer_list.data(), view_list.data(), layer_list.size());
 
 	}
 
 	template<typename Ch>
-	static inline TNLAYER create_tilelayer(unsigned int width, unsigned int height, TNRATIO xr, TNRATIO yr, const std::basic_string<Ch>& aspect, TNFLAG flags)
+	static inline TNLAYER CreateTilelayer(Rect size, Ratio ratio, const std::basic_string<Ch>& aspect, TNFLAG flags)
 	{
 		CharCaster caster;
 		TNLAYER layer;
 
 		chk() %
-			impl->create_tilelayer(width, height, xr, yr, caster.c_wstr(aspect), flags);
+			impl->create_tilelayer(size.w, size.h, ratio.x, ratio.y, caster.c_wstr(aspect), flags);
 
 		return layer;
 	}
 
-	static inline void update_tilelayer(TNLAYER layer, const TNTILE* tiles, const TNBOOL* toupdate)
+	static inline void UpdateTilelayer(TNLAYER layer, const Field2D<TNTILE>& tiles, const Field2D<TNBOOL>& toupdate)
 	{
 		chk() %
-			impl->update_tilelayer(layer, tiles, toupdate);
+			impl->update_tilelayer(layer, tiles.storage().data(), toupdate.storage().data());
 	}
 
 	template<typename Ch>
-	static inline TNID stdtile(const std::basic_string<Ch>& name)
+	static inline TNID Stdtile(const std::basic_string<Ch>& name)
 	{
 		CharCaster caster;
 		TNID id = 0;
@@ -169,7 +174,7 @@ public:
 	}
 
 	template<typename Ch>
-	static inline TNID keyname_to_code(const std::basic_string<Ch>& name)
+	static inline TNID KeynameToCode(const std::basic_string<Ch>& name)
 	{
 		TNKEYCODE keycode = 0;
 		CharCaster caster;
@@ -181,7 +186,7 @@ public:
 	}
 
 	template<typename Ch>
-	static inline std::basic_string<Ch> keycode_to_name(TNKEYCODE code)
+	static inline std::basic_string<Ch> KeycodeToName(TNKEYCODE code)
 	{
 		const wchar_t* keyname = nullptr;
 		CharCaster caster;
