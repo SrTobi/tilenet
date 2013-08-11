@@ -7,8 +7,11 @@
 
 namespace tiley {
 
+class AutoFlusher;
+
 class Flushable
 {
+	friend class AutoFlusher;
 public:
 	Flushable()
 	{
@@ -17,23 +20,13 @@ public:
 	
 	virtual ~Flushable() {}
 	
-	inline void flush()
-	{
-		if(!frozen())
-			do_flush();
-	}
 	
-	inline void flushAll()
-	{
-		ApplyFlushAll(*this);
-	}
-	
-	virtual void freeze()
+	void freeze()
 	{
 		ApplyFreeze(*this);
 	}
 	
-	virtual void unfreeze()
+	void unfreeze()
 	{
 		ApplyUnFreeze(*this);
 	}
@@ -41,6 +34,18 @@ public:
 	bool frozen() const
 	{
 		return mFreezeCount > 0;
+	}
+
+private:
+	inline void flush()
+	{
+		if(!frozen())
+			do_flush();
+	}
+
+	inline void flushAll()
+	{
+		ApplyFlushAll(*this);
 	}
 	
 protected:
@@ -84,21 +89,21 @@ private:
 };
 
 
-class AutoFlush
+class AutoFlusher
 {
-public:
-	AutoFlush(Flushable& toFlush)
+protected:
+	AutoFlusher(Flushable* toFlush)
 		: mToFlush(toFlush)
 	{
 	}
 	
-	~AutoFlush()
+	~AutoFlusher()
 	{
-		mToFlush.flush();
+		if(mToFlush) mToFlush->flush();
 	}
 
 private:
-	Flushable& mToFlush;
+	Flushable* mToFlush;
 };
 
 }

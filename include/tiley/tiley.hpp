@@ -13,7 +13,12 @@
 #include "field2d.hpp"
 #include "lockable.hpp"
 #include "tn_object.hpp"
+#include "blitable.hpp"
 
+#include "layer.hpp"
+#include "tile_layer.hpp"
+#include "mask.hpp"
+#include "surface.hpp"
 
 
 #endif
