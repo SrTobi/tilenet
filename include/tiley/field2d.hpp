@@ -2,7 +2,7 @@
 #ifndef _TILEY_FIELD2D_HPP
 #define _TILEY_FIELD2D_HPP
 
-
+#include "tilenet.h"
 #include "blitable.hpp"
 #include "vector.hpp"
 
@@ -87,7 +87,7 @@ public:
 	}
 
 private:
-	typename storage_type::size_type calcPosition(const size_type&  pos)
+	typename storage_type::size_type calcPosition(const size_type&  pos) const
 	{
 		return TNPOS_INDEX(pos.x, pos.y, mSize.w);
 	}

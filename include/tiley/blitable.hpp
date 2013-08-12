@@ -6,6 +6,7 @@
 
 #include "lockable.hpp"
 #include "flushable.hpp"
+#include "vector.hpp"
 
 namespace tiley {
 
@@ -45,6 +46,7 @@ template<typename E>
 class Blitable
 	: public Lockable
 	, public virtual Flushable
+	, public DefaultValuable<E>
 {
 	template<typename E>
 	friend class Context;
@@ -54,7 +56,7 @@ public:
 public:
 	inline virtual ~Blitable(){}
 
-	virtual const size_type& size() const;
+	virtual const size_type& size() const = 0;
 
 protected:
 	virtual const value_type& get(const Point& pos) const = 0;
@@ -77,6 +79,7 @@ public:
 public:
 	Context(target_type& target, bool flushAtEnd = true)
 		: Lock(target)
+		, mTarget(target)
 		, AutoFlusher(flushAtEnd? &target : nullptr)
 		, mSize(target.size())
 	{
@@ -84,6 +87,7 @@ public:
 
 	Context(target_type& target, value_type* defVal, bool flushAtEnd = true)
 		: Lock(target)
+		, mTarget(target)
 		, AutoFlusher(flushAtEnd? &target : nullptr)
 		, DefaultValuable(defVal)
 		, mSize(target.size())
@@ -93,7 +97,7 @@ public:
 	inline const value_type& get(const Point& pos) const
 	{
 		if(pos.isIn(mSize))
-			return mTarget.get(mPos + pos);
+			return mTarget.get(pos);
 		else
 			return defaultValue();
 	}
@@ -101,7 +105,7 @@ public:
 	inline void set(const value_type& e, const Point& pos)
 	{
 		if(pos.isIn(mSize))
-			mTarget.set(e, mPos + pos);
+			mTarget.set(e, pos);
 	}
 	
 

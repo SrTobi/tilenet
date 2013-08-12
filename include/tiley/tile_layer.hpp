@@ -25,7 +25,7 @@ public:
 		, mUpdated(size)
 	{
 		init();
-		reset(Impl::CreateTilelayer(size, ratio, L"std", flags));
+		reset(Impl::CreateTilelayer(size, ratio, std::wstring(L"std"), flags));
 	}
 
 	TileLayer(const size_type& size, const string& aspect, const Ratio& ratio = Ratio(1.0f, 1.0f), TNFLAG flags = 0) 
@@ -65,18 +65,18 @@ private:
 
 	virtual const value_type& get( const Point& pos ) const
 	{
-		if(pos.isIn(mSize))
-			return mContent.at(mPos + pos);
+		if(pos.isIn(size()))
+			return mContent.at(pos);
 		else
-			return defaultValue();
+			return this->defaultValue();
 	}
 
 	virtual void set(const value_type& e, const Point& pos )
 	{
-		if(pos.isIn(mSize) && masked(pos))
+		if(pos.isIn(size()))
 		{
-			mContent.at(mPos + pos) = e;
-			mUpdated.at(mPos + pos) = 1;
+			mContent.at(pos) = e;
+			mUpdated.at(pos) = 1;
 		}else
 		{
 			defaultValue();
@@ -96,7 +96,7 @@ private:
 
 private:
 	Field2D<TNTILE> mContent;
-	Field2D<TNBOOL> mUpdated;
+	mutable Field2D<TNBOOL> mUpdated;
 
 	mutable Mutex mMutex;
 };

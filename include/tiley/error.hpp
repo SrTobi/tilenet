@@ -37,9 +37,9 @@ public:
 		return mWhat;
 	}
 
-	inline virtual const std::string& wwhy() const
+	inline virtual std::wstring wwhy() const
 	{
-
+		return L"";
 	}
 
 private:

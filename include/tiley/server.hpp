@@ -38,7 +38,7 @@ public:
 
 	const string& description() const
 	{
-		return mTilesetName;
+		return mPackageName;
 	}
 
 	void description(const string& desc)
@@ -47,14 +47,14 @@ public:
 	}
 	
 
-	const string& tilesetName() const
+	const string& package() const
 	{
-		return mTilesetName;
+		return mPackageName;
 	}
 
-	void tilesetName(const string& name)
+	void package(const string& name)
 	{
-		mTilesetName = name;
+		mPackageName = name;
 	}
 
 	const string& interface() const
@@ -72,7 +72,7 @@ public:
 private:
 	string mName;
 	string mDescription;
-	string mTilesetName;
+	string mPackageName;
 	string mTilesetInterface;
 };
 
@@ -84,13 +84,15 @@ class Server
 {
 public:
 	typedef std::basic_string<Ch> string;
+	typedef ServerConfig<Ch> config_type;
 	typedef Mutex mutex_type;
 public:
-	Server(const ServerConfig& cfg)
+	Server(const config_type& cfg)
 		: mConfig(cfg)
+		, mParticipants(6, nullptr)
 	{
 		mEventIterator = mEventBuffer.begin();
-		reset(Impl::CreateServer(cfg.name(), cfg.description(), cfg.tilesetName(), cfg.interface()));
+		reset(Impl::CreateServer(cfg.name(), cfg.description(), cfg.package(), cfg.interface()));
 	}
 
 	bool fetch(TNEVENT& evt)
@@ -138,7 +140,7 @@ public:
 		return fetch(evt, timeout_dummy);
 	}
 
-	const ServerConfig& config() const
+	const config_type& config() const
 	{
 		return mConfig;
 	}
@@ -211,8 +213,18 @@ private:
 		mParticipants[index] = nullptr;
 	}
 
+	virtual void lock() const
+	{
+		mMutex.lock();
+	}
+
+	virtual void unlock() const
+	{
+		mMutex.unlock();
+	}
+
 private:
-	const ServerConfig mConfig;
+	const config_type mConfig;
 	bool mStarted;
 
 	std::vector<TNEVENT> mEventBuffer;
@@ -220,7 +232,7 @@ private:
 
 	std::vector<std::shared_ptr<Participant>> mParticipants;
 
-	mutex_type mMutex;
+	mutable mutex_type mMutex;
 };
 
 

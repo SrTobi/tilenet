@@ -16,10 +16,11 @@
 #if TILEY_DEFAULT_IMPL == TILEY_OWN_IMPL
 #error Not implemented
 #elif TILEY_DEFAULT_IMPL == TILEY_STATIC_IMPL
+#	include "impl/char_cast.hpp"
 #	include "impl/static_impl.hpp"
 
 namespace tiley {
-	typedef tiley::impl::TileyImpl<tiley::impl::StaticImpl, void> Impl;
+	typedef tiley::impl::TileyImpl<tiley::impl::StaticImpl, tiley::BasicCharCaster> Impl;
 }
 
 #elif TILEY_DEFAULT_IMPL == TILEY_STATIC_IMPL

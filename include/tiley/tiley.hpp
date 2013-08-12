@@ -24,6 +24,9 @@
 
 #include "participant.hpp"
 #include "server.hpp"
+#include "acceptors.hpp"
+
+#include "functions.hpp"
 
 
 #endif

@@ -6,10 +6,10 @@
 #include <vector>
 #include <string>
 #include <cassert>
+#include <tilenet.h>
 #include "../error.hpp"
 #include "../vector.hpp"
 #include "../field2d.hpp"
-#include "char_cast.hpp"
 
 namespace tiley {
 namespace impl {
@@ -104,7 +104,7 @@ public:
 			impl->add_local_acceptor(nullptr, server);
 	}
 
-	static inline std::vector<TNEVENT> FetchEvents(TNSERVER , size_t* timeout = nullptr)
+	static inline std::vector<TNEVENT> FetchEvents(TNSERVER server, size_t* timeout = nullptr)
 	{
 		std::vector<TNEVENT> evts(32);
 		size_t fetched;
@@ -116,10 +116,16 @@ public:
 		return evts;
 	}
 
-	static inline size_t Exit(size_t timeout = 0)
+	static inline void Exit()
 	{
 		chk() %
-			impl->exit(&timeout);
+			impl->exit(nullptr);
+	}
+
+	static inline size_t Exit(size_t* timeout)
+	{
+		chk() %
+			impl->exit(timeout);
 
 		return timeout;
 	}
@@ -136,7 +142,7 @@ public:
 	static inline void AttachLayer(TNPARTICIPANT participant, TNLAYER layer)
 	{
 		chk() %
-			impl->kick(participant, layer);
+			impl->attach_layer(participant, layer);
 	}
 
 	template<typename Ch>
@@ -167,7 +173,7 @@ public:
 		TNLAYER layer;
 
 		chk() %
-			impl->create_tilelayer(size.w, size.h, ratio.x, ratio.y, caster.c_wstr(aspect), flags);
+			impl->create_tilelayer(&layer, size.w, size.h, ratio.x, ratio.y, caster.c_wstr(aspect), flags);
 
 		return layer;
 	}
