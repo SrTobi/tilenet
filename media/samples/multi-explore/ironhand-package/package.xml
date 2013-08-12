@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+	<package>
+		<information name="multi-explore-sample-package">
+			Standard package for the sample 'multi-explore'.
+			This is a sample for tilenet.
+		
+			<author name="tobias" />
+			<interface value="tn.org.samples.multi-explore" />
+		</information>
+		
+		<aspect w="18" h="18" />
+		<image name="ironhand" src="ironhand.png" />
+		<raster name="ironhand-raster" img="ironhand" w="18" h="18" />
+		
+		<tile name="tree" raster="ironhand-raster" x="1" y="0" std="T" color="#44ff44" />
+		<tile name="plain" raster="ironhand-raster" x="5" y="0" std="."  color="#44ff44" />
+		<tile name="player" raster="ironhand-raster" x="0" y="0" std="smiley" color="#aabb90" />
+		
+		<animation name="empty" int="1000" rand="1">
+			<tile std="~" raster="ironhand-raster" x="1" y="1" color="#9999ff" />
+			<tile std="=" raster="ironhand-raster" x="0" y="1" color="#9999ff" />
+		</animation>
+	</package>
