@@ -20,5 +20,10 @@
 #include "mask.hpp"
 #include "surface.hpp"
 
+#include "tile.hpp"
+
+#include "participant.hpp"
+#include "server.hpp"
+
 
 #endif

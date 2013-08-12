@@ -52,9 +52,25 @@ public:
 			impl->set_service_thread_count(count);
 	}
 
-	static inline TNSERVER CreateServer(const TNSVRCONFIG& init)
+	template<typename Ch>
+	static inline TNSERVER CreateServer(const std::basic_string<Ch>& name,
+										const std::basic_string<Ch>& desc,
+										const std::basic_string<Ch>& tilesetName,
+										const std::basic_string<Ch>& tilesetInterface)
 	{
+		CharCaster caster1;
+		CharCaster caster2;
+		CharCaster caster3;
+		CharCaster caster4;
+
 		TNSERVER srv;
+		TNSVRCONFIG init;
+		init.name = caster1.c_wstr(name);
+		init.info = caster2.c_wstr(desc);
+		init.pkg = caster3.c_wstr(tilesetName);
+		init.pkgi = caster4.c_wstr(tilesetInterface);
+		init.options = 0;
+
 
 		chk() %
 			impl->create_server(&srv, &init);
@@ -96,6 +112,7 @@ public:
 		chk() %
 			tilenet_fetch_events(server, evts.data(), evts.size(), &fetched, nullptr);
 
+		evts.resize(fetched);
 		return evts;
 	}
 

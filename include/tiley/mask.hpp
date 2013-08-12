@@ -8,7 +8,7 @@
 
 namespace tiley {
 
-template<typename Mutex>
+template<typename Mutex = TILEY_DEFAULT_MUTEX>
 class Mask
 	: public Blitable<bool>
 	, public AutoObject

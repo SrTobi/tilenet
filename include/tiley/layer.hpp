@@ -13,7 +13,6 @@
 
 namespace tiley {
 
-template<typename Ch, typename Mutex>
 class Layer
 	: public AutoObject
 	, public virtual Flushable
@@ -21,14 +20,11 @@ class Layer
 	, public TNObject
 {
 public:
-	typedef std::basic_string<Ch> string;
-
-public:
-	Layer()
+	inline Layer()
 	{
 	}
 
-	virtual ~Layer()
+	inline virtual ~Layer()
 	{
 	}
 

@@ -10,7 +10,7 @@
 namespace tiley {
 
 
-template<typename Ch, typename Elem>
+template<typename Elem, typename Ch = TILEY_DEFAULT_CHAR>
 class Surface
 	: public Blitable<Elem>
 	, public AutoObject

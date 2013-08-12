@@ -8,7 +8,7 @@
 
 namespace tiley {
 
-template<typename Const = true>
+template<bool Const = true>
 class ITile;
 
 class Tile
@@ -31,7 +31,7 @@ public:
 	{
 	}
 
-	template<typename Const>
+	template<bool Const>
 	inline Tile(const ITile<Const>& other);
 
 	inline Tile(const Tile& other)
@@ -63,45 +63,36 @@ private:
 	TNTILE mTile;
 };
 
-template<bool Const, Tile::TileType Type>
-class ITile
+
+
+class StdTile
 {
 public:
-	typedef typename std::conditional<Const, const TNTILE, TNTILE>::type value_type;
-
-
-	ITile(value_type& tile)
-		: mTileRef(&tile)
+	template<typename Ch>
+	StdTile(const std::basic_string<Ch>& name)
 	{
+		id = Impl::Stdtile(name);
 	}
 
-	template<typename C>
-	ITile(const ITile<C>& other)
-		: mTileRef(other.mTileRef)
+	TNTILE operator ()() const
 	{
-		assert(mTileRef);
+		return (*this)(0xFFFFFFFF);
 	}
 
-	Tile::TileType type() const
+	TNTILE operator ()(TNCOLOR color) const
 	{
-		return Type;
-	}
+		TNTILE tile;
+		tile.type = TN_STD_TILE;
+		tile.data.stdset.id = id;
+		tile.data.stdset.color = color;
+		tile.data.stdset.modifier = 0;
 
-protected:
-	inline value_type& ref()
-	{
-		assert(mTileRef);
-		return *mTileRef;
+		return tile;
 	}
 
 private:
-	static TNTILE EmptyTile;
-	value_type* mTileRef;
+	TNID id;
 };
-
-template<typename Const>
-TNTILE ITile::EmptyTile = {TN_NULL_TILE};
-
 
 }
 

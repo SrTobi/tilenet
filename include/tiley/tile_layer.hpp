@@ -9,17 +9,46 @@
 
 namespace tiley {
 
-template<typename Ch, typename Mutex>
+template<typename Ch = TILEY_DEFAULT_CHAR, typename Mutex = TILEY_DEFAULT_MUTEX>
 class TileLayer
-	: public Layer<Ch, Mutex>
+	: public Layer
 	, public Blitable<TNTILE>
 {
 public:
-	typedef Rect size_type;
-	typedef Layer<Ch, Mutex> base_type; 
+	typedef std::basic_string<Ch>					string;
+	typedef typename Blitable<TNTILE>::size_type	size_type;
+	typedef typename Ratio							ratio_type;
+	typedef Layer									base_type;
 public:
-	TileLayer(const size_type& size)
+	TileLayer(const size_type& size, const Ratio& ratio = Ratio(1.0f, 1.0f), TNFLAG flags = 0) 
+		: mContent(size)
+		, mUpdated(size)
 	{
+		init();
+		reset(Impl::CreateTilelayer(size, ratio, L"std", flags));
+	}
+
+	TileLayer(const size_type& size, const string& aspect, const Ratio& ratio = Ratio(1.0f, 1.0f), TNFLAG flags = 0) 
+		: mContent(size)
+		, mUpdated(size)
+	{
+		init();
+		reset(Impl::CreateTilelayer(size, ratio, aspect, flags));
+	}
+
+
+	inline virtual const size_type& size() const
+	{
+		return mContent.size();
+	}
+
+private:
+	void init()
+	{
+		TNTILE nullTile;
+		memset(&nullTile, 0, sizeof(nullTile));
+		mContent.clear(nullTile);
+		mUpdated.clear(0);
 	}
 
 private:
@@ -68,6 +97,7 @@ private:
 private:
 	Field2D<TNTILE> mContent;
 	Field2D<TNBOOL> mUpdated;
+
 	mutable Mutex mMutex;
 };
 

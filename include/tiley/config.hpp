@@ -23,9 +23,23 @@ namespace tiley {
 }
 
 #elif TILEY_DEFAULT_IMPL == TILEY_STATIC_IMPL
-#error Not implemented
+#	error Not implemented
 #endif
 
 
+#ifndef TILEY_DEFAULT_CHAR
+#	define TILEY_DEFAULT_CHAR wchar_t
+#endif
+
+#ifndef TILEY_DEFAULT_MUTEX
+namespace tiley {
+	struct NullMutex
+	{
+		void lock() {}
+		void unlock() {}
+	};
+}
+#	define TILEY_DEFAULT_MUTEX tiley::NullMutex 
+#endif
 
 #endif
