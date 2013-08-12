@@ -57,7 +57,8 @@ StdRefTile::~StdRefTile()
 
 OVERRIDE void StdRefTile::render(sf::RenderTarget& target, Point pos, const sf::Color& color)
 {
-	mRef->render(target, pos, color * mColor);
+	if(mRef)
+		mRef->render(target, pos, color * mColor);
 }
 
 

@@ -208,6 +208,7 @@ void StdTilePool::init()
 	addStdTile(16, 1, L":|colon");
 	addStdTile(17, 1, L";|semicolon");
 	addStdTile(21, 1, L"?|question|questionmark");
+	addStdTile(23, 0, L"!|bang|shriek|pling|shout|shoutpole|exclamationmark");
 
 	// math
 	addStdTile(3, 1, L"-|dash|minus");
@@ -220,6 +221,7 @@ void StdTilePool::init()
 
 	// stuff
 	addStdTile(18, 3, L"|vbar|vertical-bar");
+	addStdTile(20, 3, L"~|tilde");
 }
 
 const std::shared_ptr<sf::Texture>& StdTilePool::getTexture() const
