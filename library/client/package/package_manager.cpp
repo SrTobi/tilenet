@@ -49,7 +49,7 @@ public:
 				iterateDirectory(p, deep - 1);
 			}else if(fs::is_regular_file(p) && p.filename() == "package.xml")
 			{
-				checkPackageDotXml(p.stem());
+				checkPackageDotXml(p.parent_path());
 			}
 		}
 	}
@@ -160,7 +160,7 @@ void PackageManager::serachPackages()
 
 	std::shared_ptr<PackageFinder> pf = std::make_shared<PackageFinder>(mPackagePaths.begin(), mPackagePaths.end());
 
-	auto func = std::bind(&PackageFinder::search, pf, 2);
+	auto func = std::bind(&PackageFinder::search, pf, 3);
 	boost::packaged_task<std::vector<PackageInfo>> task(std::move(func));
 	mPackageInfosWaiter = task.get_future();
 
