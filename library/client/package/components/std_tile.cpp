@@ -36,7 +36,7 @@ StdSpriteTile::~StdSpriteTile()
 OVERRIDE void StdSpriteTile::render( sf::RenderTarget& target, Point pos, const sf::Color& color )
 {
 	mSprite.setPosition(float(pos.x), float(pos.y));
-	mSprite.setColor(color);
+	mSprite.setColor(mColor * color);
 	target.draw(mSprite);
 }
 
