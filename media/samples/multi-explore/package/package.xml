@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+	<package>
+		<information name="multi-explore-sample-package">
+			Standard package for the sample 'multi-explore'.
+			This is a sample for tilenet.
+		
+			<author name="tobias" />
+			<interface value="tn.org.samples.multi-explore" />
+		</information>
+		
+		<tile name="tree" std="T" color="#00cc00" />
+		<tile name="plain" std="."  color="#00ee00" />
+		<tile name="player" std="smiley" color="#0000ff" />
+		
+		<animation name="empty" int="1000" rand="1">
+			<tile std="~" color="#0000bb" />
+			<tile std="=" color="#0000bb" />
+		</animation>
+	</package>
