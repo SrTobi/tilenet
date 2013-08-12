@@ -2,6 +2,7 @@
 #ifndef _TILEY_TILE_LAYER_HPP
 #define _TILEY_TILE_LAYER_HPP
 
+#include <cstring>
 
 #include "field2d.hpp"
 #include "layer.hpp"
@@ -17,7 +18,7 @@ class TileLayer
 public:
 	typedef std::basic_string<Ch>					string;
 	typedef typename Blitable<TNTILE>::size_type	size_type;
-	typedef typename Ratio							ratio_type;
+	typedef Ratio									ratio_type;
 	typedef Layer									base_type;
 public:
 	TileLayer(const size_type& size, const Ratio& ratio = Ratio(1.0f, 1.0f), TNFLAG flags = 0) 

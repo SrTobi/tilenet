@@ -217,7 +217,9 @@ public:
 		chk() %
 			impl->keyname(code, &keyname);
 
-		return caster.str<Ch>(keyname);
+		std::basic_string<Ch> result;
+		caster.str(result, keyname);
+		return result;
 	}
 };
 

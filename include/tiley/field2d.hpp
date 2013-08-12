@@ -39,8 +39,8 @@ public:
 	{
 		storage_type newStorage(size.area());
 
-		storage_type::iterator srcIt = mStorage.begin();
-		storage_type::iterator destIt = newStorage.begin();
+		typename storage_type::iterator srcIt = mStorage.begin();
+		typename storage_type::iterator destIt = newStorage.begin();
 
 		auto w = std::min(mSize.w, size.w);
 

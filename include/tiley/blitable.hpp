@@ -42,16 +42,16 @@ private:
 	value_type* mDefaultValue;
 };
 
-template<typename E>
+template<typename Elem>
 class Blitable
 	: public Lockable
 	, public virtual Flushable
-	, public DefaultValuable<E>
+	, public DefaultValuable<Elem>
 {
 	template<typename E>
 	friend class Context;
 public:
-	typedef E value_type;
+	typedef Elem value_type;
 	typedef Rect size_type;
 public:
 	inline virtual ~Blitable(){}
@@ -89,7 +89,7 @@ public:
 		: Lock(target)
 		, mTarget(target)
 		, AutoFlusher(flushAtEnd? &target : nullptr)
-		, DefaultValuable(defVal)
+		, DefaultValuable<E>(defVal)
 		, mSize(target.size())
 	{
 	}
@@ -99,7 +99,7 @@ public:
 		if(pos.isIn(mSize))
 			return mTarget.get(pos);
 		else
-			return defaultValue();
+			return this->defaultValue();
 	}
 
 	inline void set(const value_type& e, const Point& pos)

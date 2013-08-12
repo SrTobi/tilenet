@@ -41,6 +41,12 @@ public:
 		return str.c_str();
 	}
 	
+	template<typename Ch>
+	inline void str(std::basic_string<Ch>& target, const wchar_t* cstr)
+	{
+		while(*cstr)
+			target.push_back(*(cstr++));
+	}
 
 private:
 	wchar_t buf[1024];

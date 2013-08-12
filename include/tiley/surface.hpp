@@ -10,13 +10,14 @@
 namespace tiley {
 
 
-template<typename Elem, typename Ch = TILEY_DEFAULT_CHAR>
+template<typename Elem, typename Ch = TILEY_DEFAULT_CHAR, typename Mutex = TILEY_DEFAULT_MUTEX>
 class Surface
 	: public Blitable<Elem>
 	, public AutoObject
 {
 public:
 	typedef std::basic_string<Ch> string;
+	typedef Mutex mutex_type;
 	typedef Elem value_type;
 	typedef Blitable<Elem> target_type;
 	typedef typename target_type::size_type size_type;
@@ -34,7 +35,7 @@ public:
 		, mPos(pos)
 		, mSize(size)
 	{
-		assert(size.w >= 0 && size.h >= 0)
+		assert(size.w >= 0 && size.h >= 0);
 	}
 
 	~Surface()
@@ -60,7 +61,7 @@ protected:
 		if(pos.isIn(mSize) && masked(pos))
 			return mTarget.get(mPos + pos);
 		else
-			return defaultValue();
+			return this->defaultValue();
 	}
 
 	virtual void set(const value_type& e, const Point& pos )
@@ -69,7 +70,7 @@ protected:
 			mTarget.set(e, mPos + pos);
 		else
 		{
-			assert(defaultValue());
+			assert(this->defaultValue());
 		}
 	}
 
@@ -95,7 +96,7 @@ protected:
 
 private:
 	target_type& mTarget;
-	Mask* mMask;
+	Mask<mutex_type>* mMask;
 	size_type mSize;
 	size_type mPos;
 };

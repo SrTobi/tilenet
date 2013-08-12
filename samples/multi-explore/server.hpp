@@ -10,7 +10,7 @@
 class Participant
 {
 public:
-	Participant(Map& map, std::shared_ptr<tiley::Participant>& p);
+	Participant(Map& map, const std::shared_ptr<tiley::Participant>& p);
 	~Participant();
 
 	bool move(const tiley::Point& dir);

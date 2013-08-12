@@ -9,7 +9,7 @@ tiley::StdTile WaterTile(std::wstring(L"water"));
 tiley::StdTile EmptyTile(std::wstring(L"empty"));
 
 
-Participant::Participant(Map& map, std::shared_ptr<tiley::Participant>& p )
+Participant::Participant(Map& map, const std::shared_ptr<tiley::Participant>& p )
 	: mMap(map)
 	, mLayer(tiley::Rect(21, 21))
 	, mHandle(p)

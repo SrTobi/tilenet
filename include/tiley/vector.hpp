@@ -2,6 +2,7 @@
 #ifndef _TILEY_VECTOR_HPP
 #define _TILEY_VECTOR_HPP
 
+#include <cmath>
 #include <sstream>
 
 

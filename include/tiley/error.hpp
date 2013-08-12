@@ -27,17 +27,17 @@ public:
 	{
 	}
 
-	inline virtual const char* what() const
+	inline virtual const char* what() const throw()
 	{
 		return mWhat.c_str();
 	}
 
-	inline virtual const std::string& why() const
+	inline virtual const std::string& why() const throw()
 	{
 		return mWhat;
 	}
 
-	inline virtual std::wstring wwhy() const
+	inline virtual std::wstring wwhy() const throw()
 	{
 		return L"";
 	}
