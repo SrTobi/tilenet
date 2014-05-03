@@ -2,7 +2,6 @@
 #ifndef _TILEY_SURFACE_HPP
 #define _TILEY_SURFACE_HPP
 
-#include <string>
 #include "field2d.hpp"
 #include "mask.hpp"
 
@@ -10,13 +9,12 @@
 namespace tiley {
 
 
-template<typename Elem, typename Ch = TILEY_DEFAULT_CHAR, typename Mutex = TILEY_DEFAULT_MUTEX>
+template<typename Elem, typename Mutex = TILEY_DEFAULT_MUTEX>
 class Surface
 	: public Blitable<Elem>
 	, public AutoObject
 {
-public:
-	typedef std::basic_string<Ch> string;
+public:	
 	typedef Mutex mutex_type;
 	typedef Elem value_type;
 	typedef Blitable<Elem> target_type;
