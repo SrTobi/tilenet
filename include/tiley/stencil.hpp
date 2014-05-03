@@ -10,7 +10,7 @@ namespace tiley {
 
 
 template<typename Elem, typename Mutex = TILEY_DEFAULT_MUTEX>
-class Surface
+class Stencil
 	: public Blitable<Elem>
 	, public AutoObject
 {
@@ -21,14 +21,14 @@ public:
 	typedef typename target_type::size_type size_type;
 public:
 
-	Surface(target_type& target)
+	Stencil(target_type& target)
 		: mTarget(target)
 		, mPos(0, 0)
 		, mSize(target->size())
 	{
 	}
 
-	Surface(target_type& target, const size_type& pos, const size_type& size)
+	Stencil(target_type& target, const size_type& pos, const size_type& size)
 		: mTarget(target)
 		, mPos(pos)
 		, mSize(size)
@@ -36,7 +36,7 @@ public:
 		assert(size.w >= 0 && size.h >= 0);
 	}
 
-	~Surface()
+	~Stencil()
 	{
 		free(mMask);
 	}

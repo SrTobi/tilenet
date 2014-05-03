@@ -18,7 +18,7 @@
 #include "layer.hpp"
 #include "tile_layer.hpp"
 #include "mask.hpp"
-#include "surface.hpp"
+#include "stencil.hpp"
 
 #include "tile.hpp"
 
