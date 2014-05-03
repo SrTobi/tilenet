@@ -28,7 +28,7 @@ public:
 		return mMask.at(pos) = newVal;
 	}
 
-	bool masked(const size_type& pos) const
+	const bool& masked(const size_type& pos) const
 	{
 		return mMask.at(pos);
 	}
@@ -47,12 +47,12 @@ private:
 
 	virtual const value_type& get( const Point& pos ) const
 	{
-		throw std::exception("The method or operation is not implemented.");
+		return masked(pos);
 	}
 
-	virtual void set( const value_type& e, const Point& pos )
+	virtual void set(const Point& pos, const value_type& e)
 	{
-		throw std::exception("The method or operation is not implemented.");
+		mask(pos, e);
 	}
 
 	virtual void lock() const

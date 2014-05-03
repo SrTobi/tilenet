@@ -64,7 +64,7 @@ protected:
 			return this->defaultValue();
 	}
 
-	virtual void set(const value_type& e, const Point& pos )
+	virtual void set(const Point& pos, const value_type& e)
 	{
 		if(pos.isIn(mSize) && masked(pos))
 			mTarget.set(e, mPos + pos);

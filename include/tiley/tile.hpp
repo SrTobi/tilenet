@@ -8,6 +8,8 @@
 
 namespace tiley {
 
+typedef TNTILE RawTile;
+
 template<bool Const = true>
 class ITile;
 

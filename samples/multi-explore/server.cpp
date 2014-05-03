@@ -50,8 +50,8 @@ void Participant::someone_moved( const tiley::Point& from, const tiley::Point& t
 	tiley::Point offset(mLayer.size()/2);
 
 	tiley::Context<TNTILE> ctx(mLayer);
-	ctx.set(PlainTile(), from - position() + offset);
-	ctx.set(PlayerTile(), to - position() + offset);
+	ctx.set(from - position() + offset, PlainTile());
+	ctx.set(to - position() + offset, PlayerTile());
 }
 
 void Participant::draw()
@@ -90,7 +90,7 @@ void Participant::draw()
 			default:
 				break;
 			}
-			ctx.set(tile, p);
+			ctx.set(p, tile);
 		}
 	}
 }

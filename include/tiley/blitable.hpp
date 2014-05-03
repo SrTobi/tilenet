@@ -60,7 +60,7 @@ public:
 
 protected:
 	virtual const value_type& get(const Point& pos) const = 0;
-	virtual void set(const value_type& e, const Point& pos) = 0;
+	virtual void set(const Point& pos, const value_type& e) = 0;
 
 };
 
@@ -102,10 +102,10 @@ public:
 			return this->defaultValue();
 	}
 
-	inline void set(const value_type& e, const Point& pos)
+	inline void set(const Point& pos, const value_type& e)
 	{
 		if(pos.isIn(mSize))
-			mTarget.set(e, pos);
+			mTarget.set(pos,e);
 	}
 	
 
