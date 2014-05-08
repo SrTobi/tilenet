@@ -15,12 +15,11 @@ class Surface
 	, public Attachable<Surface>
 {
 public:
-	typedef Rect	size_type;
-	typedef Blitable<RawTile>						base_type;
+	typedef Rect				size_type;
+	typedef Blitable<RawTile>	base_type;
 public:
 	inline Surface(const size_type& size)
 		: mContent(size)
-		, mUpdated(size)
 	{
 		init();
 	}
@@ -35,23 +34,12 @@ public:
 		return mContent;
 	}
 
-	const Field2D<TNBOOL>& updated_content() const
-	{
-		return mUpdated;
-	}
-
-	void clear_update() const
-	{
-		mUpdated.clear(0);
-	}
-
 private:
 	inline void init()
 	{
-		TNTILE nullTile;
+		RawTile nullTile;
 		memset(&nullTile, 0, sizeof(nullTile));
 		mContent.clear(nullTile);
-		mUpdated.clear(0);
 	}
 
 protected:
@@ -78,7 +66,6 @@ protected:
 		if(pos.isIn(size()))
 		{
 			mContent.at(pos) = e;
-			mUpdated.at(pos) = 1;
 		}else
 		{
 			defaultValue();
@@ -95,7 +82,6 @@ protected:
 
 private:
 	Field2D<RawTile> mContent;
-	mutable Field2D<TNBOOL> mUpdated;
 };
 
 
