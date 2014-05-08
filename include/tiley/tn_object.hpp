@@ -8,6 +8,7 @@
 
 namespace tiley {
 
+typedef TNOBJ ObjectHandle;
 
 class TNObject
 {
@@ -17,7 +18,7 @@ public:
 	{
 	}
 
-	inline TNObject(TNOBJ obj)
+	inline TNObject(ObjectHandle obj)
 		: mObject(obj)
 	{
 	}
@@ -27,13 +28,16 @@ public:
 		destroy();
 	}
 	
-	inline TNOBJ native_ref() const { return mObject; }
+	inline ObjectHandle native_ref() const { return mObject; }
 	
 protected:
-	inline void reset(TNOBJ obj)
+	inline void reset(ObjectHandle obj)
 	{
-		destroy();
-		mObject = obj;
+		if (obj != native_ref())
+		{
+			destroy();
+			mObject = obj;
+		}
 	}
 	
 private:
@@ -41,13 +45,34 @@ private:
 	{
 		if(mObject)
 			Impl::DestroyObject(mObject);
+		mObject = nullptr;
 	}
 	
 private:
-	TNOBJ mObject;
+	ObjectHandle mObject;
 };
 
+class TNObjectHandle: public TNObject
+{
+public:
+	inline TNObjectHandle()
+	{
+	}
 
+	inline TNObjectHandle(ObjectHandle obj)
+		: TNObject(obj)
+	{
+	}
+
+	inline virtual ~TNObjectHandle()
+	{
+	}
+
+	inline void reset(ObjectHandle obj)
+	{
+		TNObject::reset(obj);
+	}
+};
 
 }
 
