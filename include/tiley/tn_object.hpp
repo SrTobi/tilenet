@@ -31,7 +31,7 @@ public:
 	inline ObjectHandle native_ref() const { return mObject; }
 	
 protected:
-	inline void reset(ObjectHandle obj)
+	inline void reset(ObjectHandle obj) const
 	{
 		if (obj != native_ref())
 		{
@@ -41,7 +41,7 @@ protected:
 	}
 	
 private:
-	inline void destroy()
+	inline void destroy() const
 	{
 		if(mObject)
 			Impl::DestroyObject(mObject);
@@ -49,7 +49,7 @@ private:
 	}
 	
 private:
-	ObjectHandle mObject;
+	mutable ObjectHandle mObject;
 };
 
 class TNObjectHandle: public TNObject
