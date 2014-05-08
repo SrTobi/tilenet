@@ -79,6 +79,11 @@ public:
 	typedef AttachableType attachable_type;
 
 public:
+	AttachSocket()
+		: mAttached(nullptr)
+	{
+	}
+	
 	void attach(attachable_type* attachable)
 	{
 		Lock lock(*this);

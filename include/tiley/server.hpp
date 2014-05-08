@@ -9,6 +9,7 @@
 #include <memory>
 #include "config.hpp"
 #include "tn_object.hpp"
+#include "event.hpp"
 #include "participant.hpp"
 
 namespace tiley {

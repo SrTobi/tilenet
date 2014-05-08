@@ -13,28 +13,17 @@ namespace tiley {
 
 class Participant
 	: public AutoObject
+	, public AttachSocket<Layer>
 {
 public:
 	inline Participant(TNPARTICIPANT id)
 		: mPId(id)
-		, mAttachedLayer(nullptr)
+		, mLayerHandle(nullptr)
 	{
 	}
 
 	inline ~Participant()
 	{
-		free(mAttachedLayer);
-	}
-
-
-	inline void attach(Layer* layer)
-	{
-		if(layer)
-		{
-			free(mAttachedLayer);
-			mAttachedLayer = layer;
-			Impl::AttachLayer(mPId, layer->native_ref());
-		}
 	}
 
 	inline void kick()
@@ -59,8 +48,34 @@ public:
 	}
 
 private:
+	inline virtual void on_attached()
+	{
+		flush();
+	}
+
+	inline virtual void do_flush() const
+	{
+		auto* a = attached()->native_ref();
+		if (mLayerHandle != a)
+			Impl::AttachLayer(mPId, a);
+	}
+
+	inline virtual void apply_to_children(void(*) (Flushable&)) const
+	{
+		// no children
+	}
+
+	inline virtual void lock() const
+	{
+	}
+
+	inline virtual void unlock() const
+	{
+	}
+
+private:
 	TNPARTICIPANT mPId;
-	Layer* mAttachedLayer;
+	ObjectHandle mLayerHandle;
 };
 
 
