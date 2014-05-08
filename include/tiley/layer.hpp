@@ -16,8 +16,7 @@ namespace tiley {
 class Layer
 	: public AutoObject
 	, public virtual Flushable
-	, public Lockable
-	, public TNObject
+	, public virtual Lockable
 {
 public:
 	inline Layer()

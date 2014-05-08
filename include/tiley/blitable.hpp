@@ -44,7 +44,7 @@ private:
 
 template<typename Elem>
 class Blitable
-	: public Lockable
+	: public virtual Lockable
 	, public virtual Flushable
 	, public DefaultValuable<Elem>
 {
