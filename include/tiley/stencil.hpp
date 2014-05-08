@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _TILEY_SURFACE_HPP
-#define _TILEY_SURFACE_HPP
+#ifndef _TILEY_STENCIL_HPP
+#define _TILEY_STENCIL_HPP
 
 #include "field2d.hpp"
 #include "mask.hpp"
