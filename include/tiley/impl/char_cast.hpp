@@ -5,7 +5,24 @@
 #include <string>
 
 namespace tiley {
+	
+template<typename Ch>
+class ChooseCStr
+{};
 
+template<>
+struct ChooseCStr<char>
+{
+	static inline const char* choose(const char* c, const wchar_t* wc) { return c;  }
+};
+
+template<>
+struct ChooseCStr<wchar_t>
+{
+	static inline const wchar_t* choose(const char* c, const wchar_t* wc) { return wc; }
+};
+
+#define CSTR_T(_ch, _str) (ChooseCStr<_ch>::choose(_str, L##_str))
 
 class BasicCharCaster
 {
