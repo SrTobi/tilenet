@@ -11,7 +11,6 @@ class AutoFlusher;
 
 class Flushable
 {
-	friend class AutoFlusher;
 public:
 	Flushable()
 	{
@@ -36,7 +35,6 @@ public:
 		return mFreezeCount > 0;
 	}
 
-private:
 	inline void flush()
 	{
 		if(!frozen())
