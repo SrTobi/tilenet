@@ -1,0 +1,1 @@
+This should be a simple but powerful library, which streams a game with (consolelike)tile-graphic to one or more clients playing or watching the game.
